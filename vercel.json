@@ -6,5 +6,9 @@
     { "source": "/project", "destination": "/project" },
     { "source": "/finance", "destination": "/finance" }
   ],
-  "redirects": []
+  "redirects": [],
+  "fallback": {
+    "destination": "/index.html",
+    "status": 200
+  }
 }
