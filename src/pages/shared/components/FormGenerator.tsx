@@ -272,7 +272,9 @@ export default function FormGenerator({
                 name={res.name}
                 rules={res?.rules}
               >
-                <Checkbox.Group>
+                <Checkbox.Group 
+                className={res?.className}
+                >
                   {res.options.map((option: any, optIdx: number) => (
                     <Checkbox key={optIdx} value={option.value}>
                       {option.label}
