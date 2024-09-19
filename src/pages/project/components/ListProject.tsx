@@ -217,7 +217,7 @@ export default function ListProject() {
         }}
       />
 
-      <Drawer title="Tambah Entitas Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Project Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}
