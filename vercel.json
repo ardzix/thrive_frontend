@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/login" },
+    { "source": "/company", "destination": "/company" },
+    { "source": "/user", "destination": "/user" },
+    { "source": "/project", "destination": "/project" },
+    { "source": "/finance", "destination": "/finance" }
+  ],
+  "redirects": [],
+  "catchAll": {
+    "destination": "/404",
+    "status": 404
+  }
+}
