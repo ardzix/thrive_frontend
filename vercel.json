@@ -1,14 +1,4 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/login" },
-    { "source": "/company", "destination": "/company" },
-    { "source": "/user", "destination": "/user" },
-    { "source": "/project", "destination": "/project" },
-    { "source": "/finance", "destination": "/finance" }
-  ],
-  "redirects": [],
-  "fallback": {
-    "destination": "/index.html",
-    "status": 200
-  }
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "redirects": []
 }
