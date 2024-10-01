@@ -11,7 +11,6 @@ export default function LoginContainer() {
   const dataForm = [
     {
       name: "email",
-      // label: "Email/Whatsapp",
       type: "text",
       placeholder: "Email/Whatsapp",
       prefix: (
