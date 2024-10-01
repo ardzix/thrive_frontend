@@ -101,14 +101,14 @@ export default function ListUserDivison() {
       label: "Divisi Id",
       type: "text",
       placeholder: "Enter Divisi Id",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "division_name",
       label: "Divisi",
       type: "text",
       placeholder: "Enter Divisi",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "description",
@@ -116,14 +116,14 @@ export default function ListUserDivison() {
       type: "textarea",
       className: "w-full !min-h-[150px]",
       placeholder: "Enter Deskripsi",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
       label: "Status",
       type: "select",
       placeholder: "Enter Status",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Active",

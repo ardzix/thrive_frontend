@@ -106,21 +106,21 @@ export default function ListUserRole() {
       label: "Role Id",
       type: "text",
       placeholder: "Enter Role Id",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "role_name",
       label: "Role",
       type: "text",
       placeholder: "Enter Role",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "division",
       label: "Divisi",
       type: "select",
       placeholder: "Enter Divisi",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Accounting",
@@ -137,7 +137,7 @@ export default function ListUserRole() {
       label: "Status",
       type: "select",
       placeholder: "Enter Status",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Active",

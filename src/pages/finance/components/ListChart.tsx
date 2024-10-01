@@ -116,21 +116,21 @@ export default function ListChart() {
       label: "Acc. Id",
       type: "text",
       placeholder: "Enter Acc. Id",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "acc_name",
       label: "Nama Acc.",
       type: "text",
       placeholder: "Enter Acc. Name",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "class",
       label: "Kelass",
       type: "select",
       placeholder: "Enter Kelas",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Kelas 1",
@@ -151,7 +151,7 @@ export default function ListChart() {
       label: "Status",
       type: "select",
       placeholder: "Enter Status",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Active",

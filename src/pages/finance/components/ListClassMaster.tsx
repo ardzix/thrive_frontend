@@ -107,28 +107,28 @@ export default function ListClassMaster() {
       label: "Class Id",
       type: "text",
       placeholder: "Enter Project Id",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "class_name",
       label: "Nama Class",
       type: "text",
       placeholder: "Enter Class Name",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "type",
       label: "Tipe",
       type: "text",
       placeholder: "Enter Type",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
       label: "Status",
       type: "select",
       placeholder: "Enter Status",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Active",

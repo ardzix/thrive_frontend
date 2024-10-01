@@ -6,7 +6,7 @@ import CompanyContainer from "../pages/company/CompanyContainer";
 import { Button, Result } from "antd";
 import UserContainer from "../pages/user/UserContainer";
 import ProjectContainer from "../pages/project/ProjectContainer";
-import FinanceContainer from "../pages/finance/ProjectContainer";
+import FinanceContainer from "../pages/finance/FinanceContainer";
 
 const routes = [
   {

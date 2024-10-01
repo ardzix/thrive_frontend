@@ -14,6 +14,7 @@ const { Sider } = Layout;
 
 export default function SidebarCustom() {
   const navigate = useNavigate();
+  
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -58,9 +59,8 @@ export default function SidebarCustom() {
       setIsModalVisible(false);
 
       handleLogout();
-      // Tambahkan logic konfirmasi di sini, misal: menghapus data
       console.log("Confirmed!");
-    }, 2000); // Simulasi loading selama 2 detik
+    }, 2000);
   };
 
   const handleCancel = () => {
@@ -74,7 +74,7 @@ export default function SidebarCustom() {
           <img src="/images/thrive-logo.svg" className="object-contain h-14" alt="" />
         </div>
       </div>
-      <Menu className="mt-2" style={{ border: 0 }} openKeys={openKeys} onOpenChange={onOpenChange} mode="inline" selectedKeys={[pathActive]} theme="dark" onClick={(v) => navigate(v.key)} items={items} />
+      <Menu className="mt-2 custom-menu" style={{ border: 0 }} openKeys={openKeys} onOpenChange={onOpenChange} mode="inline" selectedKeys={[pathActive]} theme="dark" onClick={(v) => navigate(v.key)} items={items} />
 
       <div className="absolute bottom-0 w-full flex flex-col items-start justify-start p-6 ">
         <Divider className="bg-neutral-700" />

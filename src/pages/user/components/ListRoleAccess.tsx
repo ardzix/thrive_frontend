@@ -101,21 +101,21 @@ export default function ListRoleAccess() {
       label: "Access ID",
       type: "text",
       placeholder: "Enter Access Id",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "role_access",
       label: "Role Access",
       type: "text",
       placeholder: "Enter Role Access",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "module",
       label: "Module",
       type: "checkbox",
       //   placeholder: "Enter Module",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       className: "!flex !flex-col !gap-2",
       options: [
         {
@@ -161,7 +161,7 @@ export default function ListRoleAccess() {
       label: "Status",
       type: "select",
       placeholder: "Enter Status",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Active",

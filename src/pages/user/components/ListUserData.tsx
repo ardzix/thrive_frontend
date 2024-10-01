@@ -95,21 +95,21 @@ export default function ListUserData() {
       label: "User Id",
       type: "text",
       placeholder: "Enter User Id",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "user_name",
       label: "Nama User",
       type: "text",
       placeholder: "Enter User Name",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "position",
       label: "Posisi",
       type: "select",
       placeholder: "Enter Position",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Accounting",
@@ -126,7 +126,7 @@ export default function ListUserData() {
       label: "Access",
       type: "select",
       placeholder: "Enter Access",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Accounting",
@@ -143,7 +143,7 @@ export default function ListUserData() {
       label: "Entitas",
       type: "select",
       placeholder: "Enter Entity",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Accounting",
@@ -160,28 +160,28 @@ export default function ListUserData() {
       label: "Email",
       type: "text",
       placeholder: "Enter Email",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "phone",
       label: "NO. Telp",
       type: "text",
       placeholder: "Enter Phone",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "address",
       label: "Alamat",
       type: "text",
       placeholder: "Enter Address",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
       label: "Status",
       type: "select",
       placeholder: "Enter Status",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Active",

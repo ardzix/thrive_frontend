@@ -107,21 +107,21 @@ export default function ListProject() {
       label: "Project Id",
       type: "text",
       placeholder: "Enter Project Id",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "project_name",
       label: "Nama Project",
       type: "text",
       placeholder: "Enter Project Name",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "project_proposal",
       label: "Proposal Project",
       type: "select",
       placeholder: "Enter Project Proposal",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "proposal 1",
@@ -138,7 +138,7 @@ export default function ListProject() {
       label: "Project Leader",
       type: "select",
       placeholder: "Enter Project Leader",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Leader 1",
@@ -155,14 +155,14 @@ export default function ListProject() {
       label: "Project Kickoff",
       type: "text",
       placeholder: "Enter Project Kickoff",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
       label: "Status",
       type: "select",
       placeholder: "Enter Status",
-      required: true,
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Active",
