@@ -1,20 +1,7 @@
 import { useRef, useState, useCallback } from "react";
 import dayjs from "dayjs";
 
-import {
-  Button,
-  Checkbox,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Slider,
-  Switch,
-  Upload,
-  message,
-} from "antd";
+import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Radio, Select, Slider, Switch, Upload, message } from "antd";
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
@@ -26,54 +13,39 @@ const getBase64 = (file: any) =>
     reader.onerror = (error) => reject(error);
   });
 
-export default function FormGenerator({
-  data,
-  onFinish,
-  id,
-  size,
-  layout,
-  formStyle,
-  labelCol,
-  wrapperCol,
-  hookForm,
-  disabled,
-}: any) {
+export default function FormGenerator({ data, onFinish, id, size, layout, formStyle, labelCol, wrapperCol, hookForm, disabled }: any) {
   const formRef: any = useRef(null);
   const [imageUrl, setImageUrl] = useState("");
 
-  const handleChangeSingleImage = useCallback(
-    async (info: any, name: string, uploadType: any) => {
-      const file = info.file.originFileObj;
+  const handleChangeSingleImage = useCallback(async (info: any, name: string, uploadType: any) => {
+    const file = info.file.originFileObj;
 
-      const isJpgOrPng =
-        file.type === "image/jpeg" || file.type === "image/png";
-      if (!isJpgOrPng) {
-        message.error("You can only upload JPG/PNG file!");
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        message.error("Image must smaller than 2MB!");
-      }
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must smaller than 2MB!");
+    }
 
-      console.log(isJpgOrPng, "isJpgOrPng");
-      console.log(isLt2M, "isLt2m");
-      try {
-        const url: any = await getBase64(file);
-        if (isJpgOrPng && isLt2M) {
-          setImageUrl(url);
-          // prettier-ignore
-          formRef?.current?.setFieldValue(name,uploadType === "base64" ? url : file); //validate upload type
-        } else {
-          formRef?.current?.setFieldValue(name, undefined);
-          setImageUrl("");
-        }
-        console.log("successfully");
-      } catch (error) {
-        console.log(error, "error generate base64 uploading");
+    console.log(isJpgOrPng, "isJpgOrPng");
+    console.log(isLt2M, "isLt2m");
+    try {
+      const url: any = await getBase64(file);
+      if (isJpgOrPng && isLt2M) {
+        setImageUrl(url);
+        // prettier-ignore
+        formRef?.current?.setFieldValue(name,uploadType === "base64" ? url : file); //validate upload type
+      } else {
+        formRef?.current?.setFieldValue(name, undefined);
+        setImageUrl("");
       }
-    },
-    []
-  );
+      console.log("successfully");
+    } catch (error) {
+      console.log(error, "error generate base64 uploading");
+    }
+  }, []);
 
   return (
     <div>
@@ -87,19 +59,10 @@ export default function FormGenerator({
           //filter value formatted
           for (const objForm of data) {
             if (objForm.type === "date") {
-              value[objForm.name] = dayjs(new Date(value[objForm.name])).format(
-                objForm.payloadFormat
-              );
+              value[objForm.name] = dayjs(new Date(value[objForm.name])).format(objForm.payloadFormat);
             }
             if (objForm.type === "range") {
-              value[objForm.name] = [
-                dayjs(new Date(value[objForm.name][0])).format(
-                  objForm.payloadFormat
-                ),
-                dayjs(new Date(value[objForm.name][1])).format(
-                  objForm.payloadFormat
-                ),
-              ];
+              value[objForm.name] = [dayjs(new Date(value[objForm.name][0])).format(objForm.payloadFormat), dayjs(new Date(value[objForm.name][1])).format(objForm.payloadFormat)];
             }
           }
           onFinish(value);
@@ -121,16 +84,8 @@ export default function FormGenerator({
           //TEXT
           if (res?.type === "text")
             return (
-              <Form.Item
-                key={i}
-                label={res?.label}
-                name={res?.name}
-                rules={res?.rules}
-              >
-                <Input
-                  placeholder={res?.placeholder}
-                  className={res?.className}
-                />
+              <Form.Item key={i} label={res?.label} name={res?.name} rules={res?.rules}>
+                <Input placeholder={res?.placeholder} className={res?.className} prefix={res?.prefix} />
               </Form.Item>
             );
           //EMAIL
@@ -148,26 +103,15 @@ export default function FormGenerator({
                   },
                 ]}
               >
-                <Input
-                  placeholder={res.placeholder}
-                  className={res?.className}
-                />
+                <Input placeholder={res.placeholder} className={res?.className} prefix={res?.prefix} />
               </Form.Item>
             );
           }
           //PASSWORD
           if (res.type === "password") {
             return (
-              <Form.Item
-                key={i}
-                label={res?.label}
-                name={res?.name}
-                rules={res?.rules}
-              >
-                <Input.Password
-                  className={res?.className}
-                  placeholder={res?.placeholder}
-                />
+              <Form.Item key={i} label={res?.label} name={res?.name} rules={res?.rules}>
+                <Input.Password className={res?.className} placeholder={res?.placeholder} prefix={res?.prefix} />
               </Form.Item>
             );
           }
@@ -182,83 +126,45 @@ export default function FormGenerator({
                   ...res?.rules,
                   ({ getFieldValue }) => ({
                     validator(_, value) {
-                      if (
-                        !value ||
-                        getFieldValue(res.confirmationWith) === value
-                      ) {
+                      if (!value || getFieldValue(res.confirmationWith) === value) {
                         return Promise.resolve();
                       }
-                      return Promise.reject(
-                        new Error(
-                          "The new password that you entered do not match!"
-                        )
-                      );
+                      return Promise.reject(new Error("The new password that you entered do not match!"));
                     },
                   }),
                 ]}
               >
-                <Input.Password
-                  className={res?.className}
-                  placeholder={res?.placeholder}
-                />
+                <Input.Password className={res?.className} placeholder={res?.placeholder} />
               </Form.Item>
             );
           }
           //NUMBER
           if (res?.type === "number") {
             return (
-              <Form.Item
-                key={i}
-                label={res?.label}
-                name={res?.name}
-                rules={res?.rules}
-              >
-                <InputNumber
-                  style={{ minWidth: 140 }}
-                  placeholder={res?.placeholder}
-                  min={res?.min}
-                  max={res?.max}
-                  className={res?.className}
-                />
+              <Form.Item key={i} label={res?.label} name={res?.name} rules={res?.rules}>
+                <InputNumber style={{ minWidth: 140 }} placeholder={res?.placeholder} min={res?.min} max={res?.max} className={res?.className} />
               </Form.Item>
             );
           }
           //TEL
           if (res?.type === "tel") {
             return (
-              <Form.Item
-                key={i}
-                label={res?.label}
-                name={res?.name}
-                rules={res?.rules}
-              >
-                <Input
-                  placeholder={res?.placeholder}
-                  className={res?.className}
-                />
+              <Form.Item key={i} label={res?.label} name={res?.name} rules={res?.rules}>
+                <Input placeholder={res?.placeholder} className={res?.className} />
               </Form.Item>
             );
           }
           //SELECT
           if (res?.type === "select")
             return (
-              <Form.Item
-                label={res.label}
-                key={i}
-                name={res.name}
-                rules={res?.rules}
-              >
+              <Form.Item label={res.label} key={i} name={res.name} rules={res?.rules}>
                 <Select
                   placeholder={res.placeholder}
                   className={res?.className}
                   // maxTagCount="responsive"
                   showSearch
                   optionFilterProp="children"
-                  filterOption={(input: any, option: any) =>
-                    (option?.label ?? "")
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
+                  filterOption={(input: any, option: any) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
                   options={res.options}
                   onChange={res?.onChange}
                 />
@@ -266,15 +172,8 @@ export default function FormGenerator({
             );
           if (res?.type === "checkbox") {
             return (
-              <Form.Item
-                label={res.label}
-                key={i}
-                name={res.name}
-                rules={res?.rules}
-              >
-                <Checkbox.Group 
-                className={res?.className}
-                >
+              <Form.Item label={res.label} key={i} name={res.name} rules={res?.rules}>
+                <Checkbox.Group className={res?.className}>
                   {res.options.map((option: any, optIdx: number) => (
                     <Checkbox key={optIdx} value={option.value}>
                       {option.label}
@@ -303,12 +202,7 @@ export default function FormGenerator({
           //RADIO
           if (res?.type === "radio") {
             return (
-              <Form.Item
-                label={res.label}
-                key={i}
-                name={res.name}
-                rules={res?.rules}
-              >
+              <Form.Item label={res.label} key={i} name={res.name} rules={res?.rules}>
                 <Radio.Group className={res?.className}>
                   {res.options.map((option: any, optIdx: number) => (
                     <Radio key={optIdx} value={option.value}>
@@ -322,13 +216,7 @@ export default function FormGenerator({
           //SLIDER
           if (res?.type === "slider") {
             return (
-              <Form.Item
-                label={res.label}
-                key={i}
-                name={res.name}
-                rules={res?.rules}
-                initialValue={res.min}
-              >
+              <Form.Item label={res.label} key={i} name={res.name} rules={res?.rules} initialValue={res.min}>
                 <Slider min={res.min} max={res.max} />
               </Form.Item>
             );
@@ -337,14 +225,7 @@ export default function FormGenerator({
           if (res?.type === "switch") {
             const isValueTrue = Form.useWatch(res?.name, hookForm);
             return (
-              <Form.Item
-                label={res.label}
-                key={i}
-                name={res.name}
-                rules={res?.rules}
-                valuePropName="checked"
-                initialValue
-              >
+              <Form.Item label={res.label} key={i} name={res.name} rules={res?.rules} valuePropName="checked" initialValue>
                 <Switch
                   style={{
                     background: isValueTrue ? "green" : "gray",
@@ -369,11 +250,7 @@ export default function FormGenerator({
                   format={res.previewFormat}
                   className={res?.className}
                   disabledDate={(current) => {
-                    return (
-                      (current &&
-                        current < dayjs(res?.minDate, "YYYY-MM-DD")) ||
-                      current > dayjs(res?.maxDate, "YYYY-MM-DD")
-                    );
+                    return (current && current < dayjs(res?.minDate, "YYYY-MM-DD")) || current > dayjs(res?.maxDate, "YYYY-MM-DD");
                   }}
                 />
               </Form.Item>
@@ -382,21 +259,12 @@ export default function FormGenerator({
           //RANGE DATE PICKER
           if (res?.type === "range") {
             return (
-              <Form.Item
-                label={res.label}
-                key={i}
-                name={res.name}
-                rules={res?.rules}
-              >
+              <Form.Item label={res.label} key={i} name={res.name} rules={res?.rules}>
                 <RangePicker
                   className={res?.className}
                   format={res.previewFormat}
                   disabledDate={(current) => {
-                    return (
-                      (current &&
-                        current < dayjs(res?.minDate, "YYYY-MM-DD")) ||
-                      current > dayjs(res?.maxDate, "YYYY-MM-DD")
-                    );
+                    return (current && current < dayjs(res?.minDate, "YYYY-MM-DD")) || current > dayjs(res?.maxDate, "YYYY-MM-DD");
                   }}
                 />
               </Form.Item>
@@ -405,12 +273,7 @@ export default function FormGenerator({
           //TEXTAREA
           if (res?.type === "textarea") {
             return (
-              <Form.Item
-                label={res.label}
-                key={i}
-                name={res.name}
-                rules={res?.rules}
-              >
+              <Form.Item label={res.label} key={i} name={res.name} rules={res?.rules}>
                 <TextArea className={res?.className} />
               </Form.Item>
             );
@@ -418,13 +281,7 @@ export default function FormGenerator({
           //SINGLE IMAGE
           if (res.type === "single_image") {
             return (
-              <Form.Item
-                label={res.label}
-                key={i}
-                name={res.name}
-                rules={res?.rules}
-                valuePropName="string || {}"
-              >
+              <Form.Item label={res.label} key={i} name={res.name} rules={res?.rules} valuePropName="string || {}">
                 <Upload
                   listType="picture-card"
                   className="avatar-uploader"
@@ -432,9 +289,7 @@ export default function FormGenerator({
                   showUploadList={false}
                   accept="image/png, image/jpg, image/jpeg"
                   multiple
-                  onChange={(info) =>
-                    handleChangeSingleImage(info, res.name, res?.uploadType)
-                  }
+                  onChange={(info) => handleChangeSingleImage(info, res.name, res?.uploadType)}
                 >
                   {imageUrl ? (
                     <img
@@ -456,9 +311,7 @@ export default function FormGenerator({
           if (res?.type === "separator") {
             return (
               <>
-                <h3 className={`text-center ${res?.className} py-5`}>
-                  {res?.label}
-                </h3>
+                <h3 className={`text-center ${res?.className} py-5`}>{res?.label}</h3>
               </>
             );
           }

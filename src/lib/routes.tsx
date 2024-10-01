@@ -17,23 +17,23 @@ const routes = [
   {
     path: "/company",
     element: <CompanyContainer />,
-    isPrivate: false,
+    isPrivate: true,
   },
 
   {
     path: "/user",
     element: <UserContainer />,
-    isPrivate: false,
+    isPrivate: true,
   },
   {
     path: "/project",
     element: <ProjectContainer />,
-    isPrivate: false,
+    isPrivate: true,
   },
   {
     path: "/finance",
     element: <FinanceContainer />,
-    isPrivate: false,
+    isPrivate: true,
   },
   {
     path: "*",

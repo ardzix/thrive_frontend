@@ -7,12 +7,16 @@ import theme from "../../../lib/theme";
 import { FaCircleUser } from "react-icons/fa6";
 import { useStorageStore } from "../storage.store";
 import { MdLogout } from "react-icons/md";
-import React from "react";
+import React, { useState } from "react";
+import ConfirmModal from "./ConfirmModal";
 
 const { Sider } = Layout;
 
 export default function SidebarCustom() {
   const navigate = useNavigate();
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   function getItem(label: string, key: string, icon?: any, children?: any, disabled?: boolean): any {
     const childrenList = children?.filter((f: any) => f !== undefined);
@@ -43,6 +47,26 @@ export default function SidebarCustom() {
 
   const { handleLogout } = useStorageStore();
 
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleConfirm = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      setIsModalVisible(false);
+
+      handleLogout();
+      // Tambahkan logic konfirmasi di sini, misal: menghapus data
+      console.log("Confirmed!");
+    }, 2000); // Simulasi loading selama 2 detik
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <Sider className="min-h-screen border-r !bg-neutral-900" width={230} collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
       <div className={`w-full flex flex-col justify-center items-center pt-6 mb-6 ${collapsed && "hidden"} `}>
@@ -61,11 +85,22 @@ export default function SidebarCustom() {
             <p className="text-sm text-neutral-400 ">Super Admin</p>
           </div>
         </div>
-        <div className="min-w-[100px] flex items-center justify-end gap-x-3 font-semibold" onClick={() => handleLogout()}>
+        <div className="min-w-[100px] cursor-pointer flex items-center justify-end gap-x-3 font-semibold" onClick={showModal}>
           <MdLogout size={32} color={theme?.mainPurpleLight} />
           <p className="font-semibold text-base text-neutral-200 ">Logout</p>
         </div>
       </div>
+      <ConfirmModal
+        danger={true}
+        isVisible={isModalVisible}
+        title="Log Out"
+        content="Apakah anda yakin ingin keluar dari aplikasi?"
+        confirmText="Log Out"
+        cancelText="Cancel"
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        loading={loading}
+      />
     </Sider>
   );
 }

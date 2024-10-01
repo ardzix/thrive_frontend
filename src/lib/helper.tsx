@@ -11,7 +11,7 @@ export const PublicRoute = ({ children }: any) => {
   // const bot_id = localStorage.getItem('bot_id')
   // const store_id = localStorage.getItem('store_id')
 
-  if (token && auth) return <Navigate to="/dashboard" />;
+  if (token && auth) return <Navigate to="/company" />;
   return children;
 };
 
