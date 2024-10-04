@@ -14,7 +14,6 @@ const { Sider } = Layout;
 
 export default function SidebarCustom() {
   const navigate = useNavigate();
-  
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,13 +27,16 @@ export default function SidebarCustom() {
     return;
   }
 
-  const items = [getItem("Master Data", "sub_3", <BarChartOutlined />, [getItem("company", "/company", null), getItem("User", "/user", null), getItem("Project", "/project", null), getItem("Finance", "/finance", null)])];
+  const items = [
+    getItem("Master Data", "sub_1", <BarChartOutlined />, [getItem("company", "/company", null), getItem("User", "/user", null), getItem("Project", "/project", null), getItem("Finance", "/finance", null)]),
+    // getItem("Project", "sub_3", <FaUserCog />, [getItem("company", "/company", null), getItem("User", "/user", null), getItem("Project", "/project", null), getItem("Finance", "/finance", null)])
+];
 
   const { collapsed, setCollapsed, setOpenKeys, openKeys } = useSharedStore();
 
   const pathActive = `/${window.location.pathname.split("/").filter((f) => f !== "")[0]}`;
 
-  const defaultOpenKeys = ["sub_1", "sub_2", "sub_3"];
+  const defaultOpenKeys = ["sub_1", "sub_2",];
 
   React.useEffect(() => {
     if (openKeys.length === 0) {
@@ -57,9 +59,7 @@ export default function SidebarCustom() {
     setTimeout(() => {
       setLoading(false);
       setIsModalVisible(false);
-
       handleLogout();
-      console.log("Confirmed!");
     }, 2000);
   };
 
@@ -74,7 +74,7 @@ export default function SidebarCustom() {
           <img src="/images/thrive-logo.svg" className="object-contain h-14" alt="" />
         </div>
       </div>
-      <Menu className="mt-2 custom-menu" style={{ border: 0 }} openKeys={openKeys} onOpenChange={onOpenChange} mode="inline" selectedKeys={[pathActive]} theme="dark" onClick={(v) => navigate(v.key)} items={items} />
+      <Menu className="mt-2 custom-menu !bg-neutral-900" style={{ border: 0 }} openKeys={openKeys} onOpenChange={onOpenChange} mode="inline" selectedKeys={[pathActive]} theme="dark" onClick={(v) => navigate(v.key)} items={items} />
 
       <div className="absolute bottom-0 w-full flex flex-col items-start justify-start p-6 ">
         <Divider className="bg-neutral-700" />

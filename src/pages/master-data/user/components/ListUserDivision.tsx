@@ -2,16 +2,14 @@ import { Button, Drawer, Form, Table } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FaPen } from "react-icons/fa6";
-import InputSearch from "../../shared/components/InputSearch";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import FormGenerator from "../../shared/components/FormGenerator";
-import { rupiahFormat } from "../../../lib/helper";
+import InputSearch from "../../../shared/components/InputSearch";
+import FormGenerator from "../../../shared/components/FormGenerator";
 
 type ListDataType = {
   id: string;
-  currency: string;
-  code: string;
-  conversion: number;
+  role_name: string;
+  division: string;
   created_by: string;
   updated_at: string;
   status: string;
@@ -20,27 +18,24 @@ type ListDataType = {
 const data: ListDataType[] = [
   {
     id: "1",
-    currency: "Australian Dollar",
-    code: "USD",
-    conversion: 9000000,
+    role_name: "Accounting",
+    division: "Finance",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "2",
-    currency: "Australian Dollar",
-    code: "USD",
-    conversion: 820000,
+    role_name: "Accounting",
+    division: "Finance",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "3",
-    currency: "Australian Dollar",
-    code: "USD",
-    conversion: 500000,
+    role_name: "Accounting",
+    division: "Finance",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "not active",
@@ -49,31 +44,14 @@ const data: ListDataType[] = [
 
 const columns = [
   {
-    title: "Currency Id",
+    title: "Divisi Id",
     dataIndex: "id",
     key: "id",
   },
   {
-    title: "Currency",
-    dataIndex: "currency",
-    key: "currency",
-  },
-  {
-    title: "Code",
-    dataIndex: "code",
-    key: "code",
-  },
-  {
-    title: "Konversi",
-    dataIndex: "conversion",
-    key: "conversion",
-    render: (conversion: number) => {
-      return (
-        <>
-          <p>{rupiahFormat(conversion)}</p>
-        </>
-      );
-    },
+    title: "Role",
+    dataIndex: "role_name",
+    key: "role_name",
   },
   {
     title: "Dibuat Oleh",
@@ -86,7 +64,6 @@ const columns = [
     key: "updated_at",
     render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
   },
-
   {
     title: "Status",
     dataIndex: "status",
@@ -113,7 +90,7 @@ const columns = [
   },
 ];
 
-export default function ListCurrency() {
+export default function ListUserDivison() {
   const [page, setPage] = useState(1);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
@@ -121,30 +98,24 @@ export default function ListCurrency() {
   const dataForm = [
     {
       name: "id",
-      label: "Currency ID",
+      label: "Divisi Id",
       type: "text",
-      placeholder: "Enter Currency Id",
+      placeholder: "Enter Divisi Id",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "currency",
-      label: "Currency",
+      name: "division_name",
+      label: "Divisi",
       type: "text",
-      placeholder: "Enter Currency",
+      placeholder: "Enter Divisi",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "currency_code",
-      label: "Currency Code",
-      type: "text",
-      placeholder: "Enter Currency Code",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "conversion_rate",
-      label: "Conversion Rate",
-      type: "text",
-      placeholder: "Enter Conversion Rate",
+      name: "description",
+      label: "Deskripsi",
+      type: "textarea",
+      className: "w-full !min-h-[150px]",
+      placeholder: "Enter Deskripsi",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
@@ -171,7 +142,7 @@ export default function ListCurrency() {
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={() => {}} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
-          Mata Uang Baru
+          Divisi Baru
         </Button>
       </div>
       <Table
@@ -207,7 +178,7 @@ export default function ListCurrency() {
         }}
       />
 
-      <Drawer title="Tambah Mata Uang Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Divisi Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}

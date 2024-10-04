@@ -2,14 +2,16 @@ import { Button, Drawer, Form, Table } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FaPen } from "react-icons/fa6";
-import InputSearch from "../../shared/components/InputSearch";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import FormGenerator from "../../shared/components/FormGenerator";
+import InputSearch from "../../../shared/components/InputSearch";
+import FormGenerator from "../../../shared/components/FormGenerator";
+import { rupiahFormat } from "../../../../lib/helper";
 
 type ListDataType = {
   id: string;
-  role_name: string;
-  division: string;
+  currency: string;
+  code: string;
+  conversion: number;
   created_by: string;
   updated_at: string;
   status: string;
@@ -18,24 +20,27 @@ type ListDataType = {
 const data: ListDataType[] = [
   {
     id: "1",
-    role_name: "Accounting",
-    division: "Finance",
+    currency: "Australian Dollar",
+    code: "USD",
+    conversion: 9000000,
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "2",
-    role_name: "Accounting",
-    division: "Finance",
+    currency: "Australian Dollar",
+    code: "USD",
+    conversion: 820000,
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "3",
-    role_name: "Accounting",
-    division: "Finance",
+    currency: "Australian Dollar",
+    code: "USD",
+    conversion: 500000,
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "not active",
@@ -44,14 +49,31 @@ const data: ListDataType[] = [
 
 const columns = [
   {
-    title: "Access Id",
+    title: "Currency Id",
     dataIndex: "id",
     key: "id",
   },
   {
-    title: "Role Access",
-    dataIndex: "role_name",
-    key: "role_name",
+    title: "Currency",
+    dataIndex: "currency",
+    key: "currency",
+  },
+  {
+    title: "Code",
+    dataIndex: "code",
+    key: "code",
+  },
+  {
+    title: "Konversi",
+    dataIndex: "conversion",
+    key: "conversion",
+    render: (conversion: number) => {
+      return (
+        <>
+          <p>{rupiahFormat(conversion)}</p>
+        </>
+      );
+    },
   },
   {
     title: "Dibuat Oleh",
@@ -64,6 +86,7 @@ const columns = [
     key: "updated_at",
     render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
   },
+
   {
     title: "Status",
     dataIndex: "status",
@@ -90,7 +113,7 @@ const columns = [
   },
 ];
 
-export default function ListRoleAccess() {
+export default function ListCurrency() {
   const [page, setPage] = useState(1);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
@@ -98,63 +121,31 @@ export default function ListRoleAccess() {
   const dataForm = [
     {
       name: "id",
-      label: "Access ID",
+      label: "Currency ID",
       type: "text",
-      placeholder: "Enter Access Id",
+      placeholder: "Enter Currency Id",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "role_access",
-      label: "Role Access",
+      name: "currency",
+      label: "Currency",
       type: "text",
-      placeholder: "Enter Role Access",
+      placeholder: "Enter Currency",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "module",
-      label: "Module",
-      type: "checkbox",
-      //   placeholder: "Enter Module",
+      name: "currency_code",
+      label: "Currency Code",
+      type: "text",
+      placeholder: "Enter Currency Code",
       rules: [{ required: true, message: "This field is required!" }],
-      className: "!flex !flex-col !gap-2",
-      options: [
-        {
-          label: "Master Data",
-          value: "Master Data",
-        },
-        {
-          label: "Finance",
-          value: "Finance",
-        },
-        {
-          label: "Project Management",
-          value: "Project Management",
-        },
-        {
-          label: "Sales & Marketing",
-          value: "Sales & Marketing",
-        },
-        {
-          label: "Admin Dashboard",
-          value: "Admin Dashboard",
-        },
-        {
-          label: "Construction",
-          value: "Construction",
-        },
-        {
-          label: "Business Development",
-          value: "Business Development",
-        },
-        {
-          label: "Legal",
-          value: "Legal",
-        },
-        {
-          label: "Maintenance",
-          value: "Maintenance",
-        },
-      ],
+    },
+    {
+      name: "conversion_rate",
+      label: "Conversion Rate",
+      type: "text",
+      placeholder: "Enter Conversion Rate",
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
@@ -180,7 +171,7 @@ export default function ListRoleAccess() {
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={() => {}} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
-          Role Access Baru
+          Mata Uang Baru
         </Button>
       </div>
       <Table
@@ -216,7 +207,7 @@ export default function ListRoleAccess() {
         }}
       />
 
-      <Drawer title="Tambah Akses Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Mata Uang Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}

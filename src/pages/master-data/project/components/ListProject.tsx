@@ -2,14 +2,14 @@ import { Button, Drawer, Form, Table } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FaPen } from "react-icons/fa6";
-import InputSearch from "../../shared/components/InputSearch";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import FormGenerator from "../../shared/components/FormGenerator";
+import InputSearch from "../../../shared/components/InputSearch";
+import FormGenerator from "../../../shared/components/FormGenerator";
 
 type ListDataType = {
   id: string;
-  role_name: string;
-  division: string;
+  project_name: string;
+  project_proposal: string;
   created_by: string;
   updated_at: string;
   status: string;
@@ -18,24 +18,24 @@ type ListDataType = {
 const data: ListDataType[] = [
   {
     id: "1",
-    role_name: "Accounting",
-    division: "Finance",
+    project_name: "Project 1",
+    project_proposal: "Proposal 1",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "2",
-    role_name: "Accounting",
-    division: "Finance",
+    project_name: "Project 2",
+    project_proposal: "Proposal 2",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "3",
-    role_name: "Accounting",
-    division: "Finance",
+    project_name: "Project 3",
+    project_proposal: "Proposal 3",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "not active",
@@ -44,19 +44,19 @@ const data: ListDataType[] = [
 
 const columns = [
   {
-    title: "Entitas Id",
+    title: "Project Id",
     dataIndex: "id",
     key: "id",
   },
   {
-    title: "Role",
-    dataIndex: "role_name",
-    key: "role_name",
+    title: "Nama Project",
+    dataIndex: "project_name",
+    key: "project_name",
   },
   {
-    title: "Divisi",
-    dataIndex: "division",
-    key: "division",
+    title: "Project Proposal",
+    dataIndex: "project_proposal",
+    key: "project_proposal",
   },
   {
     title: "Dibuat Oleh",
@@ -69,6 +69,7 @@ const columns = [
     key: "updated_at",
     render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
   },
+
   {
     title: "Status",
     dataIndex: "status",
@@ -95,7 +96,7 @@ const columns = [
   },
 ];
 
-export default function ListUserRole() {
+export default function ListProject() {
   const [page, setPage] = useState(1);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
@@ -103,34 +104,58 @@ export default function ListUserRole() {
   const dataForm = [
     {
       name: "id",
-      label: "Role Id",
+      label: "Project Id",
       type: "text",
-      placeholder: "Enter Role Id",
+      placeholder: "Enter Project Id",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "role_name",
-      label: "Role",
+      name: "project_name",
+      label: "Nama Project",
       type: "text",
-      placeholder: "Enter Role",
+      placeholder: "Enter Project Name",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "division",
-      label: "Divisi",
+      name: "project_proposal",
+      label: "Proposal Project",
       type: "select",
-      placeholder: "Enter Divisi",
+      placeholder: "Enter Project Proposal",
       rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
-          label: "Accounting",
-          value: "Accounting",
+          label: "proposal 1",
+          value: "proposal 1",
         },
         {
-          label: "Finance",
-          value: "Finance",
+          label: "proposal 2",
+          value: "proposal 2",
         },
       ],
+    },
+    {
+      name: "project_leader",
+      label: "Project Leader",
+      type: "select",
+      placeholder: "Enter Project Leader",
+      rules: [{ required: true, message: "This field is required!" }],
+      options: [
+        {
+          label: "Leader 1",
+          value: "Leader 1",
+        },
+        {
+          label: "Leader 2",
+          value: "Leader 2",
+        },
+      ],
+    },
+    {
+      name: "project_kickoff",
+      label: "Project Kickoff",
+      type: "text",
+      placeholder: "Enter Project Kickoff",
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
@@ -156,7 +181,7 @@ export default function ListUserRole() {
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={() => {}} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
-          Role Baru
+          Project Baru
         </Button>
       </div>
       <Table
@@ -192,7 +217,7 @@ export default function ListUserRole() {
         }}
       />
 
-      <Drawer title="Tambah Role Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Project Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}

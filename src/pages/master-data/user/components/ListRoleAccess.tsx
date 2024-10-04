@@ -2,14 +2,14 @@ import { Button, Drawer, Form, Table } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FaPen } from "react-icons/fa6";
-import InputSearch from "../../shared/components/InputSearch";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import FormGenerator from "../../shared/components/FormGenerator";
+import InputSearch from "../../../shared/components/InputSearch";
+import FormGenerator from "../../../shared/components/FormGenerator";
 
 type ListDataType = {
   id: string;
-  class_name: string;
-  type: string;
+  role_name: string;
+  division: string;
   created_by: string;
   updated_at: string;
   status: string;
@@ -18,24 +18,24 @@ type ListDataType = {
 const data: ListDataType[] = [
   {
     id: "1",
-    class_name: "Class 1",
-    type: "type 1",
+    role_name: "Accounting",
+    division: "Finance",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "2",
-    class_name: "Class 2",
-    type: "type 2",
+    role_name: "Accounting",
+    division: "Finance",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "3",
-    class_name: "Class 3",
-    type: "type 3",
+    role_name: "Accounting",
+    division: "Finance",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "not active",
@@ -44,19 +44,14 @@ const data: ListDataType[] = [
 
 const columns = [
   {
-    title: "Class Id",
+    title: "Access Id",
     dataIndex: "id",
     key: "id",
   },
   {
-    title: "Nama Class",
-    dataIndex: "class_name",
-    key: "class_name",
-  },
-  {
-    title: "Tipe",
-    dataIndex: "type",
-    key: "type",
+    title: "Role Access",
+    dataIndex: "role_name",
+    key: "role_name",
   },
   {
     title: "Dibuat Oleh",
@@ -69,7 +64,6 @@ const columns = [
     key: "updated_at",
     render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
   },
-
   {
     title: "Status",
     dataIndex: "status",
@@ -96,7 +90,7 @@ const columns = [
   },
 ];
 
-export default function ListClassMaster() {
+export default function ListRoleAccess() {
   const [page, setPage] = useState(1);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
@@ -104,24 +98,63 @@ export default function ListClassMaster() {
   const dataForm = [
     {
       name: "id",
-      label: "Class Id",
+      label: "Access ID",
       type: "text",
-      placeholder: "Enter Project Id",
+      placeholder: "Enter Access Id",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "class_name",
-      label: "Nama Class",
+      name: "role_access",
+      label: "Role Access",
       type: "text",
-      placeholder: "Enter Class Name",
+      placeholder: "Enter Role Access",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "type",
-      label: "Tipe",
-      type: "text",
-      placeholder: "Enter Type",
+      name: "module",
+      label: "Module",
+      type: "checkbox",
+      //   placeholder: "Enter Module",
       rules: [{ required: true, message: "This field is required!" }],
+      className: "!flex !flex-col !gap-2",
+      options: [
+        {
+          label: "Master Data",
+          value: "Master Data",
+        },
+        {
+          label: "Finance",
+          value: "Finance",
+        },
+        {
+          label: "Project Management",
+          value: "Project Management",
+        },
+        {
+          label: "Sales & Marketing",
+          value: "Sales & Marketing",
+        },
+        {
+          label: "Admin Dashboard",
+          value: "Admin Dashboard",
+        },
+        {
+          label: "Construction",
+          value: "Construction",
+        },
+        {
+          label: "Business Development",
+          value: "Business Development",
+        },
+        {
+          label: "Legal",
+          value: "Legal",
+        },
+        {
+          label: "Maintenance",
+          value: "Maintenance",
+        },
+      ],
     },
     {
       name: "status",
@@ -147,7 +180,7 @@ export default function ListClassMaster() {
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={() => {}} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
-          Kelas Baru
+          Role Access Baru
         </Button>
       </div>
       <Table
@@ -183,7 +216,7 @@ export default function ListClassMaster() {
         }}
       />
 
-      <Drawer title="Tambah Kelas Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Akses Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}

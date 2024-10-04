@@ -2,14 +2,13 @@ import { Button, Drawer, Form, Table } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FaPen } from "react-icons/fa6";
-import InputSearch from "../../shared/components/InputSearch";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import FormGenerator from "../../shared/components/FormGenerator";
+import InputSearch from "../../../shared/components/InputSearch";
+import FormGenerator from "../../../shared/components/FormGenerator";
 
 type ListDataType = {
   id: string;
-  acc_name: string;
-  class: string;
+  class_name: string;
   type: string;
   created_by: string;
   updated_at: string;
@@ -19,8 +18,7 @@ type ListDataType = {
 const data: ListDataType[] = [
   {
     id: "1",
-    class: "Class 1",
-    acc_name: "Acc. 1",
+    class_name: "Class 1",
     type: "type 1",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
@@ -28,8 +26,7 @@ const data: ListDataType[] = [
   },
   {
     id: "2",
-    class: "Class 2",
-    acc_name: "Acc. 2",
+    class_name: "Class 2",
     type: "type 2",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
@@ -37,8 +34,7 @@ const data: ListDataType[] = [
   },
   {
     id: "3",
-    class: "Class 3",
-    acc_name: "Acc. 3",
+    class_name: "Class 3",
     type: "type 3",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
@@ -48,19 +44,14 @@ const data: ListDataType[] = [
 
 const columns = [
   {
-    title: "Acc. ID",
+    title: "Class Id",
     dataIndex: "id",
     key: "id",
   },
   {
-    title: "Nama Acc.",
-    dataIndex: "acc_name",
-    key: "acc_name",
-  },
-  {
-    title: "Kelas",
-    dataIndex: "class",
-    key: "class",
+    title: "Nama Class",
+    dataIndex: "class_name",
+    key: "class_name",
   },
   {
     title: "Tipe",
@@ -105,7 +96,7 @@ const columns = [
   },
 ];
 
-export default function ListChart() {
+export default function ListClassMaster() {
   const [page, setPage] = useState(1);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
@@ -113,38 +104,24 @@ export default function ListChart() {
   const dataForm = [
     {
       name: "id",
-      label: "Acc. Id",
+      label: "Class Id",
       type: "text",
-      placeholder: "Enter Acc. Id",
+      placeholder: "Enter Project Id",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "acc_name",
-      label: "Nama Acc.",
+      name: "class_name",
+      label: "Nama Class",
       type: "text",
-      placeholder: "Enter Acc. Name",
+      placeholder: "Enter Class Name",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "class",
-      label: "Kelass",
-      type: "select",
-      placeholder: "Enter Kelas",
+      name: "type",
+      label: "Tipe",
+      type: "text",
+      placeholder: "Enter Type",
       rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "Kelas 1",
-          value: "kelas 1",
-        },
-        {
-          label: "kelas 2",
-          value: "kelas 2",
-        },
-        {
-          label: "kelas 3",
-          value: "kelas 3",
-        },
-      ],
     },
     {
       name: "status",
@@ -170,7 +147,7 @@ export default function ListChart() {
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={() => {}} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
-          Acc. Baru
+          Kelas Baru
         </Button>
       </div>
       <Table
@@ -206,7 +183,7 @@ export default function ListChart() {
         }}
       />
 
-      <Drawer title="Tambah Acc. Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Kelas Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}

@@ -1,73 +1,62 @@
 import { Button, Drawer, Form, Table } from "antd";
-import dayjs from "dayjs";
 import { useState } from "react";
 import { FaPen } from "react-icons/fa6";
-import InputSearch from "../../shared/components/InputSearch";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import FormGenerator from "../../shared/components/FormGenerator";
+import InputSearch from "../../../shared/components/InputSearch";
+import FormGenerator from "../../../shared/components/FormGenerator";
 
 type ListDataType = {
   id: string;
+  user_name: string;
   entitas_name: string;
-  city: string;
-  created_by: string;
-  updated_at: string;
+  role: string;
   status: string;
 };
 
 const data: ListDataType[] = [
   {
     id: "1",
+    user_name: "Husen",
     entitas_name: "Pt. Maju Terus Selamanya",
-    city: "Jakarta",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
+    role: "Super Admin",
     status: "active",
   },
   {
     id: "2",
+    user_name: "Kevin",
     entitas_name: "Pt. Maju Terus Selamanya",
-    city: "Jakarta",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
+    role: "Admin",
     status: "active",
   },
   {
     id: "3",
+    user_name: "John Doe",
     entitas_name: "Pt. Maju Terus Selamanya",
-    city: "Jakarta",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
+    role: "User",
     status: "not active",
   },
 ];
 
 const columns = [
   {
-    title: "Entitas Id",
+    title: "User Id",
     dataIndex: "id",
     key: "id",
   },
   {
-    title: "Nama entitas",
+    title: "Nama User",
+    dataIndex: "user_name",
+    key: "user_name",
+  },
+  {
+    title: "Role",
+    dataIndex: "role",
+    key: "role",
+  },
+  {
+    title: "Entitas",
     dataIndex: "entitas_name",
     key: "entitas_name",
-  },
-  {
-    title: "Kota",
-    dataIndex: "city",
-    key: "city",
-  },
-  {
-    title: "Tanggal Update",
-    dataIndex: "updated_at",
-    key: "updated_at",
-    render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
-  },
-  {
-    title: "Dibuat Oleh",
-    dataIndex: "created_by",
-    key: "created_by",
   },
   {
     title: "Status",
@@ -95,7 +84,7 @@ const columns = [
   },
 ];
 
-export default function ListCompanyEntitas() {
+export default function ListUserData() {
   const [page, setPage] = useState(1);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
@@ -103,51 +92,23 @@ export default function ListCompanyEntitas() {
   const dataForm = [
     {
       name: "id",
-      label: "Entitas Id",
+      label: "User Id",
       type: "text",
-      placeholder: "Enter Entitas Id",
+      placeholder: "Enter User Id",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "entitas_name",
-      label: "Nama Entitas",
+      name: "user_name",
+      label: "Nama User",
       type: "text",
-      placeholder: "Enter Entitas Name",
+      placeholder: "Enter User Name",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "address",
-      label: "Alamat",
-      type: "text",
-      placeholder: "Enter Address",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "city",
-      label: "Kota",
-      type: "text",
-      placeholder: "Enter City",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "province",
-      label: "Provinsi",
-      type: "text",
-      placeholder: "Enter Province",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "postcode",
-      label: "Kode Pos",
-      type: "text",
-      placeholder: "Enter Postcode",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "division",
-      label: "Divisi",
+      name: "position",
+      label: "Posisi",
       type: "select",
-      placeholder: "Enter Divisi",
+      placeholder: "Enter Position",
       rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
@@ -162,19 +123,43 @@ export default function ListCompanyEntitas() {
     },
     {
       name: "access",
-      label: "Akses",
+      label: "Access",
       type: "select",
-      placeholder: "Enter Akses",
+      placeholder: "Enter Access",
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
-          label: "Public",
-          value: "Public",
+          label: "Accounting",
+          value: "Accounting",
         },
         {
-          label: "Private",
-          value: "Private",
+          label: "Finance",
+          value: "Finance",
         },
       ],
+    },
+    {
+      name: "entity",
+      label: "Entitas",
+      type: "select",
+      placeholder: "Enter Entity",
+      rules: [{ required: true, message: "This field is required!" }],
+      options: [
+        {
+          label: "Accounting",
+          value: "Accounting",
+        },
+        {
+          label: "Finance",
+          value: "Finance",
+        },
+      ],
+    },
+    {
+      name: "email",
+      label: "Email",
+      type: "text",
+      placeholder: "Enter Email",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
@@ -185,24 +170,10 @@ export default function ListCompanyEntitas() {
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "fax",
-      label: "NO. Fax",
+      name: "address",
+      label: "Alamat",
       type: "text",
-      placeholder: "Enter Fax",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "Fiskal",
-      label: "Tahun Fiskal",
-      type: "text",
-      placeholder: "Enter Fiskal",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "periode_audit",
-      label: "Periode Audit",
-      type: "text",
-      placeholder: "Enter Periode Audit",
+      placeholder: "Enter Address",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
@@ -229,7 +200,7 @@ export default function ListCompanyEntitas() {
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={() => {}} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
-          Entitas Baru
+          User Baru
         </Button>
       </div>
       <Table
@@ -265,7 +236,7 @@ export default function ListCompanyEntitas() {
         }}
       />
 
-      <Drawer title="Tambah Entitas Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah User Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}

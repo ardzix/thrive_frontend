@@ -2,11 +2,11 @@ import { createBrowserRouter } from "react-router-dom";
 
 import LoginContainer from "../pages/auth/LoginContainer";
 import { PrivateRoute, PublicRoute } from "./helper";
-import CompanyContainer from "../pages/company/CompanyContainer";
 import { Button, Result } from "antd";
-import UserContainer from "../pages/user/UserContainer";
-import ProjectContainer from "../pages/project/ProjectContainer";
-import FinanceContainer from "../pages/finance/FinanceContainer";
+import CompanyContainer from "../pages/master-data/company/CompanyContainer";
+import UserContainer from "../pages/master-data/user/UserContainer";
+import ProjectContainer from "../pages/master-data/project/ProjectContainer";
+import FinanceContainer from "../pages/master-data/finance/FinanceContainer";
 
 const routes = [
   {

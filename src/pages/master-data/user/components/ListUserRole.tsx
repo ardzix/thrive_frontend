@@ -1,62 +1,73 @@
 import { Button, Drawer, Form, Table } from "antd";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { FaPen } from "react-icons/fa6";
-import InputSearch from "../../shared/components/InputSearch";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import FormGenerator from "../../shared/components/FormGenerator";
+import InputSearch from "../../../shared/components/InputSearch";
+import FormGenerator from "../../../shared/components/FormGenerator";
 
 type ListDataType = {
   id: string;
-  user_name: string;
-  entitas_name: string;
-  role: string;
+  role_name: string;
+  division: string;
+  created_by: string;
+  updated_at: string;
   status: string;
 };
 
 const data: ListDataType[] = [
   {
     id: "1",
-    user_name: "Husen",
-    entitas_name: "Pt. Maju Terus Selamanya",
-    role: "Super Admin",
+    role_name: "Accounting",
+    division: "Finance",
+    created_by: "Husen",
+    updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "2",
-    user_name: "Kevin",
-    entitas_name: "Pt. Maju Terus Selamanya",
-    role: "Admin",
+    role_name: "Accounting",
+    division: "Finance",
+    created_by: "Husen",
+    updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "3",
-    user_name: "John Doe",
-    entitas_name: "Pt. Maju Terus Selamanya",
-    role: "User",
+    role_name: "Accounting",
+    division: "Finance",
+    created_by: "Husen",
+    updated_at: "2022-02-02 12:00:00",
     status: "not active",
   },
 ];
 
 const columns = [
   {
-    title: "User Id",
+    title: "Entitas Id",
     dataIndex: "id",
     key: "id",
   },
   {
-    title: "Nama User",
-    dataIndex: "user_name",
-    key: "user_name",
-  },
-  {
     title: "Role",
-    dataIndex: "role",
-    key: "role",
+    dataIndex: "role_name",
+    key: "role_name",
   },
   {
-    title: "Entitas",
-    dataIndex: "entitas_name",
-    key: "entitas_name",
+    title: "Divisi",
+    dataIndex: "division",
+    key: "division",
+  },
+  {
+    title: "Dibuat Oleh",
+    dataIndex: "created_by",
+    key: "created_by",
+  },
+  {
+    title: "Tanggal Update",
+    dataIndex: "updated_at",
+    key: "updated_at",
+    render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
   },
   {
     title: "Status",
@@ -84,7 +95,7 @@ const columns = [
   },
 ];
 
-export default function ListUserData() {
+export default function ListUserRole() {
   const [page, setPage] = useState(1);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
@@ -92,23 +103,23 @@ export default function ListUserData() {
   const dataForm = [
     {
       name: "id",
-      label: "User Id",
+      label: "Role Id",
       type: "text",
-      placeholder: "Enter User Id",
+      placeholder: "Enter Role Id",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "user_name",
-      label: "Nama User",
+      name: "role_name",
+      label: "Role",
       type: "text",
-      placeholder: "Enter User Name",
+      placeholder: "Enter Role",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "position",
-      label: "Posisi",
+      name: "division",
+      label: "Divisi",
       type: "select",
-      placeholder: "Enter Position",
+      placeholder: "Enter Divisi",
       rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
@@ -120,61 +131,6 @@ export default function ListUserData() {
           value: "Finance",
         },
       ],
-    },
-    {
-      name: "access",
-      label: "Access",
-      type: "select",
-      placeholder: "Enter Access",
-      rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "Accounting",
-          value: "Accounting",
-        },
-        {
-          label: "Finance",
-          value: "Finance",
-        },
-      ],
-    },
-    {
-      name: "entity",
-      label: "Entitas",
-      type: "select",
-      placeholder: "Enter Entity",
-      rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "Accounting",
-          value: "Accounting",
-        },
-        {
-          label: "Finance",
-          value: "Finance",
-        },
-      ],
-    },
-    {
-      name: "email",
-      label: "Email",
-      type: "text",
-      placeholder: "Enter Email",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "phone",
-      label: "NO. Telp",
-      type: "text",
-      placeholder: "Enter Phone",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "address",
-      label: "Alamat",
-      type: "text",
-      placeholder: "Enter Address",
-      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
@@ -200,7 +156,7 @@ export default function ListUserData() {
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={() => {}} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
-          User Baru
+          Role Baru
         </Button>
       </div>
       <Table
@@ -236,7 +192,7 @@ export default function ListUserData() {
         }}
       />
 
-      <Drawer title="Tambah User Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Role Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}

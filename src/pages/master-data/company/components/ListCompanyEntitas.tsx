@@ -2,14 +2,14 @@ import { Button, Drawer, Form, Table } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FaPen } from "react-icons/fa6";
-import InputSearch from "../../shared/components/InputSearch";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import FormGenerator from "../../shared/components/FormGenerator";
+import InputSearch from "../../../shared/components/InputSearch";
+import FormGenerator from "../../../shared/components/FormGenerator";
 
 type ListDataType = {
   id: string;
-  role_name: string;
-  division: string;
+  entitas_name: string;
+  city: string;
   created_by: string;
   updated_at: string;
   status: string;
@@ -18,24 +18,24 @@ type ListDataType = {
 const data: ListDataType[] = [
   {
     id: "1",
-    role_name: "Accounting",
-    division: "Finance",
+    entitas_name: "Pt. Maju Terus Selamanya",
+    city: "Jakarta",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "2",
-    role_name: "Accounting",
-    division: "Finance",
+    entitas_name: "Pt. Maju Terus Selamanya",
+    city: "Jakarta",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "3",
-    role_name: "Accounting",
-    division: "Finance",
+    entitas_name: "Pt. Maju Terus Selamanya",
+    city: "Jakarta",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "not active",
@@ -44,25 +44,30 @@ const data: ListDataType[] = [
 
 const columns = [
   {
-    title: "Divisi Id",
+    title: "Entitas Id",
     dataIndex: "id",
     key: "id",
   },
   {
-    title: "Role",
-    dataIndex: "role_name",
-    key: "role_name",
+    title: "Nama entitas",
+    dataIndex: "entitas_name",
+    key: "entitas_name",
   },
   {
-    title: "Dibuat Oleh",
-    dataIndex: "created_by",
-    key: "created_by",
+    title: "Kota",
+    dataIndex: "city",
+    key: "city",
   },
   {
     title: "Tanggal Update",
     dataIndex: "updated_at",
     key: "updated_at",
     render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
+  },
+  {
+    title: "Dibuat Oleh",
+    dataIndex: "created_by",
+    key: "created_by",
   },
   {
     title: "Status",
@@ -90,7 +95,7 @@ const columns = [
   },
 ];
 
-export default function ListUserDivison() {
+export default function ListCompanyEntitas() {
   const [page, setPage] = useState(1);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
@@ -98,24 +103,106 @@ export default function ListUserDivison() {
   const dataForm = [
     {
       name: "id",
-      label: "Divisi Id",
+      label: "Entitas Id",
       type: "text",
-      placeholder: "Enter Divisi Id",
+      placeholder: "Enter Entitas Id",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "division_name",
-      label: "Divisi",
+      name: "entitas_name",
+      label: "Nama Entitas",
       type: "text",
+      placeholder: "Enter Entitas Name",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "address",
+      label: "Alamat",
+      type: "text",
+      placeholder: "Enter Address",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "city",
+      label: "Kota",
+      type: "text",
+      placeholder: "Enter City",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "province",
+      label: "Provinsi",
+      type: "text",
+      placeholder: "Enter Province",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "postcode",
+      label: "Kode Pos",
+      type: "text",
+      placeholder: "Enter Postcode",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "division",
+      label: "Divisi",
+      type: "select",
       placeholder: "Enter Divisi",
       rules: [{ required: true, message: "This field is required!" }],
+      options: [
+        {
+          label: "Accounting",
+          value: "Accounting",
+        },
+        {
+          label: "Finance",
+          value: "Finance",
+        },
+      ],
     },
     {
-      name: "description",
-      label: "Deskripsi",
-      type: "textarea",
-      className: "w-full !min-h-[150px]",
-      placeholder: "Enter Deskripsi",
+      name: "access",
+      label: "Akses",
+      type: "select",
+      placeholder: "Enter Akses",
+      options: [
+        {
+          label: "Public",
+          value: "Public",
+        },
+        {
+          label: "Private",
+          value: "Private",
+        },
+      ],
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "phone",
+      label: "NO. Telp",
+      type: "text",
+      placeholder: "Enter Phone",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "fax",
+      label: "NO. Fax",
+      type: "text",
+      placeholder: "Enter Fax",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "Fiskal",
+      label: "Tahun Fiskal",
+      type: "text",
+      placeholder: "Enter Fiskal",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "periode_audit",
+      label: "Periode Audit",
+      type: "text",
+      placeholder: "Enter Periode Audit",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
@@ -142,7 +229,7 @@ export default function ListUserDivison() {
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={() => {}} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
-          Divisi Baru
+          Entitas Baru
         </Button>
       </div>
       <Table
@@ -178,7 +265,7 @@ export default function ListUserDivison() {
         }}
       />
 
-      <Drawer title="Tambah Divisi Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Entitas Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}

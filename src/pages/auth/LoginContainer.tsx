@@ -87,7 +87,7 @@ export default function LoginContainer() {
         </div>
         <div className="absolute bottom-10 left-0 right-0">
           <p className="text-center text-neutral-400">
-            Powered by <b>Thrive</b>
+          Powered by <strong>Altru</strong>
           </p>
         </div>
       </div>

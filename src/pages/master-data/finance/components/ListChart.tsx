@@ -2,14 +2,15 @@ import { Button, Drawer, Form, Table } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FaPen } from "react-icons/fa6";
-import InputSearch from "../../shared/components/InputSearch";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import FormGenerator from "../../shared/components/FormGenerator";
+import InputSearch from "../../../shared/components/InputSearch";
+import FormGenerator from "../../../shared/components/FormGenerator";
 
 type ListDataType = {
   id: string;
-  project_name: string;
-  project_proposal: string;
+  acc_name: string;
+  class: string;
+  type: string;
   created_by: string;
   updated_at: string;
   status: string;
@@ -18,24 +19,27 @@ type ListDataType = {
 const data: ListDataType[] = [
   {
     id: "1",
-    project_name: "Project 1",
-    project_proposal: "Proposal 1",
+    class: "Class 1",
+    acc_name: "Acc. 1",
+    type: "type 1",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "2",
-    project_name: "Project 2",
-    project_proposal: "Proposal 2",
+    class: "Class 2",
+    acc_name: "Acc. 2",
+    type: "type 2",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "active",
   },
   {
     id: "3",
-    project_name: "Project 3",
-    project_proposal: "Proposal 3",
+    class: "Class 3",
+    acc_name: "Acc. 3",
+    type: "type 3",
     created_by: "Husen",
     updated_at: "2022-02-02 12:00:00",
     status: "not active",
@@ -44,19 +48,24 @@ const data: ListDataType[] = [
 
 const columns = [
   {
-    title: "Project Id",
+    title: "Acc. ID",
     dataIndex: "id",
     key: "id",
   },
   {
-    title: "Nama Project",
-    dataIndex: "project_name",
-    key: "project_name",
+    title: "Nama Acc.",
+    dataIndex: "acc_name",
+    key: "acc_name",
   },
   {
-    title: "Project Proposal",
-    dataIndex: "project_proposal",
-    key: "project_proposal",
+    title: "Kelas",
+    dataIndex: "class",
+    key: "class",
+  },
+  {
+    title: "Tipe",
+    dataIndex: "type",
+    key: "type",
   },
   {
     title: "Dibuat Oleh",
@@ -96,7 +105,7 @@ const columns = [
   },
 ];
 
-export default function ListProject() {
+export default function ListChart() {
   const [page, setPage] = useState(1);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
@@ -104,58 +113,38 @@ export default function ListProject() {
   const dataForm = [
     {
       name: "id",
-      label: "Project Id",
+      label: "Acc. Id",
       type: "text",
-      placeholder: "Enter Project Id",
+      placeholder: "Enter Acc. Id",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "project_name",
-      label: "Nama Project",
+      name: "acc_name",
+      label: "Nama Acc.",
       type: "text",
-      placeholder: "Enter Project Name",
+      placeholder: "Enter Acc. Name",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "project_proposal",
-      label: "Proposal Project",
+      name: "class",
+      label: "Kelass",
       type: "select",
-      placeholder: "Enter Project Proposal",
+      placeholder: "Enter Kelas",
       rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
-          label: "proposal 1",
-          value: "proposal 1",
+          label: "Kelas 1",
+          value: "kelas 1",
         },
         {
-          label: "proposal 2",
-          value: "proposal 2",
+          label: "kelas 2",
+          value: "kelas 2",
+        },
+        {
+          label: "kelas 3",
+          value: "kelas 3",
         },
       ],
-    },
-    {
-      name: "project_leader",
-      label: "Project Leader",
-      type: "select",
-      placeholder: "Enter Project Leader",
-      rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "Leader 1",
-          value: "Leader 1",
-        },
-        {
-          label: "Leader 2",
-          value: "Leader 2",
-        },
-      ],
-    },
-    {
-      name: "project_kickoff",
-      label: "Project Kickoff",
-      type: "text",
-      placeholder: "Enter Project Kickoff",
-      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
@@ -181,7 +170,7 @@ export default function ListProject() {
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={() => {}} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
-          Project Baru
+          Acc. Baru
         </Button>
       </div>
       <Table
@@ -217,7 +206,7 @@ export default function ListProject() {
         }}
       />
 
-      <Drawer title="Tambah Project Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Acc. Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}

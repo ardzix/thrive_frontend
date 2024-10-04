@@ -1,10 +1,10 @@
-import CustomLayout from "../shared/components/CustomLayout";
-import HeaderCustom from "../shared/components/HeaderCustom";
 import { Tabs } from "antd";
 import ListUserData from "./components/ListUserData";
 import ListUserRole from "./components/ListUserRole";
 import ListRoleAccess from "./components/ListRoleAccess";
 import ListUserDivison from "./components/ListUserDivision";
+import HeaderCustom from "../../shared/components/HeaderCustom";
+import CustomLayout from "../../shared/components/CustomLayout";
 
 const items = [
   {

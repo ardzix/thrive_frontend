@@ -1,7 +1,7 @@
-import CustomLayout from "../shared/components/CustomLayout";
-import HeaderCustom from "../shared/components/HeaderCustom";
 import { Tabs } from "antd";
 import ListProject from "./components/ListProject";
+import CustomLayout from "../../shared/components/CustomLayout";
+import HeaderCustom from "../../shared/components/HeaderCustom";
 
 const items = [
   {
