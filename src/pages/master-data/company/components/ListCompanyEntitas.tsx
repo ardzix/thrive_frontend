@@ -203,7 +203,7 @@ export default function ListCompanyEntitas() {
   const handleGetEntity = () => {
      getEntity(params)
   }
-
+ 
   const handleSubmit = async (values: any) => {
     try {
       await postEntity(values);
