@@ -4,8 +4,8 @@ import { Button, Modal, notification } from "antd";
 // import OTPCounter from "./OTPCounter";
 import { useNavigate } from "react-router-dom";
 import { useStorageStore } from "../../shared/storage.store";
-import { useAuthStore } from "../../../stores/auth.store";
 import OTPCounter from "./OTPCounter";
+import { useAuthStore } from "../auth.store";
 
 export default function FormOtp({ email }: any) {
   const [VerifyCode, setVerifyCode] = useState("");
