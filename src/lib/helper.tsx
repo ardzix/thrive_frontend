@@ -3,15 +3,9 @@ import { useStorageStore } from "../pages/shared/storage.store";
 
 const token = useStorageStore.getState().token;
 const auth = useStorageStore.getState().auth;
+
 export const PublicRoute = ({ children }: any) => {
-  console.log(token);
-
-  // const auth = localStorage.getItem('auth')
-  //   const token = localStorage.getItem("tokenPesantren");
-  // const bot_id = localStorage.getItem('bot_id')
-  // const store_id = localStorage.getItem('store_id')
-
-  if (token && auth) return <Navigate to="/company" />;
+  if (auth && token) return <Navigate to="/company" />;
   return children;
 };
 

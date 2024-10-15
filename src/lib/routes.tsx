@@ -7,11 +7,17 @@ import CompanyContainer from "../pages/master-data/company/CompanyContainer";
 import UserContainer from "../pages/master-data/user/UserContainer";
 import ProjectContainer from "../pages/master-data/project/ProjectContainer";
 import FinanceContainer from "../pages/master-data/finance/FinanceContainer";
+import ForgotPasswordContainer from "../pages/auth/ForgotPasswordContainer";
 
 const routes = [
   {
     path: "/",
     element: <LoginContainer />,
+    isPrivate: false,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordContainer />,
     isPrivate: false,
   },
   {

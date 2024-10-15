@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import dayjs from "dayjs";
+import { fetcherPOST } from "../../lib/fetcher";
 // import { fetcherPOST } from "../../lib/fetcher";
 
 interface ISharedState {
@@ -13,7 +14,7 @@ interface ISharedState {
 
   setOpenKeys: (payload: any) => void;
   handleDateRange: (payload: any) => void;
-  // postUploadFile: (payload: any) => void;
+  postUploadFile: (payload: any) => void;
 }
 
 export const useSharedStore = create<ISharedState>()((set) => ({
@@ -43,18 +44,18 @@ export const useSharedStore = create<ISharedState>()((set) => ({
   //   }
   // },
 
-  // postUploadFile: async (body) => {
-  //   set({ loading: true });
-  //   try {
-  //     const url = `/common/file/`;
-  //     const data = await fetcherPOST(url, body);
-  //     console.log(data, "data zustand upload file");
-  //     set({ loading: false });
-  //     return Promise.resolve(data);
-  //   } catch (error: any) {
-  //     console.log(error.message, "error zustand");
-  //     set({ loading: false });
-  //     return Promise.reject(error);
-  //   }
-  // },
+  postUploadFile: async (body) => {
+    set({ loading: true });
+    try {
+      const url = `/common/file/`;
+      const data = await fetcherPOST(url, body);
+      console.log(data, "data zustand upload file");
+      set({ loading: false });
+      return Promise.resolve(data);
+    } catch (error: any) {
+      console.log(error.message, "error zustand");
+      set({ loading: false });
+      return Promise.reject(error);
+    }
+  },
 }));

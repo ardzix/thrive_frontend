@@ -1,10 +1,12 @@
-import { Button, Drawer, Form, Table } from "antd";
+import { Button, Drawer, Form, Modal, notification, Skeleton, Table } from "antd";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
+import { useEntityStore } from "../entity.store";
+import { useDivisionStore } from "../../user/division.store";
 
 type ListDataType = {
   id: string;
@@ -15,43 +17,16 @@ type ListDataType = {
   status: string;
 };
 
-const data: ListDataType[] = [
-  {
-    id: "1",
-    entitas_name: "Pt. Maju Terus Selamanya",
-    city: "Jakarta",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "active",
-  },
-  {
-    id: "2",
-    entitas_name: "Pt. Maju Terus Selamanya",
-    city: "Jakarta",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "active",
-  },
-  {
-    id: "3",
-    entitas_name: "Pt. Maju Terus Selamanya",
-    city: "Jakarta",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "not active",
-  },
-];
-
 const columns = [
   {
     title: "Entitas Id",
-    dataIndex: "id",
-    key: "id",
+    dataIndex: "entity_id",
+    key: "entity_id",
   },
   {
     title: "Nama entitas",
-    dataIndex: "entitas_name",
-    key: "entitas_name",
+    dataIndex: "entity_name",
+    key: "entity_name",
   },
   {
     title: "Kota",
@@ -96,20 +71,20 @@ const columns = [
 ];
 
 export default function ListCompanyEntitas() {
-  const [page, setPage] = useState(1);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
+  const {getEntity,listEntity, postEntity, loading}= useEntityStore()
+  const {getDivison,listDivision, loading: loadingDivision}=useDivisionStore()
+  const [params, setParams]= useState({
+    offset: 0,
+    limit: 10,
+    search: "",
+    status: "",
+  })
 
   const dataForm = [
     {
-      name: "id",
-      label: "Entitas Id",
-      type: "text",
-      placeholder: "Enter Entitas Id",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "entitas_name",
+      name: "entity_name",
       label: "Nama Entitas",
       type: "text",
       placeholder: "Enter Entitas Name",
@@ -137,7 +112,7 @@ export default function ListCompanyEntitas() {
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "postcode",
+      name: "postal_code",
       label: "Kode Pos",
       type: "text",
       placeholder: "Enter Postcode",
@@ -149,16 +124,10 @@ export default function ListCompanyEntitas() {
       type: "select",
       placeholder: "Enter Divisi",
       rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "Accounting",
-          value: "Accounting",
-        },
-        {
-          label: "Finance",
-          value: "Finance",
-        },
-      ],
+      options: listDivision?.items?.map((item:any) => ({
+        label: item.division_name,
+        value: item.id,
+      }))
     },
     {
       name: "access",
@@ -180,6 +149,13 @@ export default function ListCompanyEntitas() {
     {
       name: "phone",
       label: "NO. Telp",
+      type: "text",
+      placeholder: "Enter Phone",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "email",
+      label: "Email",
       type: "text",
       placeholder: "Enter Phone",
       rules: [{ required: true, message: "This field is required!" }],
@@ -224,6 +200,42 @@ export default function ListCompanyEntitas() {
     },
   ];
 
+  const handleGetEntity = () => {
+     getEntity(params)
+  }
+
+  const handleSubmit = async (values: any) => {
+    try {
+      await postEntity(values);
+      setOpenDrawer(false);
+      hookFormGenerator.resetFields();
+
+      notification.success({
+        message: "Success",
+        description: "Berhasil menyimpan data entitas",
+      });
+      
+      handleGetEntity();
+    } catch (error: any) {
+      console.log(error.message);
+      Modal.error({
+        title: "Error",
+        content: error.message || "Internal Server Error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    handleGetEntity()
+  }, [params]);
+
+  useEffect(()=>{
+    getDivison({
+      offset: 0,
+      limit: 10000,
+    })
+  },[])
+
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
@@ -234,53 +246,66 @@ export default function ListCompanyEntitas() {
       </div>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={listEntity?.items}
         size="small"
-        loading={false}
+        loading={loading}
         pagination={{
           size: "default",
-          current: page,
-          // current: parseInt(CurrentPage),
-          // defaultCurrent: 1,
-          onChange: (p) => {
-            setPage(p);
-          },
-          //   pageSize: pageSize,
-          // size: pageSize,
+          current: Math.floor(params.offset / params.limit) + 1, // Perhitungan halaman saat ini
+          pageSize: params.limit,
+          // defaultPageSize: params.limit,
           showSizeChanger: true,
-          //   total: listTaskAll?.count,
-          //   onShowSizeChange: (p, s) => {
-          //     setPage(p);
-          //     setPageSize(s);
-          //   },
-          showTotal: (total, range) => (
-            <span style={{ left: 0, position: "absolute", fontSize: 12 }}>
-              Showing {range[0]} to {range[1]} of {total} results
-            </span>
-          ),
+          total: listEntity?.total, // Total data
+          onChange: (page, pageSize) => {
+            setParams({
+              ...params,
+              limit: pageSize,
+              offset: (page - 1) * pageSize, // Perhitungan offset
+            });
+          },
+          onShowSizeChange: (current, size) => {
+            setParams({
+              ...params,
+              limit: size,
+              offset:(current - 1) * size,
+            });
+          },
+          showTotal: (total, range) => {
+            return(
+              <span style={{ left: 0, position: "absolute", fontSize: 12 }}>
+                Menampilkan {range[0]} hingga {Math.min(range[1], total)} dari {total} hasil
+              </span>
+            )
+          },
         }}
         scroll={{
           x: "100%",
-          // y: "100%",
         }}
       />
-
       <Drawer title="Tambah Entitas Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
-        <FormGenerator
-          hookForm={hookFormGenerator}
-          onFinish={() => {}}
-          data={dataForm}
-          id="dynamicForm"
-          size="default" //small , default , large
-          layout="vertical" //vertical, horizontal
-          // disabled={loading}
-          // formStyle={{ maxWidth: "100%" }}
-        />
-        <div className="w-full">
-          <Button form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
-            Simpan
-          </Button>
-        </div>
+        {
+          listDivision?.items?.length > 0 && !loadingDivision ? (
+              <> 
+                <FormGenerator
+                  hookForm={hookFormGenerator}
+                  onFinish={handleSubmit}
+                  data={dataForm}
+                  id="dynamicForm"
+                  size="default" //small , default , large
+                  layout="vertical" //vertical, horizontal
+                  // disabled={loading}
+                  // formStyle={{ maxWidth: "100%" }}
+                />
+                <div className="w-full">
+                  <Button loading={loading} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+                    Simpan
+                  </Button>
+                </div>
+              </>   
+          ): (
+            <Skeleton avatar paragraph={{ rows: dataForm.length }} />
+          )
+        }
       </Drawer>
     </main>
   );
