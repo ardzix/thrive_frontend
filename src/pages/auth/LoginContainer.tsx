@@ -1,5 +1,5 @@
 import { Button, Carousel, Form, Modal, notification } from "antd";
-import FormGenerator, { IDataForm } from "../shared/components/FormGenerator";
+import FormGenerator from "../shared/components/FormGenerator";
 import { FaUser } from "react-icons/fa6";
 import { PiLockKeyFill } from "react-icons/pi";
 import { useStorageStore } from "../shared/storage.store";
@@ -11,7 +11,7 @@ export default function LoginContainer() {
   const { handleToken } = useStorageStore();
   const navigate = useNavigate();
 
-  const dataForm :IDataForm[] = [
+  const dataForm = [
     {
       name: "email",
       type: "text",
