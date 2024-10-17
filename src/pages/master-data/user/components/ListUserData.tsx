@@ -126,7 +126,7 @@ export default function ListUserData() {
       type: "select",
       placeholder: "Enter Access",
       rules: [{ required: true, message: "This field is required!" }],
-      options: listUserRoles?.items?.map((item) => ({
+      options: listUserRoles?.items?.map((item: any) => ({
         label: item.role_name,
         value: item.role_name,
       })),
