@@ -51,7 +51,7 @@ const columns = [
     render: (status: string) => {
       return (
         <>
-          <p className={`${status === "active" ? "text-green-500" : "text-red-500"}`}>{status}</p>
+          <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
         </>
       );
     },
@@ -193,8 +193,8 @@ export default function ListCompanyEntitas() {
           value: "Active",
         },
         {
-          label: "Not Active",
-          value: "Not Active",
+          label: "Inactive",
+          value: "Inactive",
         },
       ],
     },
@@ -239,8 +239,8 @@ export default function ListCompanyEntitas() {
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
-        <InputSearch placeholder="Search" onChange={() => {}} />
-        <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
+        <InputSearch placeholder="Search" onChange={(search) => setParams({ ...params, search }) } />
+        <Button type="primary" onClick={() => setOpenDrawer(true)} className="text-black hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Entitas Baru
         </Button>
       </div>

@@ -17,7 +17,8 @@ interface IStorage {
 }
 
 interface IRole {
-  email?: number | undefined;
+  id: string;
+  role_name: string;
 }
 
 export const useStorageStore = create<IStorage>()(
@@ -32,13 +33,14 @@ export const useStorageStore = create<IStorage>()(
         email: "",
         role: null,
         handleToken: async (val) => {
+          console.log(val);
           set({
             auth: true,
             token: val.token,
             // // refresh_token: val.refresh_token,
             role: val.role,
             email: val.email,
-            name: `${val.first_name} ${val.last_name} `,
+            name: val.name,
           });
           window.location.reload();
         },

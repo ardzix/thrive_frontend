@@ -35,7 +35,7 @@ const columns = [
     render: (status: string) => {
       return (
         <>
-          <p className={`${status === "Active" ? "text-green-500" : "text-red-500"}`}>{status}</p>
+          <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
         </>
       );
     },
@@ -138,7 +138,7 @@ export default function ListUserDivison() {
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
-        <InputSearch placeholder="Search" onChange={() => {}} />
+        <InputSearch placeholder="Search" onChange={(val) => setParams({ ...params, search: val })} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Divisi Baru
         </Button>

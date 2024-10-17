@@ -18,7 +18,7 @@ export default function InputSearch({ onChange, placeholder }: InputSearchProps)
 
   return (
     <div>
-      <Input size="large" placeholder={placeholder} onChange={(e) => setText(e.target.value)} prefix={<SearchOutlined />} className="min-w-[300px]" />
+      <Input type="text" size="large" value={text} placeholder={placeholder} onChange={(e) => setText(e.target.value)} prefix={<SearchOutlined />} className="min-w-[300px]" />
     </div>
   );
 }

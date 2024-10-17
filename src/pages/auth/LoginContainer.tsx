@@ -53,7 +53,7 @@ export default function LoginContainer() {
         notification.success({ message: "Success" });
 
         setTimeout(() => {
-          handleToken(res.data);
+          handleToken(res?.data);
         }, 1000);
       }
     } catch (error: any) {

@@ -1,10 +1,12 @@
-import { Button, Drawer, Form, Table } from "antd";
+import { Button, Drawer, Form, Modal, notification, Skeleton, Table } from "antd";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
+import { useRoleAccessStore } from "../roleAccess.store";
+import { useUserRoleStore } from "../userRole.store";
 
 type ListDataType = {
   id: string;
@@ -15,38 +17,11 @@ type ListDataType = {
   status: string;
 };
 
-const data: ListDataType[] = [
-  {
-    id: "1",
-    role_name: "Accounting",
-    division: "Finance",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "active",
-  },
-  {
-    id: "2",
-    role_name: "Accounting",
-    division: "Finance",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "active",
-  },
-  {
-    id: "3",
-    role_name: "Accounting",
-    division: "Finance",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "not active",
-  },
-];
-
 const columns = [
   {
     title: "Access Id",
-    dataIndex: "id",
-    key: "id",
+    dataIndex: "access_id",
+    key: "access_id",
   },
   {
     title: "Role Access",
@@ -71,7 +46,7 @@ const columns = [
     render: (status: string) => {
       return (
         <>
-          <p className={`${status === "active" ? "text-green-500" : "text-red-500"}`}>{status}</p>
+          <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
         </>
       );
     },
@@ -91,70 +66,47 @@ const columns = [
 ];
 
 export default function ListRoleAccess() {
-  const [page, setPage] = useState(1);
+  const [params, setParams] = useState({
+    offset: 0,
+    limit: 10,
+    search: "",
+  });
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
+  const {
+         getRoleAccess,
+         loading,
+         listRoleAccess,
+         postRoleAccess,
+         getModules,
+         listModules,   
+         }=useRoleAccessStore()
+
+  const {loading:loadingUserRole,listUserRoles,getUserRole}=useUserRoleStore()
 
   const dataForm = [
     {
-      name: "id",
-      label: "Access ID",
-      type: "text",
-      placeholder: "Enter Access Id",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "role_access",
+      name: "role_id",
       label: "Role Access",
-      type: "text",
+      type: "select",
       placeholder: "Enter Role Access",
       rules: [{ required: true, message: "This field is required!" }],
+      options: listUserRoles?.items?.map((role: any) => ({
+        label: role.role_name,
+        value: role.id,
+      })),
     },
     {
-      name: "module",
+      name: "modules",
       label: "Module",
       type: "checkbox",
       //   placeholder: "Enter Module",
       rules: [{ required: true, message: "This field is required!" }],
       className: "!flex !flex-col !gap-2",
-      options: [
-        {
-          label: "Master Data",
-          value: "Master Data",
-        },
-        {
-          label: "Finance",
-          value: "Finance",
-        },
-        {
-          label: "Project Management",
-          value: "Project Management",
-        },
-        {
-          label: "Sales & Marketing",
-          value: "Sales & Marketing",
-        },
-        {
-          label: "Admin Dashboard",
-          value: "Admin Dashboard",
-        },
-        {
-          label: "Construction",
-          value: "Construction",
-        },
-        {
-          label: "Business Development",
-          value: "Business Development",
-        },
-        {
-          label: "Legal",
-          value: "Legal",
-        },
-        {
-          label: "Maintenance",
-          value: "Maintenance",
-        },
-      ],
+      options:listModules?.items?.map((module: any) => ({
+        label: module.name,
+        value: module.id,
+      })),
     },
     {
       name: "status",
@@ -168,67 +120,119 @@ export default function ListRoleAccess() {
           value: "Active",
         },
         {
-          label: "Not Active",
-          value: "Not Active",
+          label: "Inactive",
+          value: "inactive",
         },
       ],
     },
   ];
 
+
+  const handleGetRoleAccess = () => {
+    getRoleAccess(params)
+  };
+
+  useEffect(()=>{
+   handleGetRoleAccess();
+  },[params])
+
+  useEffect(()=>{
+    getModules({
+      offset: 0,
+      limit: 1000,
+    })
+
+    getUserRole({
+      offset: 0,
+      limit: 1000,
+    })
+
+  },[])
+
+  const handleSubmit = async (val: any)=> {
+    try {
+     await postRoleAccess(val)
+     notification.success({
+       message: "Success",
+       description: "Berhasil menyimpan role access",
+     })
+     hookFormGenerator.resetFields()
+     setOpenDrawer(false)
+     handleGetRoleAccess()
+    } catch (error: any) {
+     console.log(error.message)
+     Modal.error({
+       title: "Error",
+       content: error.message || "Internal Server Error",
+     })
+    }
+   };
+
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
-        <InputSearch placeholder="Search" onChange={() => {}} />
+        <InputSearch placeholder="Search" onChange={(e) => setParams({...params, search: e})} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Role Access Baru
         </Button>
       </div>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={listRoleAccess?.items}
         size="small"
-        loading={false}
+        loading={loading}
         pagination={{
           size: "default",
-          current: page,
-          // current: parseInt(CurrentPage),
-          // defaultCurrent: 1,
-          onChange: (p) => {
-            setPage(p);
-          },
-          //   pageSize: pageSize,
-          // size: pageSize,
+          current: Math.floor(params.offset / params.limit) + 1, // Perhitungan halaman saat ini
+          pageSize: params.limit,
+          // defaultPageSize: params.limit,
           showSizeChanger: true,
-          //   total: listTaskAll?.count,
-          //   onShowSizeChange: (p, s) => {
-          //     setPage(p);
-          //     setPageSize(s);
-          //   },
-          showTotal: (total, range) => (
-            <span style={{ left: 0, position: "absolute", fontSize: 12 }}>
-              Showing {range[0]} to {range[1]} of {total} results
-            </span>
-          ),
+          total: listRoleAccess?.total, // Total data
+          onChange: (page, pageSize) => {
+            setParams({
+              ...params,
+              limit: pageSize,
+              offset: (page - 1) * pageSize, // Perhitungan offset
+            });
+          },
+          onShowSizeChange: (current, size) => {
+            setParams({
+              ...params,
+              limit: size,
+              offset:(current - 1) * size,
+            });
+          },
+          showTotal: (total, range) => {
+            return(
+              <span style={{ left: 0, position: "absolute", fontSize: 12 }}>
+                Menampilkan {range[0]} hingga {Math.min(range[1], total)} dari {total} hasil
+              </span>
+            )
+          },
         }}
         scroll={{
           x: "100%",
-          // y: "100%",
         }}
       />
 
       <Drawer title="Tambah Akses Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
-        <FormGenerator
-          hookForm={hookFormGenerator}
-          onFinish={() => {}}
-          data={dataForm}
-          id="dynamicForm"
-          size="default" //small , default , large
-          layout="vertical" //vertical, horizontal
-          // disabled={loading}
-          // formStyle={{ maxWidth: "100%" }}
-        />
+        {
+          loadingUserRole && (
+          <Skeleton active paragraph={{ rows: dataForm.length }} />
+          )
+        }
+          <FormGenerator
+            hookForm={hookFormGenerator}
+            onFinish={handleSubmit}
+            data={dataForm}
+            id="dynamicForm"
+            size="default" //small , default , large
+            layout="vertical" //vertical, horizontal
+            // disabled={loading}
+            // formStyle={{ maxWidth: "100%" }}
+          />
         <div className="w-full">
-          <Button form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+          <Button loading={loading} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
             Simpan
           </Button>
         </div>

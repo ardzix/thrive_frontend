@@ -2,24 +2,22 @@ import { create } from "zustand";
 import { fetcherGET, fetcherPOST } from "../../../lib/fetcher";
 import { Iparams } from "../../shared/shared.store";
 
-
-
 interface IUserStore{
     loading: boolean
-    listUsers: any
-    getUsers: (params: Iparams) => Promise<any>
-    postUser: (data:any) => Promise<any>
+    listUserRoles: any
+    getUserRole: (params: Iparams) => Promise<any>
+    postUserRole: (data:any ) => Promise<any>
 }
 
 
-export const useUserStore = create<IUserStore>()((set) => ({
+export const useUserRoleStore = create<IUserStore>()((set) => ({
     loading: false,
-    listUsers: [],
-    getUsers: async (params) => {
+    listUserRoles: [],
+    getUserRole: async (params) => {
         set({ loading: true });
         try {
-            const data = await fetcherGET(`/users`, params);
-            set({ loading: false, listUsers: data.data });
+            const data = await fetcherGET(`/roles`, params);
+            set({ loading: false, listUserRoles: data.data });
             return Promise.resolve(data);
         } catch (error: any) {
             console.log(error.message, "error zustand");
@@ -27,10 +25,10 @@ export const useUserStore = create<IUserStore>()((set) => ({
             return Promise.reject(error);
         }
     },
-    postUser: async (data) => {
+    postUserRole: async (data) => {
         set({ loading: true });
         try {
-            const response = await fetcherPOST(`/users`, data);
+            const response = await fetcherPOST(`/roles`, data);
             set({ loading: false });
             return Promise.resolve(response);
         } catch (error: any) {
@@ -38,5 +36,5 @@ export const useUserStore = create<IUserStore>()((set) => ({
             set({ loading: false });
             return Promise.reject(error);
         }
-    }
+    },
 }))

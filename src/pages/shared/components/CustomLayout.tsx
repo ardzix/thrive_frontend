@@ -1,9 +1,10 @@
-import { Layout } from "antd";
+import { ConfigProvider, Layout } from "antd";
 // import { useNavigate } from "react-router-dom";
 // import { useSharedStore } from "../shared.store";
 // import { useStorageStore } from "../storage.store";
 import SidebarCustom from "./SidebarCustom";
 import { ReactNode } from "react";
+import {theme} from "../../../lib/theme";
 const { Content } = Layout;
 
 const CustomLayout = ({ children }: { children: ReactNode }) => {
@@ -31,14 +32,16 @@ const CustomLayout = ({ children }: { children: ReactNode }) => {
   // ];
 
   return (
-    <Layout>
-      <SidebarCustom />
+    <ConfigProvider theme={theme}>
       <Layout>
-        <Content className=" bg-neutral-200 overflow-auto p-6 h-[calc(100vh-96px)]">
-          <div className="2xl:container mx-auto">{children}</div>
-        </Content>
+        <SidebarCustom />
+        <Layout>
+          <Content className=" bg-neutral-200 overflow-auto p-6 h-[calc(100vh-96px)]">
+            <div className="2xl:container mx-auto">{children}</div>
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </ConfigProvider>
   );
 };
 export default CustomLayout;

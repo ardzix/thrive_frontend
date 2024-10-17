@@ -1,12 +1,12 @@
 // baseURL: import.meta.env.VITE_URL_API,
 
 import axios from "axios";
-// import { Modal } from "antd";
+import { Modal } from "antd";
 import { useStorageStore } from "../pages/shared/storage.store";
 const { token,
   //  refresh_token,
     // handleRefreshToken,
-    //  handleLogout 
+     handleLogout 
     } =
   useStorageStore.getState();
 
@@ -88,6 +88,31 @@ if (token) {
 //     return Promise.reject(error);
 //   }
 // );
+
+request.interceptors.response.use(
+  (response) => {
+    return response; // Jika response sukses, lanjutkan seperti biasa
+  },
+  (error) => {
+    const statusCode = error?.response?.status;
+
+    // Jika status code adalah 400 atau 401, redirect ke halaman login
+    if (statusCode === 401) {
+      Modal.error({
+        title: "Session Expired",
+        content: "Your session has expired. Please log in again.",
+        okText: "Log In",
+        onOk: () => {
+          handleLogout(); // Mengarahkan ke halaman login
+        },
+        okType: "danger",
+      });
+    }
+
+    return Promise.reject(error); // Mengembalikan error untuk ditangani lebih lanjut
+  }
+);
+
 
 export const fetcherPOST = async (url: string, data: any) => {
   try {

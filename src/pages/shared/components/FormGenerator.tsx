@@ -31,37 +31,6 @@ const getBase64 = (file: any) =>
     reader.onerror = (error) => reject(error);
   });
 
- export interface IDataForm {
-  name: string;
-  type: 
-  "text" |
-  "number" |
-  "select" |
-  "select-multiple" |
-  "switch" |
-  "tel"|
-  "checkbox" |
-  "textarea" | 
-  "date" |
-  "range" |
-  "upload" |
-  "slider" |
-  "radio"|
-  "password" |
-  "comfirm-password" |
-  "checkbox_boolean"|
-  "multiple_image"|
-  "single_image";
-  label?: string;
-  placeholder?: string;
-  value?: string;
-  options?: any;
-  className?: string;
-  prefix?: JSX.Element | string;
-  suffix?: JSX.Element | string;
-  rules?: any;
-}
-
 export default function FormGenerator({
   data,
   onFinish,
@@ -444,6 +413,7 @@ export default function FormGenerator({
                 key={i}
                 name={res.name}
                 rules={res?.rules}
+                extra={res?.helperText}
               >
                 <Select
                   placeholder={res?.placeholder}
@@ -504,7 +474,7 @@ export default function FormGenerator({
                 name={res.name}
                 rules={res?.rules}
               >
-                <Checkbox.Group>
+                <Checkbox.Group className="min-h-[300px] flex-wrap flex flex-col justify-start items-start space-y-2">
                   {res.options.map((option: any, optIdx: number) => (
                     <Checkbox key={optIdx} value={option.value}>
                       {option.label}

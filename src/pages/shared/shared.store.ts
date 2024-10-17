@@ -4,6 +4,13 @@ import dayjs from "dayjs";
 import { fetcherPOST } from "../../lib/fetcher";
 // import { fetcherPOST } from "../../lib/fetcher";
 
+export interface Iparams{
+  offset: number;
+  limit: number;
+  search?: string;
+  status?: string;
+}
+
 interface ISharedState {
   collapsed: any;
   loading: boolean;
@@ -47,7 +54,7 @@ export const useSharedStore = create<ISharedState>()((set) => ({
   postUploadFile: async (body) => {
     set({ loading: true });
     try {
-      const url = `/common/file/`;
+      const url = `/file/upload/`;
       const data = await fetcherPOST(url, body);
       console.log(data, "data zustand upload file");
       set({ loading: false });

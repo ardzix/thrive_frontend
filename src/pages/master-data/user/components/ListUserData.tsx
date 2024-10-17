@@ -1,52 +1,22 @@
-import { Button, Drawer, Form, Table } from "antd";
-import { useState } from "react";
+import { Button, Drawer, Empty, Form, Modal, notification, Skeleton, Table } from "antd";
+import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-
-type ListDataType = {
-  id: string;
-  user_name: string;
-  entitas_name: string;
-  role: string;
-  status: string;
-};
-
-const data: ListDataType[] = [
-  {
-    id: "1",
-    user_name: "Husen",
-    entitas_name: "Pt. Maju Terus Selamanya",
-    role: "Super Admin",
-    status: "active",
-  },
-  {
-    id: "2",
-    user_name: "Kevin",
-    entitas_name: "Pt. Maju Terus Selamanya",
-    role: "Admin",
-    status: "active",
-  },
-  {
-    id: "3",
-    user_name: "John Doe",
-    entitas_name: "Pt. Maju Terus Selamanya",
-    role: "User",
-    status: "not active",
-  },
-];
+import { useUserStore } from "../user.store";
+import { useUserRoleStore } from "../userRole.store";
 
 const columns = [
   {
     title: "User Id",
-    dataIndex: "id",
-    key: "id",
+    dataIndex: "user_id",
+    key: "user_id",
   },
   {
     title: "Nama User",
-    dataIndex: "user_name",
-    key: "user_name",
+    dataIndex: "full_name",
+    key: "full_name",
   },
   {
     title: "Role",
@@ -55,8 +25,8 @@ const columns = [
   },
   {
     title: "Entitas",
-    dataIndex: "entitas_name",
-    key: "entitas_name",
+    dataIndex: "entity",
+    key: "entity",
   },
   {
     title: "Status",
@@ -64,9 +34,7 @@ const columns = [
     key: "status",
     render: (status: string) => {
       return (
-        <>
           <p className={`${status === "active" ? "text-green-500" : "text-red-500"}`}>{status}</p>
-        </>
       );
     },
   },
@@ -75,28 +43,57 @@ const columns = [
     dataIndex: "id",
     key: "id",
     render: () => (
-      <>
         <Button>
           <FaPen />
         </Button>
-      </>
     ),
   },
 ];
 
 export default function ListUserData() {
-  const [page, setPage] = useState(1);
+  const [params, setParams] = useState({
+    offset: 0,
+    limit: 10,
+    search: "",
+  });
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
+  const {getUserRole,listUserRoles, loading:loadingUserRole}=useUserRoleStore()
+  const {getUsers, listUsers, loading, postUser} = useUserStore()
+
+  const handleGetUsers = () => {
+     getUsers(params)
+  }
+
+  useEffect(()=>{
+      handleGetUsers()
+  },[params])
+
+  useEffect(()=>{
+    getUserRole({
+      offset: 0,
+      limit: 1000,
+    })
+  },[])
+
+  const handleSubmit = async (val: any)=> {
+   try {
+    await postUser(val)
+    notification.success({
+      message: "Success",
+      description: "Berhasil menyimpan data user",
+    })
+    handleGetUsers()
+   } catch (error: any) {
+    console.log(error.message)
+    Modal.error({
+      title: "Error",
+      content: error.message || "Internal Server Error",
+    })
+   }
+  };
 
   const dataForm = [
-    {
-      name: "id",
-      label: "User Id",
-      type: "text",
-      placeholder: "Enter User Id",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
     {
       name: "user_name",
       label: "Nama User",
@@ -112,13 +109,9 @@ export default function ListUserData() {
       rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
-          label: "Accounting",
-          value: "Accounting",
-        },
-        {
-          label: "Finance",
-          value: "Finance",
-        },
+          label: "test",
+          value: "test"
+        }
       ],
     },
     {
@@ -127,16 +120,10 @@ export default function ListUserData() {
       type: "select",
       placeholder: "Enter Access",
       rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "Accounting",
-          value: "Accounting",
-        },
-        {
-          label: "Finance",
-          value: "Finance",
-        },
-      ],
+      options: listUserRoles?.items?.map((item) => ({
+        label: item.role_name,
+        value: item.role_name,
+      })),
     },
     {
       name: "entity",
@@ -188,8 +175,8 @@ export default function ListUserData() {
           value: "Active",
         },
         {
-          label: "Not Active",
-          value: "Not Active",
+          label: "Inactive",
+          value: "inactive",
         },
       ],
     },
@@ -198,57 +185,68 @@ export default function ListUserData() {
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
-        <InputSearch placeholder="Search" onChange={() => {}} />
+        <InputSearch placeholder="Search" onChange={(e) => setParams({...params, search: e})} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           User Baru
         </Button>
       </div>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={listUsers?.items}
         size="small"
-        loading={false}
+        loading={loading}
         pagination={{
           size: "default",
-          current: page,
-          // current: parseInt(CurrentPage),
-          // defaultCurrent: 1,
-          onChange: (p) => {
-            setPage(p);
-          },
-          //   pageSize: pageSize,
-          // size: pageSize,
+          current: Math.floor(params.offset / params.limit) + 1, // Perhitungan halaman saat ini
+          pageSize: params.limit,
+          // defaultPageSize: params.limit,
           showSizeChanger: true,
-          //   total: listTaskAll?.count,
-          //   onShowSizeChange: (p, s) => {
-          //     setPage(p);
-          //     setPageSize(s);
-          //   },
-          showTotal: (total, range) => (
-            <span style={{ left: 0, position: "absolute", fontSize: 12 }}>
-              Showing {range[0]} to {range[1]} of {total} results
-            </span>
-          ),
+          total: listUsers?.total, // Total data
+          onChange: (page, pageSize) => {
+            setParams({
+              ...params,
+              limit: pageSize,
+              offset: (page - 1) * pageSize, // Perhitungan offset
+            });
+          },
+          onShowSizeChange: (current, size) => {
+            setParams({
+              ...params,
+              limit: size,
+              offset:(current - 1) * size,
+            });
+          },
+          showTotal: (total, range) => {
+            return(
+              <span style={{ left: 0, position: "absolute", fontSize: 12 }}>
+                Menampilkan {range[0]} hingga {Math.min(range[1], total)} dari {total} hasil
+              </span>
+            )
+          },
         }}
         scroll={{
           x: "100%",
-          // y: "100%",
         }}
       />
 
       <Drawer title="Tambah User Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+        {
+          loadingUserRole && (
+          <Skeleton active paragraph={{ rows: dataForm.length }} />
+          )
+        }
         <FormGenerator
           hookForm={hookFormGenerator}
-          onFinish={() => {}}
+          onFinish={handleSubmit}
           data={dataForm}
           id="dynamicForm"
           size="default" //small , default , large
           layout="vertical" //vertical, horizontal
-          // disabled={loading}
+          disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
         <div className="w-full">
-          <Button form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+          <Button loading={loading} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
             Simpan
           </Button>
         </div>

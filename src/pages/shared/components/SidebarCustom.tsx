@@ -3,7 +3,7 @@ import { useSharedStore } from "../shared.store";
 import { BarChartOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { acceptablePathList } from "../../../lib/routes";
-import theme from "../../../lib/theme";
+import  { colors } from "../../../lib/theme";
 import { FaCircleUser } from "react-icons/fa6";
 import { useStorageStore } from "../storage.store";
 import { MdLogout } from "react-icons/md";
@@ -48,7 +48,7 @@ export default function SidebarCustom() {
     setOpenKeys(keys);
   };
 
-  const { handleLogout } = useStorageStore();
+  const { handleLogout ,name, role } = useStorageStore();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -60,7 +60,7 @@ export default function SidebarCustom() {
       setLoading(false);
       setIsModalVisible(false);
       handleLogout();
-    }, 2000);
+    }, 1000);
   };
 
   const handleCancel = () => {
@@ -68,25 +68,25 @@ export default function SidebarCustom() {
   };
 
   return (
-    <Sider className="min-h-screen border-r !bg-neutral-900" width={230} collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+    <Sider className="min-h-screen border-r !bg-black" width={230} collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
       <div className={`w-full flex flex-col justify-center items-center pt-6 mb-6 ${collapsed && "hidden"} `}>
         <div className="flex flex-col justify-center items-center w-fit space-x-2">
           <img src="/images/thrive-logo.svg" className="object-contain h-14" alt="" />
         </div>
       </div>
-      <Menu className="mt-2 custom-menu !bg-neutral-900" style={{ border: 0 }} openKeys={openKeys} onOpenChange={onOpenChange} mode="inline" selectedKeys={[pathActive]} theme="dark" onClick={(v) => navigate(v.key)} items={items} />
+      <Menu className="mt-2 custom-menu !bg-black" style={{ border: 0 }} openKeys={openKeys} onOpenChange={onOpenChange} mode="inline" selectedKeys={[pathActive]} theme="dark" onClick={(v) => navigate(v.key)} items={items} />
 
       <div className="absolute bottom-0 w-full flex flex-col items-start justify-start p-6 ">
         <Divider className="bg-neutral-700" />
         <div className="flex items-center justify-end gap-x-3 mb-5 cursor-pointer">
-          <FaCircleUser size={32} color={theme?.mainColor} />
+          <FaCircleUser size={32} color={colors?.grey} />
           <div className="">
-            <p className="font-semibold text-base text-neutral-200 ">Admin 1</p>
-            <p className="text-sm text-neutral-400 ">Super Admin</p>
+            <p className="font-semibold text-base text-neutral-200 ">{name}</p>
+            <p className="text-sm text-neutral-400 ">{role?.role_name}</p>
           </div>
         </div>
         <div className="min-w-[100px] cursor-pointer flex items-center justify-end gap-x-3 font-semibold" onClick={showModal}>
-          <MdLogout size={32} color={theme?.mainPurpleLight} />
+          <MdLogout size={32} color={colors?.grey} />
           <p className="font-semibold text-base text-neutral-200 ">Logout</p>
         </div>
       </div>
