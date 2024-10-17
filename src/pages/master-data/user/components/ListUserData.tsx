@@ -6,6 +6,7 @@ import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { useUserStore } from "../user.store";
 import { useUserRoleStore } from "../userRole.store";
+import { useEntityStore } from "../../company/entity.store";
 
 const columns = [
   {
@@ -60,6 +61,7 @@ export default function ListUserData() {
   const [hookFormGenerator] = Form.useForm();
   const {getUserRole,listUserRoles, loading:loadingUserRole}=useUserRoleStore()
   const {getUsers, listUsers, loading, postUser} = useUserStore()
+  const {getEntity,listEntity} = useEntityStore()
 
   const handleGetUsers = () => {
      getUsers(params)
@@ -72,7 +74,11 @@ export default function ListUserData() {
   useEffect(()=>{
     getUserRole({
       offset: 0,
-      limit: 1000,
+      limit: 10000,
+    })
+    getEntity({
+      offset: 0,
+      limit: 10000
     })
   },[])
 
@@ -126,21 +132,15 @@ export default function ListUserData() {
       })),
     },
     {
-      name: "entity",
+      name: "entity_id",
       label: "Entitas",
       type: "select",
       placeholder: "Enter Entity",
       rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "Accounting",
-          value: "Accounting",
-        },
-        {
-          label: "Finance",
-          value: "Finance",
-        },
-      ],
+      options: listEntity?.items?.map((item :any) => ({
+        label: item.entity_name,
+        value: item.id,
+      })),
     },
     {
       name: "email",
