@@ -154,7 +154,7 @@ export default function ListClassMaster() {
           pageSize: params.limit,
           // defaultPageSize: params.limit,
           showSizeChanger: true,
-          total: listClassMaster?.total, // Total data
+          total: listClassMaster?.total,
           onChange: (page, pageSize) => {
             setParams({
               ...params,
