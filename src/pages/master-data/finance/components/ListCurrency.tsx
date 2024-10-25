@@ -1,11 +1,12 @@
-import { Button, Drawer, Form, Table } from "antd";
+import { Button, Drawer, Form, Modal, notification, Table } from "antd";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { rupiahFormat } from "../../../../lib/helper";
+import { useFinanceStore } from "../finance.store";
 
 type ListDataType = {
   id: string;
@@ -16,36 +17,6 @@ type ListDataType = {
   updated_at: string;
   status: string;
 };
-
-const data: ListDataType[] = [
-  {
-    id: "1",
-    currency: "Australian Dollar",
-    code: "USD",
-    conversion: 9000000,
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "active",
-  },
-  {
-    id: "2",
-    currency: "Australian Dollar",
-    code: "USD",
-    conversion: 820000,
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "active",
-  },
-  {
-    id: "3",
-    currency: "Australian Dollar",
-    code: "USD",
-    conversion: 500000,
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "not active",
-  },
-];
 
 const columns = [
   {
@@ -114,18 +85,37 @@ const columns = [
 ];
 
 export default function ListCurrency() {
-  const [page, setPage] = useState(1);
+  const [params, setParams] = useState({
+    offset: 0,
+    limit: 10,
+    search: "",
+  });
   const [openDrawer, setOpenDrawer] = useState(false);
   const [hookFormGenerator] = Form.useForm();
+  const {getCurrency,loading, postCurrency, listCurrency} = useFinanceStore();
+
+  const handleSubmit = async (val: any)=> {
+    try {
+     await postCurrency(val)
+     notification.success({
+       message: "Success",
+       description: "Berhasil menyimpan data user",
+     })
+     getCurrency(params)
+    } catch (error: any) {
+     console.log(error.message)
+     Modal.error({
+       title: "Error",
+       content: error.message || "Internal Server Error",
+     })
+    }
+   };
+
+  useEffect(() => {
+    getCurrency(params);
+  }, [params])
 
   const dataForm = [
-    {
-      name: "id",
-      label: "Currency ID",
-      type: "text",
-      placeholder: "Enter Currency Id",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
     {
       name: "currency",
       label: "Currency",
@@ -159,8 +149,8 @@ export default function ListCurrency() {
           value: "Active",
         },
         {
-          label: "Not Active",
-          value: "Not Active",
+          label: "Inactive",
+          value: "Inactive",
         },
       ],
     },
@@ -176,50 +166,56 @@ export default function ListCurrency() {
       </div>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={listCurrency?.items}
         size="small"
-        loading={false}
+        loading={loading}
         pagination={{
           size: "default",
-          current: page,
-          // current: parseInt(CurrentPage),
-          // defaultCurrent: 1,
-          onChange: (p) => {
-            setPage(p);
-          },
-          //   pageSize: pageSize,
-          // size: pageSize,
+          current: Math.floor(params.offset / params.limit) + 1, // Perhitungan halaman saat ini
+          pageSize: params.limit,
+          // defaultPageSize: params.limit,
           showSizeChanger: true,
-          //   total: listTaskAll?.count,
-          //   onShowSizeChange: (p, s) => {
-          //     setPage(p);
-          //     setPageSize(s);
-          //   },
-          showTotal: (total, range) => (
-            <span style={{ left: 0, position: "absolute", fontSize: 12 }}>
-              Showing {range[0]} to {range[1]} of {total} results
-            </span>
-          ),
+          total: listCurrency?.total, // Total data
+          onChange: (page, pageSize) => {
+            setParams({
+              ...params,
+              limit: pageSize,
+              offset: (page - 1) * pageSize, // Perhitungan offset
+            });
+          },
+          onShowSizeChange: (current, size) => {
+            setParams({
+              ...params,
+              limit: size,
+              offset:(current - 1) * size,
+            });
+          },
+          showTotal: (total, range) => {
+            return(
+              <span style={{ left: 0, position: "absolute", fontSize: 12 }}>
+                Menampilkan {range[0]} hingga {Math.min(range[1], total)} dari {total} hasil
+              </span>
+            )
+          },
         }}
         scroll={{
           x: "100%",
-          // y: "100%",
         }}
       />
 
       <Drawer title="Tambah Mata Uang Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
-        <FormGenerator
+      <FormGenerator
           hookForm={hookFormGenerator}
-          onFinish={() => {}}
+          onFinish={handleSubmit}
           data={dataForm}
           id="dynamicForm"
           size="default" //small , default , large
           layout="vertical" //vertical, horizontal
-          // disabled={loading}
+          disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
         <div className="w-full">
-          <Button form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+          <Button loading={loading} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
             Simpan
           </Button>
         </div>
