@@ -159,7 +159,7 @@ export default function ListCurrency() {
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
-        <InputSearch placeholder="Search" onChange={() => {}} />
+      <InputSearch placeholder="Search" onChange={(e) => setParams({...params, search: e})} />
         <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Mata Uang Baru
         </Button>
