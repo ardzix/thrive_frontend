@@ -2,7 +2,6 @@ import React from "react";
 import ReactApexChart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { DatePicker } from "antd";
-import dayjs from "dayjs";
 
 const { RangePicker } = DatePicker;
 

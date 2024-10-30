@@ -1,21 +1,20 @@
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 import { rupiahFormat } from "../../../lib/helper";
-import AreaChart from "../../shared/components/chart/AreaChart";
 import CustomLayout from "../../shared/components/CustomLayout";
 import HeaderCustom from "../../shared/components/HeaderCustom";
 
 export default function DashboardFinanceContainer() {
-    const categories = ["Jan", "Feb", "Mar", "Apr", "May"];
-    const series = [
-        {
-           name: "Data Series",
-           data: [30, 40, 35, 50, 40, 49]
-        },
-        {
-           name: "Data Series",
-           data: [20 , 10, 25, 15, 30, 40]
-        }
-    ];
+    // const categories = ["Jan", "Feb", "Mar", "Apr", "May"];
+    // const series = [
+    //     {
+    //        name: "Data Series",
+    //        data: [30, 40, 35, 50, 40, 49]
+    //     },
+    //     {
+    //        name: "Data Series",
+    //        data: [20 , 10, 25, 15, 30, 40]
+    //     }
+    // ];
 
     // const customOptions = {
     //   tooltip: {
@@ -23,9 +22,9 @@ export default function DashboardFinanceContainer() {
     //   },
     // };
 
-    const handleMonthChange = (date: dayjs.Dayjs | null) => {
-        console.log("Selected month:", date ? date.format("YYYY-MM") : "No month selected");
-      };
+    // const handleMonthChange = (date: dayjs.Dayjs | null) => {
+    //     console.log("Selected month:", date ? date.format("YYYY-MM") : "No month selected");
+    //   };
 
     return (
         <CustomLayout>
