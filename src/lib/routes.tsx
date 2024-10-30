@@ -8,6 +8,75 @@ import UserContainer from "../pages/master-data/user/UserContainer";
 import ProjectContainer from "../pages/master-data/project/ProjectContainer";
 import FinanceContainer from "../pages/master-data/finance/FinanceContainer";
 import ForgotPasswordContainer from "../pages/auth/ForgotPasswordContainer";
+import GeneralLedgerContainer from "../pages/finance/general-ledger/GeneralLedgerContainer";
+import BankContainer from "../pages/finance/bank/BankContainer";
+import RequestsContainer from "../pages/finance/requests/RequestsContainer";
+import ReportContainer from "../pages/finance/report/ReportContainer";
+import SetupContainer from "../pages/finance/setup/SetupContainer";
+import DashboardFinanceContainer from "../pages/finance/dashboard-finance/DashboardFinanceContainer";
+
+interface Route {
+  path: string;
+  element: JSX.Element;
+  isPrivate?: boolean; // Make isPrivate optional
+}
+
+const masterDataRoutes : Route[] =[
+  {
+    path: "/master-data/company",
+    element: <CompanyContainer />,
+    isPrivate: true,
+  },
+
+  {
+    path: "/master-data/user",
+    element: <UserContainer />,
+    isPrivate: true,
+  },
+  {
+    path: "/master-data/project",
+    element: <ProjectContainer />,
+    isPrivate: true,
+  },
+  {
+    path: "/master-data/finance",
+    element: <FinanceContainer />,
+    isPrivate: true,
+  },
+];
+
+const financeRoutes: Route[] = [
+  {
+    path: "/finance/dashboard",
+    element: <DashboardFinanceContainer/>,
+    isPrivate: true,
+  },
+  {
+    path: "/finance/general-ledger",
+    element: <GeneralLedgerContainer />,
+    isPrivate: true,
+  },
+  {
+    path: "/finance/bank",
+    element: <BankContainer />,
+    isPrivate: true,
+  },
+  {
+    path: "/finance/requests",
+    element: <RequestsContainer />,
+    isPrivate: true,
+  },
+  {
+    path: "/finance/report",
+    element: <ReportContainer />,
+    isPrivate: true,
+  },
+  {
+    path: "/finance/setup",
+    element: <SetupContainer />,
+    isPrivate: true,
+  },
+];
 
 const routes = [
   {
@@ -20,27 +89,8 @@ const routes = [
     element: <ForgotPasswordContainer />,
     isPrivate: false,
   },
-  {
-    path: "/company",
-    element: <CompanyContainer />,
-    isPrivate: true,
-  },
-
-  {
-    path: "/user",
-    element: <UserContainer />,
-    isPrivate: true,
-  },
-  {
-    path: "/project",
-    element: <ProjectContainer />,
-    isPrivate: true,
-  },
-  {
-    path: "/finance",
-    element: <FinanceContainer />,
-    isPrivate: true,
-  },
+  ...masterDataRoutes,
+  ...financeRoutes,
   {
     path: "*",
     element: (

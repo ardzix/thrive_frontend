@@ -5,7 +5,7 @@ const token = useStorageStore.getState().token;
 const auth = useStorageStore.getState().auth;
 
 export const PublicRoute = ({ children }: any) => {
-  if (auth && token) return <Navigate to="/company" />;
+  if (auth && token) return <Navigate to="/master-data/company" />;
   return children;
 };
 

@@ -35,7 +35,9 @@ const columns = [
     key: "status",
     render: (status: string) => {
       return (
-          <p className={`${status === "active" ? "text-green-500" : "text-red-500"}`}>{status}</p>
+        <>
+          <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
+        </>
       );
     },
   },
@@ -84,12 +86,16 @@ export default function ListUserData() {
 
   const handleSubmit = async (val: any)=> {
    try {
+    console.log(val)
     await postUser(val)
     notification.success({
+      type: "success",
       message: "Success",
       description: "Berhasil menyimpan data user",
     })
     handleGetUsers()
+    setOpenDrawer(false)
+    hookFormGenerator.resetFields()
    } catch (error: any) {
     console.log(error.message)
     Modal.error({
@@ -101,8 +107,8 @@ export default function ListUserData() {
 
   const dataForm = [
     {
-      name: "user_name",
-      label: "Nama User",
+      name: "full_name",
+      label: "Full Name",
       type: "text",
       placeholder: "Enter User Name",
       rules: [{ required: true, message: "This field is required!" }],
@@ -121,14 +127,14 @@ export default function ListUserData() {
       ],
     },
     {
-      name: "access",
+      name: "role_id",
       label: "Access",
       type: "select",
       placeholder: "Enter Access",
       rules: [{ required: true, message: "This field is required!" }],
       options: listUserRoles?.items?.map((item: any) => ({
         label: item.role_name,
-        value: item.role_name,
+        value: item.id,
       })),
     },
     {
