@@ -1,12 +1,10 @@
-import { Button, Form, Modal, notification, Table } from "antd";
+import { Button, Table } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa6";
-import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import { useEntityStore } from "../entity.store";
 import { useDivisionStore } from "../../user/division.store";
-import UpdateCompanyEntitas from "./UpdateCompanyEntitas";
 import { useRoleAccessStore } from "../../user/roleAccess.store";
 import UpdateCompanyModule from "./UpdateModule";
 
@@ -24,11 +22,10 @@ export default function ListCompanyModules() {
     create: false,
     update: false,
   });
-  const [hookFormGenerator] = Form.useForm();
   const [idEntity, setIdEntity] = useState("");
-  const {getEntity,listEntity, postEntity, loading}= useEntityStore()
-  const {getDivison,listDivision, loading: loadingDivision}=useDivisionStore()
-  const {getRoleAccess, listRoleAccess,}= useRoleAccessStore();
+  const {getEntity,listEntity, loading}= useEntityStore()
+  const {getDivison}=useDivisionStore()
+  const {getRoleAccess}= useRoleAccessStore();
   const [params, setParams]= useState({
     offset: 0,
     limit: 10,
@@ -39,32 +36,6 @@ export default function ListCompanyModules() {
   const handleGetEntity = () => {
      getEntity(params)
   }
- 
-  const handleSubmit = async (values: any) => {
-    try {
-      console.log(values);
-      const finalyPayload = {
-        ...values,
-        fiscal_year: Number(values.fiscal_year),
-      }
-      await postEntity(finalyPayload);
-      setOpenDrawer((val) => ({...val, create: false}));
-      hookFormGenerator.resetFields();
-
-      notification.success({
-        message: "Success",
-        description: "Berhasil menyimpan data entitas",
-      });
-      
-      handleGetEntity();
-    } catch (error: any) {
-      console.log(error.message);
-      Modal.error({
-        title: "Error",
-        content: error.message || "Internal Server Error",
-      });
-    }
-  };
 
   useEffect(() => {
     handleGetEntity()

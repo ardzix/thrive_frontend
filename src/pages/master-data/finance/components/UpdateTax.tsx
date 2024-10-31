@@ -17,6 +17,7 @@ export default function UpdateTax({
 
   const handleSubmitUpdate = async (values: any) => {
     try {
+      console.log(values);
       // await updateDivision(values, division?.id), 
       notification.success({
         message: 'Success',

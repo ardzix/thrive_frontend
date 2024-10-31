@@ -2,7 +2,6 @@ import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
 import { useEntityStore } from '../entity.store';
 import { useEffect } from 'react';
-import { useDivisionStore } from '../../user/division.store';
 import { useRoleAccessStore } from '../../user/roleAccess.store';
 
 interface IUpdateCompanyEntitas {
@@ -19,12 +18,13 @@ export default function UpdateCompanyModule({
   handleGetEntity,
 }: IUpdateCompanyEntitas) {
   const [hookFormGenerator] = Form.useForm();
-  const { updateEntity, entity, getEntityById, loading } = useEntityStore();
+  const {  entity, getEntityById, loading } = useEntityStore();
   const {getModules, listModules}=useRoleAccessStore();
 
 
   const handleSubmitUpdate = async (values: any) => {
     try {
+      console.log(values);
       // const finalyPayload = {
       //   ...values,
       //   division: values.division.value || values.division,

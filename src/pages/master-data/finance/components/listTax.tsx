@@ -5,7 +5,6 @@ import { FaPen } from "react-icons/fa6";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import UpdateBank from "./UpdateBank";
 import UpdateTax from "./UpdateTax";
 
 export default function ListTax() {

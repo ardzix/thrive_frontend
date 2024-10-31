@@ -17,6 +17,7 @@ export default function UpdateBank({
 
   const handleSubmitUpdate = async (values: any) => {
     try {
+      console.log(values);
       // await updateDivision(values, division?.id), 
       notification.success({
         message: 'Success',
