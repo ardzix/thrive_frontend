@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+.ant-tabs-tab{
+  @apply !rounded-md !border-2 !border-neutral-200;
+  /* padding: 10px !important; */
+  margin-bottom: 20px !important;
+  margin-right: 20px !important;
+}
+
+.ant-tabs-ink-bar {
+  display: none !important;
+}
+
 .ant-tabs-tab.ant-tabs-tab-active {
   background-color: #d9d9d9 !important;
 }
@@ -11,6 +22,7 @@
   font-size: 14px !important;
   font-weight: 600;
   text-transform: capitalize;
+  /* margin: 10px  */
 }
 
 /* menu styles */

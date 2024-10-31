@@ -25,7 +25,12 @@ export default function CompanyContainer() {
           ]}
         />
         <div className="bg-white rounded-lg p-5 space-y-5">
-          <Tabs type="card" defaultActiveKey={"1"} items={items} />
+          <Tabs
+            type="card"
+            defaultActiveKey={"1"}
+            items={items}
+            // tabBarStyle={{ backgroundColor: "#f5f5f5", color: "#333", fontWeight: "bold" }}
+         />
         </div>
       </main>
     </CustomLayout>
