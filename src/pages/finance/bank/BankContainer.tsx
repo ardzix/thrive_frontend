@@ -1,7 +1,7 @@
 import { Tabs } from "antd";
 import CustomLayout from "../../shared/components/CustomLayout";
 import HeaderCustom from "../../shared/components/HeaderCustom";
-import ListBankIn from "./components/listBankIn";
+import ListBankIn from "./components/ListBankIn";
 
 const items = [
   {

@@ -1,7 +1,6 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
 import { useEffect } from 'react';
-import { useUserStore } from '../user.store';
 import { useUserRoleStore } from '../userRole.store';
 
 interface IUserRole {
@@ -31,9 +30,7 @@ export default function UpdateUserRole({
           division_id: values.division_id?.value,
           status: values.status
         }
-
-        console.log(finalyPayload);
-      // await updateUserRole(finalyPayload,userRole.id), 
+      await updateUserRole(finalyPayload,userRole.id), 
       notification.success({
         message: 'Success',
         description: 'Berhasil update data user role',

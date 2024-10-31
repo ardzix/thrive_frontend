@@ -28,7 +28,7 @@ export default function ListCompanyEntitas() {
   const [idEntity, setIdEntity] = useState("");
   const {getEntity,listEntity, postEntity, loading}= useEntityStore()
   const {getDivison,listDivision, loading: loadingDivision}=useDivisionStore()
-  const {getRoleAccess, listRoleAccess, loading:loadingUserRoleAccess}= useRoleAccessStore();
+  const {getRoleAccess, listRoleAccess,}= useRoleAccessStore();
   const [params, setParams]= useState({
     offset: 0,
     limit: 10,
