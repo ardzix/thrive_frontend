@@ -10,7 +10,7 @@ interface IUserRole {
   division: any
 }
 
-export default function UpdateDivision({
+export default function UpdateDepartement({
   openDrawer,
   setOpenDrawer,
   handleGetDivision,
@@ -39,30 +39,33 @@ export default function UpdateDivision({
     }
   };
 
-  useEffect(()=>{
-    hookFormGenerator.setFieldsValue({
-      division_name: division?.division_name,
-      description: division?.description,
-      status: division?.status
-    })
-  },[division])
+  // useEffect(()=>{
+  //   hookFormGenerator.setFieldsValue({
+  //     division_name: division?.division_name,
+  //     description: division?.description,
+  //     status: division?.status
+  //   })
+  // },[division])
 
-const dataForm = [
+  const dataForm = [
     {
-      name: "division_name",
-      label: "Divisi",
+      name: "departement_name",
+      label: "Departemen",
       type: "text",
-      placeholder: "Enter Divisi",
+      placeholder: "Enter Departemen Name",
      rules: [
         { required: true, message: "This field is required!" },
       ],
     },
     {
-      name: "description",
-      label: "Deskripsi",
-      type: "textarea",
-      className: "w-full !min-h-[150px]",
-      placeholder: "Enter Deskripsi",
+      name: "divisi_id",
+      label: "Divisi",
+      type: "select",
+      placeholder: "Enter Divisi",
+      options: [{
+        label: division?.division_name,
+        value: division?.id
+      }],
       rules: [
         { required: true, message: "This field is required!" },
       ],
@@ -90,7 +93,7 @@ const dataForm = [
   
   return (
     <Drawer
-      title="Update Divisi"
+      title="Update Departement"
       onClose={() => {
         setOpenDrawer((val: any) => ({ ...val, update: false }))
         hookFormGenerator.resetFields();
@@ -107,7 +110,7 @@ const dataForm = [
           layout="vertical"
           disabled={loading}
         />
-        <div className="w-full">
+        <div className="w-full absolute bottom-0 left-0 right-0 px-5 pb-5">
           <Button
             loading={loading}
             form="updateDivision"

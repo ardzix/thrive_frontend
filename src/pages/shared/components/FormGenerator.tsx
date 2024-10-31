@@ -272,7 +272,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 key={i}
-                className="w-full"
+                className="w-full custom-label"
                 label={res?.label}
                 name={res?.name}
                 rules={res?.rules}
@@ -289,7 +289,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 key={i}
-                className="w-full"
+                className="w-full custom-label"
                 label={res.label}
                 name={res.name}
                 rules={[
@@ -313,7 +313,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 key={i}
-                className="w-full"
+                className="w-full custom-label"
                 label={res?.label}
                 name={res?.name}
                 rules={res?.rules}
@@ -331,7 +331,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 key={i}
-                className="w-full"
+                className="w-full custom-label"
                 label={res?.label}
                 name={res?.name}
                 rules={[
@@ -365,7 +365,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 key={i}
-                className="w-full"
+                className="w-full custom-label"
                 label={res?.label}
                 name={res?.name}
                 rules={res?.rules}
@@ -391,7 +391,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 key={i}
-                className="w-full"
+                className="w-full custom-label"
                 label={res?.label}
                 name={res?.name}
                 rules={res?.rules}
@@ -411,7 +411,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 key={i}
                 name={res.name}
                 rules={res?.rules}
@@ -441,7 +441,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 key={i}
                 name={res.name}
                 rules={res?.rules}
@@ -471,7 +471,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 key={i}
                 name={res.name}
                 rules={res?.rules}
@@ -491,7 +491,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 // className="mb-0"
                 style={res.overideStyle}
                 key={i}
@@ -508,7 +508,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 key={i}
                 name={res.name}
                 rules={res?.rules}
@@ -528,7 +528,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 key={i}
                 name={res.name}
                 rules={res?.rules}
@@ -544,7 +544,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 key={i}
                 name={res.name}
                 rules={res?.rules}
@@ -566,7 +566,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 key={i}
                 name={res.name}
                 // className={res?.className}
@@ -591,7 +591,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 key={i}
                 name={res.name}
                 rules={res?.rules}
@@ -615,7 +615,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 key={i}
                 name={res.name}
                 rules={res?.rules}
@@ -635,7 +635,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full"
+                className="w-full custom-label"
                 key={i}
                 name={res.name}
                 rules={res?.rules}
@@ -684,7 +684,7 @@ export default function FormGenerator({
             return (
               <Form.Item
                 label={res.label}
-                className="w-full flex"
+                className="w-full custom-label flex"
                 key={i}
                 name={res.name}
                 rules={res?.rules}

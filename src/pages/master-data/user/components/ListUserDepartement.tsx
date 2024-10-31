@@ -1,43 +1,56 @@
 import { Button, Drawer, Form, Modal, notification, Table } from "antd";
-import { useEffect, useState } from "react";
-import { FaPen } from "react-icons/fa6";
+import {  useState } from "react";
+import {  FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-import { useDivisionStore } from "../division.store";
-import UpdateDivision from "./UpdateDivision";
+import UpdateDepartement from "./UpdateDepartement";
+import dayjs from "dayjs";
 
-export default function ListUserDivison() {
+export default function ListUserDepartement() {
   const [openDrawer, setOpenDrawer] = useState({
     create: false,
     update: false,
   });
   const [hookFormGenerator] = Form.useForm();
-  const {postDivision,getDivison,listDivision, loading} = useDivisionStore((state) => state);
+  // const {postDivision,getDivison,listDivision, loading} = useDivisionStore((state) => state);
   const [params, setParams]= useState({
     offset: 0,
     limit: 10,
     search: "",
     status: "",
   })
+
   const [division, setDivision] = useState({});
+  // dummy data
+  const listDepartement = {
+    items: Array(10).fill(null).map(() => ({
+      id: "DEP001",  // String acak sepanjang 10 karakter
+      departement_name: "Finance & Accounting",  // String acak sepanjang 15 karakter
+      created_by: "Admin",
+      updated_at: dayjs().format("DD/MM/YYYY HH:mm:ss"),
+      status: "active",
+    })),
+    total: 10,
+    limit: 10,
+    offset: 0,
+  };
 
   const dataForm = [
     {
-      name: "division_name",
-      label: "Divisi",
+      name: "departement_name",
+      label: "Departemen",
       type: "text",
-      placeholder: "Enter Divisi",
+      placeholder: "Enter Departemen Name",
      rules: [
         { required: true, message: "This field is required!" },
       ],
     },
     {
-      name: "description",
-      label: "Deskripsi",
-      type: "textarea",
-      className: "w-full !min-h-[150px]",
-      placeholder: "Enter Deskripsi",
+      name: "divisi_id",
+      label: "Divisi",
+      type: "text",
+      placeholder: "Enter Divisi",
       rules: [
         { required: true, message: "This field is required!" },
       ],
@@ -62,23 +75,27 @@ export default function ListUserDivison() {
       ],
     },
   ];
-
-  const handleGetDivision = () => {
-    getDivison(params)
-  }
+  
+  // const handleGetDivision = () => {
+    //   getDivison(params)
+    // }
+    
+    // useEffect(()=> {
+    //   handleGetDivision();
+    // },[params])
 
   const handleSubmit= async (val: any)=>{
     console.log(val);
     try {
-        await postDivision(val);
+        // await postDivision(val);
         notification.success({
           message: "Success",
-          description: "Divisi Berhasil",
+          description: "Berhasil menyimpan data Departement",
         })
         setOpenDrawer((prev)=> ({...prev, create: false}));
         hookFormGenerator.resetFields();
 
-        handleGetDivision();
+        // handleGetDivision();
     } catch (error: any) {
       console.log(error.message);
       Modal.error({
@@ -88,32 +105,29 @@ export default function ListUserDivison() {
     }
   }
 
-  useEffect(()=> {
-    handleGetDivision();
-  },[params])
 
   const columns = [
     {
-      title: "Divisi Id",
-      dataIndex: "division_id",
-      key: "division_id",
+      title: "Department ID",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: "Nama",
-      dataIndex: "division_name",
-      key: "division_name",
+      title: "Department",
+      dataIndex: "departement_name",
+      key: "departement_name",
     },
     {
-      title: "Deskripsi",
-      dataIndex: "description",
-      key: "description",
+      title: "Dibuat Oleh",
+      dataIndex: "created_by",
+      key: "created_by",
     },
-    // {
-    //   title: "Tanggal Update",
-    //   dataIndex: "updated_at",
-    //   key: "updated_at",
-    //   render: ({ updated_at }: ListDataType) => <span>{updated_at ? dayjs(updated_at).format("DD/MM/YYYY") : "-"}</span>,
-    // },
+    {
+      title: "Tanggal Update",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      // render: ({ updated_at }: ListDataType) => <span>{updated_at ? dayjs(updated_at).format("DD/MM/YYYY") : "-"}</span>,
+    },
     {
       title: "Status",
       dataIndex: "status",
@@ -133,10 +147,12 @@ export default function ListUserDivison() {
       render: (_, prev: any) => {
         return (
           <>
-            <Button onClick={()=>{
+            <Button 
+            onClick={()=>{
               setOpenDrawer((prev)=> ({...prev, update: true}))
               setDivision({...prev})
-            }}>
+            }}
+            >
               <FaPen />
             </Button>
           </>
@@ -150,21 +166,21 @@ export default function ListUserDivison() {
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={(val) => setParams({ ...params, search: val })} />
         <Button onClick={() => setOpenDrawer((prev)=> ({...prev, create: true}))} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
-          Divisi Baru
+          Departement Baru
         </Button>
       </div>
       <Table
         columns={columns}
-        dataSource={listDivision?.items}
+        dataSource={listDepartement?.items}
         size="small"
-        loading={loading}
+        loading={false}
         pagination={{
           size: "default",
           current: Math.floor(params.offset / params.limit) + 1, // Perhitungan halaman saat ini
           pageSize: params.limit,
           // defaultPageSize: params.limit,
           showSizeChanger: true,
-          total: listDivision?.total, // Total data
+          total: listDepartement?.total, // Total data
           onChange: (page, pageSize) => {
             setParams({
               ...params,
@@ -192,7 +208,7 @@ export default function ListUserDivison() {
         }}
       />
 
-      <Drawer title="Tambah Divisi Baru" onClose={() => setOpenDrawer((prev)=> ({...prev, create: false}))} open={openDrawer.create}>
+      <Drawer title="Tambah Departemen Baru" onClose={() => setOpenDrawer((prev)=> ({...prev, create: false}))} open={openDrawer.create}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={handleSubmit}
@@ -200,19 +216,19 @@ export default function ListUserDivison() {
           id="createDivision"
           size="default" //small , default , large
           layout="vertical" //vertical, horizontal
-          disabled={loading}
+          // disabled={FaLessThanEqual}
           // formStyle={{ maxWidth: "100%" }}
         />
-        <div className="w-full">
-          <Button loading={loading} form="createDivision" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+        <div className="w-full absolute bottom-0 left-0 right-0 px-5 pb-5">
+          <Button loading={false} form="createDivision" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
             Simpan
           </Button>
         </div>
       </Drawer>
-      <UpdateDivision
+      <UpdateDepartement
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
-        handleGetDivision={handleGetDivision}
+        handleGetDivision={() => {}}
         division={division}
       />
     </main>

@@ -45,54 +45,6 @@ export default function ListUserData() {
     })
   },[])
 
-  const columns = [
-    {
-      title: "User Id",
-      dataIndex: "user_id",
-      key: "user_id",
-    },
-    {
-      title: "Nama User",
-      dataIndex: "full_name",
-      key: "full_name",
-    },
-    {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
-    },
-    {
-      title: "Entitas",
-      dataIndex: "entity",
-      key: "entity",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => {
-        return (
-          <>
-            <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
-          </>
-        );
-      },
-    },
-    {
-      title: "Action",
-      dataIndex: "id",
-      key: "id",
-      render: (id: any) => (
-          <Button onClick={()=> {
-            setOpenDrawer((val: any) => ({ ...val, update: true }))
-            setUserId(id)
-          }} >
-            <FaPen />
-          </Button>
-      ),
-    },
-  ];
-
   const handleSubmit = async (val: any)=> {
    try {
     console.log(val)
@@ -197,6 +149,55 @@ export default function ListUserData() {
     },
   ];
 
+  
+  const columns = [
+    {
+      title: "User Id",
+      dataIndex: "user_id",
+      key: "user_id",
+    },
+    {
+      title: "Nama User",
+      dataIndex: "full_name",
+      key: "full_name",
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+    },
+    {
+      title: "Entitas",
+      dataIndex: "entity",
+      key: "entity",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => {
+        return (
+          <>
+            <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
+          </>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      render: (id: any) => (
+          <Button onClick={()=> {
+            setOpenDrawer((val: any) => ({ ...val, update: true }))
+            setUserId(id)
+          }} >
+            <FaPen />
+          </Button>
+      ),
+    },
+  ];
+
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
@@ -244,7 +245,14 @@ export default function ListUserData() {
         }}
       />
 
-      <Drawer title="Tambah User Baru" onClose={() => setOpenDrawer((val: any) => ({ ...val, create: false }))} open={openDrawer.create}>
+      <Drawer 
+       title="Tambah User Baru"
+       onClose={() => {
+        setOpenDrawer({ ...openDrawer, create: false });
+        hookFormGenerator.resetFields();
+       }} 
+       open={openDrawer.create}
+      >
         {
           loadingUserRole && (
           <Skeleton active paragraph={{ rows: dataForm.length }} />

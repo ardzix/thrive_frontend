@@ -5,110 +5,32 @@ import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
+import UpdateProject from "./UpdateProject";
 
-type ListDataType = {
-  id: string;
-  project_name: string;
-  project_proposal: string;
-  created_by: string;
-  updated_at: string;
-  status: string;
-};
-
-const data: ListDataType[] = [
-  {
-    id: "1",
-    project_name: "Project 1",
-    project_proposal: "Proposal 1",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "active",
-  },
-  {
-    id: "2",
-    project_name: "Project 2",
-    project_proposal: "Proposal 2",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "active",
-  },
-  {
-    id: "3",
-    project_name: "Project 3",
-    project_proposal: "Proposal 3",
-    created_by: "Husen",
-    updated_at: "2022-02-02 12:00:00",
-    status: "not active",
-  },
-];
-
-const columns = [
-  {
-    title: "Project Id",
-    dataIndex: "id",
-    key: "id",
-  },
-  {
-    title: "Nama Project",
-    dataIndex: "project_name",
-    key: "project_name",
-  },
-  {
-    title: "Project Proposal",
-    dataIndex: "project_proposal",
-    key: "project_proposal",
-  },
-  {
-    title: "Dibuat Oleh",
-    dataIndex: "created_by",
-    key: "created_by",
-  },
-  {
-    title: "Tanggal Update",
-    dataIndex: "updated_at",
-    key: "updated_at",
-    render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
-  },
-
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    render: (status: string) => {
-      return (
-        <>
-          <p className={`${status === "active" ? "text-green-500" : "text-red-500"}`}>{status}</p>
-        </>
-      );
-    },
-  },
-  {
-    title: "Action",
-    dataIndex: "id",
-    key: "id",
-    render: () => (
-      <>
-        <Button>
-          <FaPen />
-        </Button>
-      </>
-    ),
-  },
-];
 
 export default function ListProject() {
   const [page, setPage] = useState(1);
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState({
+    create: false,
+    update: false,
+  });
   const [hookFormGenerator] = Form.useForm();
 
+  // dummy data
+  const listProjects={
+    items: Array(10).fill({
+      project_id: "PRO001",
+      project_name: "Lembayung Senja",
+      status: "Active",
+      created_by: "Jon Pantau",
+      updated_at: dayjs().format('DD/MM/YYYY'),
+    }),
+    total: 10,
+    offset: 0,
+    limit: 10,
+  }
+
   const dataForm = [
-    {
-      name: "id",
-      label: "Project Id",
-      type: "text",
-      placeholder: "Enter Project Id",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
     {
       name: "project_name",
       label: "Nama Project",
@@ -117,45 +39,21 @@ export default function ListProject() {
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "project_proposal",
-      label: "Proposal Project",
+      name: "entity_id",
+      label: "Entitas",
       type: "select",
-      placeholder: "Enter Project Proposal",
+      placeholder: "Enter Entity",
       rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
-          label: "proposal 1",
-          value: "proposal 1",
+          label: "entitas 1",
+          value: "entitas 1",
         },
         {
-          label: "proposal 2",
-          value: "proposal 2",
+          label: "entitas 1",
+          value: "entitas 1",
         },
       ],
-    },
-    {
-      name: "project_leader",
-      label: "Project Leader",
-      type: "select",
-      placeholder: "Enter Project Leader",
-      rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "Leader 1",
-          value: "Leader 1",
-        },
-        {
-          label: "Leader 2",
-          value: "Leader 2",
-        },
-      ],
-    },
-    {
-      name: "project_kickoff",
-      label: "Project Kickoff",
-      type: "text",
-      placeholder: "Enter Project Kickoff",
-      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
@@ -176,17 +74,70 @@ export default function ListProject() {
     },
   ];
 
+  const columns = [
+    {
+      title: "Project Id",
+      dataIndex: "project_id",
+      key: "project_id",
+    },
+    {
+      title: "Nama Project",
+      dataIndex: "project_name",
+      key: "project_name",
+    },
+    {
+      title: "Dibuat Oleh",
+      dataIndex: "created_by",
+      key: "created_by",
+    },
+    {
+      title: "Tanggal Update",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      // render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => {
+        return (
+          <>
+            <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
+          </>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      render: () => (
+        <>
+          <Button
+            onClick={()=>{
+              setOpenDrawer({...openDrawer, update: true})
+
+            }}
+          >
+            <FaPen />
+          </Button>
+        </>
+      ),
+    },
+  ];
+
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={() => {}} />
-        <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
+        <Button onClick={() => setOpenDrawer({...openDrawer, create: true})} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Project Baru
         </Button>
       </div>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={listProjects?.items}
         size="small"
         loading={false}
         pagination={{
@@ -217,7 +168,14 @@ export default function ListProject() {
         }}
       />
 
-      <Drawer title="Tambah Project Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer 
+       title="Tambah Project Baru"
+       onClose={() => {
+        setOpenDrawer({...openDrawer, create: false});
+        hookFormGenerator.resetFields();
+         }}
+       open={openDrawer.create}
+      >
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={() => {}}
@@ -228,12 +186,22 @@ export default function ListProject() {
           // disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
-        <div className="w-full">
-          <Button form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+        <div className="w-full absolute bottom-0 left-0 right-0 px-5 pb-5">
+          <Button
+            // loading={loading}
+            form="updateDivision"
+            htmlType="submit"
+            className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold"
+          >
             Simpan
-          </Button>
+        </Button>
         </div>
       </Drawer>
+      <UpdateProject
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        handleGetTax={()=>{}}
+      />
     </main>
   );
 }

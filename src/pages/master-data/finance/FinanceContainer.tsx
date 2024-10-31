@@ -4,6 +4,8 @@ import ListChart from "./components/ListChart";
 import ListCurrency from "./components/ListCurrency";
 import CustomLayout from "../../shared/components/CustomLayout";
 import HeaderCustom from "../../shared/components/HeaderCustom";
+import ListBank from "./components/ListBank";
+import ListTax from "./components/listTax";
 
 const items = [
   {
@@ -20,6 +22,16 @@ const items = [
     key: "3",
     label: "Currency",
     children: <ListCurrency />,
+  },
+  {
+    key: "4",
+    label: "Bank",
+    children: <ListBank />,
+  },
+  {
+    key: "5",
+    label: "Tax",
+    children: <ListTax />,
   },
 ];
 

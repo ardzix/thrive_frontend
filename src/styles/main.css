@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: 'DM Sans', Arial, sans-serif;
+}
+
+.custom-label .ant-form-item-label > label {
+  @apply text-[#666666] font-semibold;
+}
+
 .ant-tabs-tab{
   @apply !rounded-md !border-2 !border-neutral-200;
   /* padding: 10px !important; */
@@ -27,6 +35,10 @@
   font-weight: 600;
   text-transform: capitalize;
   /* margin: 10px  */
+  min-width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* menu styles */

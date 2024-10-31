@@ -2,12 +2,18 @@ import { Tabs } from "antd";
 import ListCompanyEntitas from "./components/ListCompanyEntitas";
 import CustomLayout from "../../shared/components/CustomLayout";
 import HeaderCustom from "../../shared/components/HeaderCustom";
+import ListCompanyModules from "./components/ListCompanyModules";
 
 const items = [
   {
     key: "1",
-    label: "Entitas",
+    label: "Company",
     children: <ListCompanyEntitas />,
+  },
+  {
+    key: "2",
+    label: "Modules",
+    children: <ListCompanyModules />,
   },
 ];
 

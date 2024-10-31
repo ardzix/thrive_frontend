@@ -1,34 +1,29 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
-import { useDivisionStore } from '../division.store';
-import { useEffect } from 'react';
 
 interface IUserRole {
   openDrawer: any;
   setOpenDrawer: any;
-  handleGetDivision: any;
-  division: any
+  handleGetBank: any;
 }
 
-export default function UpdateDivision({
+export default function UpdateBank({
   openDrawer,
   setOpenDrawer,
-  handleGetDivision,
-  division
+  handleGetBank,
 }: IUserRole) {
   const [hookFormGenerator] = Form.useForm();
-  const {updateDivision, loading } = useDivisionStore();
+  // const {updateDivision, loading } = useDivisionStore();
 
   const handleSubmitUpdate = async (values: any) => {
     try {
-      console.log(division)
-      await updateDivision(values, division?.id), 
+      // await updateDivision(values, division?.id), 
       notification.success({
         message: 'Success',
         description: 'Berhasil update data divisi',
       });
       setOpenDrawer((val: any) => ({ ...val, update: false }));
-      handleGetDivision();
+      handleGetBank();
       hookFormGenerator.resetFields();
     } catch (error: any) {
       console.log(error.message);
@@ -39,42 +34,68 @@ export default function UpdateDivision({
     }
   };
 
-  useEffect(()=>{
-    hookFormGenerator.setFieldsValue({
-      division_name: division?.division_name,
-      description: division?.description,
-      status: division?.status
-    })
-  },[division])
+  // useEffect(()=>{
+  //   hookFormGenerator.setFieldsValue({
+  //     division_name: division?.division_name,
+  //     description: division?.description,
+  //     status: division?.status
+  //   })
+  // },[division])
 
-const dataForm = [
+  const dataForm = [
     {
-      name: "division_name",
-      label: "Divisi",
+      name: "bank",
+      label: "Bank",
       type: "text",
-      placeholder: "Enter Divisi",
-     rules: [
-        { required: true, message: "This field is required!" },
-      ],
+      placeholder: "Enter Bank",
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "description",
-      label: "Deskripsi",
-      type: "textarea",
-      className: "w-full !min-h-[150px]",
-      placeholder: "Enter Deskripsi",
-      rules: [
-        { required: true, message: "This field is required!" },
+      name: "acc_number",
+      label: "No. Rekening",
+      type: "text",
+      placeholder: "Enter No. Rekening",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "acc_code",
+      label: "Account Code",
+      type: "text",
+      placeholder: "Enter Account Code",
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "currency",
+      label: "Currency",
+      type: "select",
+      placeholder: "Enter Currency",
+      options: [
+       {
+        label: "IDR",
+        value: "IDR",
+       }
       ],
+      rules: [{ required: true, message: "This field is required!" }],
+    },
+    {
+      name: "division_id",
+      label: "Managing Division",
+      type: "select",
+      placeholder: "Enter Currency",
+      options: [
+       {
+        label: "Division 1",
+        value: "323ejsdyf32dddd",
+       }
+      ],
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
       label: "Status",
       type: "select",
       placeholder: "Enter Status",
-      rules: [
-        { required: true, message: "This field is required!" },
-      ],
+      rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "Active",
@@ -82,7 +103,7 @@ const dataForm = [
         },
         {
           label: "Inactive",
-          value: "inactive",
+          value: "Inactive",
         },
       ],
     },
@@ -90,7 +111,7 @@ const dataForm = [
   
   return (
     <Drawer
-      title="Update Divisi"
+      title="Update Bank"
       onClose={() => {
         setOpenDrawer((val: any) => ({ ...val, update: false }))
         hookFormGenerator.resetFields();
@@ -105,11 +126,11 @@ const dataForm = [
           id="updateDivision"
           size="default"
           layout="vertical"
-          disabled={loading}
+          // disabled={loading}
         />
-        <div className="w-full">
+        <div className="w-full absolute bottom-0 left-0 right-0 px-5 pb-5">
           <Button
-            loading={loading}
+            // loading={loading}
             form="updateDivision"
             htmlType="submit"
             className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold"

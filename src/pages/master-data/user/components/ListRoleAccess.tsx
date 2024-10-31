@@ -42,7 +42,47 @@ export default function ListRoleAccess() {
 
   const {loading:loadingUserRole,listUserRoles,getUserRole}=useUserRoleStore()
 
-  const dataForm = [
+  const handleGetRoleAccess = () => {
+    getRoleAccess(params)
+  };
+
+  useEffect(()=>{
+   handleGetRoleAccess();
+  },[params])
+
+  useEffect(()=>{
+    getModules({
+      offset: 0,
+      limit: 1000,
+    })
+
+    getUserRole({
+      offset: 0,
+      limit: 1000,
+    })
+
+  },[])
+
+  const handleSubmit = async (val: any)=> {
+    try {
+     await postRoleAccess(val)
+     notification.success({
+       message: "Success",
+       description: "Berhasil menyimpan role access",
+     })
+     hookFormGenerator.resetFields()
+     setOpenDrawer((prev:any) => ({...prev, create: false }))
+     handleGetRoleAccess()
+    } catch (error: any) {
+     console.log(error.message)
+     Modal.error({
+       title: "Error",
+       content: error.message || "Internal Server Error",
+     })
+    }
+   };
+
+   const dataForm = [
     {
       name: "role_id",
       label: "Role Access",
@@ -84,46 +124,6 @@ export default function ListRoleAccess() {
       ],
     },
   ];
-
-  const handleGetRoleAccess = () => {
-    getRoleAccess(params)
-  };
-
-  useEffect(()=>{
-   handleGetRoleAccess();
-  },[params])
-
-  useEffect(()=>{
-    getModules({
-      offset: 0,
-      limit: 1000,
-    })
-
-    getUserRole({
-      offset: 0,
-      limit: 1000,
-    })
-
-  },[])
-
-  const handleSubmit = async (val: any)=> {
-    try {
-     await postRoleAccess(val)
-     notification.success({
-       message: "Success",
-       description: "Berhasil menyimpan role access",
-     })
-     hookFormGenerator.resetFields()
-     setOpenDrawer((prev:any) => ({...prev, create: false }))
-     handleGetRoleAccess()
-    } catch (error: any) {
-     console.log(error.message)
-     Modal.error({
-       title: "Error",
-       content: error.message || "Internal Server Error",
-     })
-    }
-   };
 
    const columns = [
     {
@@ -167,7 +167,7 @@ export default function ListRoleAccess() {
         <>
           <Button 
           onClick={() => {
-            setOpenDrawer((prev: any) => ({ ...prev, update: true }));
+            setOpenDrawer({ ...openDrawer, update: true });
             setRoleAccess(prev);
           }}
           >

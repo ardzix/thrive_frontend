@@ -51,10 +51,10 @@ export default function UpdateUserRole({
   useEffect(() => {
       hookFormGenerator.setFieldsValue({ 
         role_name: userRole?.role_name,
-        division_id:{
-          label: userRole?.division_name,
-          value: userRole?.division_id
-        },
+        // division_id:{
+        //   label: userRole?.division_name,
+        //   value: userRole?.division_id
+        // },
         status: userRole?.status,
        });
   }, [userRole]);
