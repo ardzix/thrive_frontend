@@ -36,6 +36,52 @@ export default function ListCompanyEntitas() {
     status: "",
   })
 
+  const handleGetEntity = () => {
+     getEntity(params)
+  }
+ 
+  const handleSubmit = async (values: any) => {
+    try {
+      console.log(values);
+      const finalyPayload = {
+        ...values,
+        fiscal_year: Number(values.fiscal_year),
+      }
+      await postEntity(finalyPayload);
+      setOpenDrawer((val) => ({...val, create: false}));
+      hookFormGenerator.resetFields();
+
+      notification.success({
+        message: "Success",
+        description: "Berhasil menyimpan data entitas",
+      });
+      
+      handleGetEntity();
+    } catch (error: any) {
+      console.log(error.message);
+      Modal.error({
+        title: "Error",
+        content: error.message || "Internal Server Error",
+      });
+    }
+  };
+
+  useEffect(() => {
+    handleGetEntity()
+  }, [params]);
+
+  useEffect(()=>{
+    getDivison({
+      offset: 0,
+      limit: 10000,
+    })
+    getRoleAccess({
+      offset: 0,
+      limit: 10000
+    })
+  },[])
+
+  
   const dataForm = [
     {
       name: "entity_name",
@@ -118,7 +164,7 @@ export default function ListCompanyEntitas() {
     {
       name: "fiscal_year",
       label: "Tahun Fiskal",
-      type: "number",
+      type: "text",
       placeholder: "Enter Fiskal",
       rules: [{ required: true, message: "This field is required!" }],
     },
@@ -204,47 +250,6 @@ export default function ListCompanyEntitas() {
       ),
     },
   ];
-
-  const handleGetEntity = () => {
-     getEntity(params)
-  }
- 
-  const handleSubmit = async (values: any) => {
-    try {
-      console.log(values);
-      await postEntity(values);
-      setOpenDrawer((val) => ({...val, create: false}));
-      hookFormGenerator.resetFields();
-
-      notification.success({
-        message: "Success",
-        description: "Berhasil menyimpan data entitas",
-      });
-      
-      handleGetEntity();
-    } catch (error: any) {
-      console.log(error.message);
-      Modal.error({
-        title: "Error",
-        content: error.message || "Internal Server Error",
-      });
-    }
-  };
-
-  useEffect(() => {
-    handleGetEntity()
-  }, [params]);
-
-  useEffect(()=>{
-    getDivison({
-      offset: 0,
-      limit: 10000,
-    })
-    getRoleAccess({
-      offset: 0,
-      limit: 10000
-    })
-  },[])
 
   return (
     <main className="space-y-5">

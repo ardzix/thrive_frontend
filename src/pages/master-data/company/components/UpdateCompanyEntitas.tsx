@@ -26,11 +26,10 @@ export default function UpdateCompanyEntitas({
   const handleSubmitUpdate = async (values: any) => {
     try {
       const finalyPayload = {
-        entity_name: values.entity_name,
-        address: values.address,
+        ...values,
         division: values.division.value || values.division,
         access: values.access.value || values.access,
-        status: values.status,
+        fiscal_year: Number(values.fiscal_year),
       }
       await updateEntity(finalyPayload, entityId);
       notification.success({
@@ -63,10 +62,7 @@ export default function UpdateCompanyEntitas({
     (access: any) => access?.id === entity?.access
   )?.role_name;
   
-  console.log(accessName);
-
   useEffect(() => {
-    if (entity) {
       hookFormGenerator.setFieldsValue({
         entity_name: entity?.entity_name,
         address: entity?.address,
@@ -93,7 +89,6 @@ export default function UpdateCompanyEntitas({
         audit_period: entity?.audit_period,
         status: entity?.status,
       });
-    }
   }, [entity, hookFormGenerator]);
 
   const dataForm = [
@@ -178,7 +173,7 @@ export default function UpdateCompanyEntitas({
     {
       name: 'fiscal_year',
       label: 'Tahun Fiskal',
-      type: 'number',
+      type: 'text',
       placeholder: 'Enter Fiskal',
       rules: [{ required: true, message: 'This field is required!' }],
     },
