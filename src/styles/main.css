@@ -9,6 +9,10 @@
   margin-right: 20px !important;
 }
 
+.ant-tabs-nav::before{
+    display: none !important;
+}
+
 .ant-tabs-ink-bar {
   display: none !important;
 }
