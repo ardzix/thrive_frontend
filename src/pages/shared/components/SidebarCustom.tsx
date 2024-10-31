@@ -4,7 +4,11 @@ import { BarChartOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { acceptablePathList } from "../../../lib/routes";
 import  { colors } from "../../../lib/theme";
-import { FaCalculator, FaCircleUser, FaWallet } from "react-icons/fa6";
+import { 
+  // FaCalculator,
+  FaCircleUser,
+  // FaWallet 
+  } from "react-icons/fa6";
 import { useStorageStore } from "../storage.store";
 import { MdLogout } from "react-icons/md";
 import React, { useState } from "react";
@@ -29,17 +33,17 @@ export default function SidebarCustom() {
   }
 
   const items = [
-    getItem("Master Data", "parent_1", <BarChartOutlined />, [getItem("company", "/master-data/company", null), getItem("User", "/master-data/user", null), getItem("Project", "/master-data/project", null), getItem("Finance", "/master-data/finance", null)]),
-    getItem("Finance", "parent_2", <FaCalculator />, [
-      getItem("Cash and Bank", "sub_1", <FaWallet />,  [
-        getItem("Dashboard", "/finance/dashboard", null),
-        getItem("General Ledger", "/finance/general-ledger", null),
-        getItem("Bank", "/finance/bank", null),
-        getItem("Requests", "/finance/requests", null),
-        getItem("Report", "/finance/report", null),
-        getItem("Setup", "/finance/setup", null),
-      ]),
-    ]),
+    getItem("Master Data", "parent_1", <BarChartOutlined />, [getItem("Company", "/master-data/company", null), getItem("User", "/master-data/user", null), getItem("Project", "/master-data/project", null), getItem("Finance", "/master-data/finance", null)]),
+    // getItem("Finance", "parent_2", <FaCalculator />, [
+    //   getItem("Cash and Bank", "sub_1", <FaWallet />,  [
+    //     getItem("Dashboard", "/finance/dashboard", null),
+    //     getItem("General Ledger", "/finance/general-ledger", null),
+    //     getItem("Bank", "/finance/bank", null),
+    //     getItem("Requests", "/finance/requests", null),
+    //     getItem("Report", "/finance/report", null),
+    //     getItem("Setup", "/finance/setup", null),
+    //   ]),
+    // ]),
 ];
 
   const { collapsed, setCollapsed, setOpenKeys, openKeys } = useSharedStore();

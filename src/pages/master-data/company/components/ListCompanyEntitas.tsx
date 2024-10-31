@@ -7,6 +7,8 @@ import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { useEntityStore } from "../entity.store";
 import { useDivisionStore } from "../../user/division.store";
+import UpdateCompanyEntitas from "./UpdateCompanyEntitas";
+import { useRoleAccessStore } from "../../user/roleAccess.store";
 
 type ListDataType = {
   id: string;
@@ -17,64 +19,16 @@ type ListDataType = {
   status: string;
 };
 
-const columns = [
-  {
-    title: "Entitas Id",
-    dataIndex: "entity_id",
-    key: "entity_id",
-  },
-  {
-    title: "Nama entitas",
-    dataIndex: "entity_name",
-    key: "entity_name",
-  },
-  {
-    title: "Kota",
-    dataIndex: "city",
-    key: "city",
-  },
-  {
-    title: "Tanggal Update",
-    dataIndex: "updated_at",
-    key: "updated_at",
-    render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
-  },
-  {
-    title: "Dibuat Oleh",
-    dataIndex: "created_by",
-    key: "created_by",
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    render: (status: string) => {
-      return (
-        <>
-          <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
-        </>
-      );
-    },
-  },
-  {
-    title: "Action",
-    dataIndex: "id",
-    key: "id",
-    render: () => (
-      <>
-        <Button>
-          <FaPen />
-        </Button>
-      </>
-    ),
-  },
-];
-
 export default function ListCompanyEntitas() {
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState({
+    create: false,
+    update: false,
+  });
   const [hookFormGenerator] = Form.useForm();
+  const [idEntity, setIdEntity] = useState("");
   const {getEntity,listEntity, postEntity, loading}= useEntityStore()
   const {getDivison,listDivision, loading: loadingDivision}=useDivisionStore()
+  const {getRoleAccess, listRoleAccess, loading:loadingUserRoleAccess}= useRoleAccessStore();
   const [params, setParams]= useState({
     offset: 0,
     limit: 10,
@@ -134,16 +88,10 @@ export default function ListCompanyEntitas() {
       label: "Akses",
       type: "select",
       placeholder: "Enter Akses",
-      options: [
-        {
-          label: "Public",
-          value: "Public",
-        },
-        {
-          label: "Private",
-          value: "Private",
-        },
-      ],
+      options: listRoleAccess.items?.map((item:any) => ({
+        label: item.role_name,
+        value: item.id
+      })),
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
@@ -168,14 +116,14 @@ export default function ListCompanyEntitas() {
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "Fiskal",
+      name: "fiscal_year",
       label: "Tahun Fiskal",
-      type: "text",
+      type: "number",
       placeholder: "Enter Fiskal",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "periode_audit",
+      name: "audit_period",
       label: "Periode Audit",
       type: "text",
       placeholder: "Enter Periode Audit",
@@ -200,14 +148,72 @@ export default function ListCompanyEntitas() {
     },
   ];
 
+  const columns = [
+    {
+      title: "Entitas Id",
+      dataIndex: "entity_id",
+      key: "entity_id",
+    },
+    {
+      title: "Nama entitas",
+      dataIndex: "entity_name",
+      key: "entity_name",
+    },
+    {
+      title: "Kota",
+      dataIndex: "city",
+      key: "city",
+    },
+    {
+      title: "Tanggal Update",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
+    },
+    {
+      title: "Dibuat Oleh",
+      dataIndex: "created_by",
+      key: "created_by",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => {
+        return (
+          <>
+            <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
+          </>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      render: (id:any) => (
+        <>
+          <Button onClick={() => {
+            console.log(id);
+            setOpenDrawer((val) => ({...val, update: true}))
+            setIdEntity(id)
+          }}>
+            <FaPen />
+          </Button>
+        </>
+      ),
+    },
+  ];
+
   const handleGetEntity = () => {
      getEntity(params)
   }
  
   const handleSubmit = async (values: any) => {
     try {
+      console.log(values);
       await postEntity(values);
-      setOpenDrawer(false);
+      setOpenDrawer((val) => ({...val, create: false}));
       hookFormGenerator.resetFields();
 
       notification.success({
@@ -234,13 +240,17 @@ export default function ListCompanyEntitas() {
       offset: 0,
       limit: 10000,
     })
+    getRoleAccess({
+      offset: 0,
+      limit: 10000
+    })
   },[])
 
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={(search) => setParams({ ...params, search }) } />
-        <Button type="primary" onClick={() => setOpenDrawer(true)} className="text-black hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
+        <Button type="primary" onClick={() => setOpenDrawer({ ...openDrawer, create: true })} className="text-black hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Entitas Baru
         </Button>
       </div>
@@ -282,7 +292,7 @@ export default function ListCompanyEntitas() {
           x: "100%",
         }}
       />
-      <Drawer title="Tambah Entitas Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Entitas Baru" onClose={() => setOpenDrawer(() => ({ ...openDrawer, create: false }))} open={openDrawer.create}>
         {
           listDivision?.items?.length > 0 && !loadingDivision ? (
               <> 
@@ -293,7 +303,7 @@ export default function ListCompanyEntitas() {
                   id="dynamicForm"
                   size="default" //small , default , large
                   layout="vertical" //vertical, horizontal
-                  // disabled={loading}
+                  disabled={loading}
                   // formStyle={{ maxWidth: "100%" }}
                 />
                 <div className="w-full">
@@ -307,6 +317,14 @@ export default function ListCompanyEntitas() {
           )
         }
       </Drawer>
+      <UpdateCompanyEntitas
+        handleGetEntity={handleGetEntity}
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        listDivision={listDivision}
+        entityId={idEntity}
+        listRoleAccess={listRoleAccess}
+      />
     </main>
   );
 }

@@ -7,6 +7,7 @@ import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { useRoleAccessStore } from "../roleAccess.store";
 import { useUserRoleStore } from "../userRole.store";
+import UpdateRoleAccess from "./UpdateRoleAccess";
 
 type ListDataType = {
   id: string;
@@ -17,61 +18,18 @@ type ListDataType = {
   status: string;
 };
 
-const columns = [
-  {
-    title: "Access Id",
-    dataIndex: "access_id",
-    key: "access_id",
-  },
-  {
-    title: "Role Access",
-    dataIndex: "role_name",
-    key: "role_name",
-  },
-  {
-    title: "Dibuat Oleh",
-    dataIndex: "created_by",
-    key: "created_by",
-  },
-  {
-    title: "Tanggal Update",
-    dataIndex: "updated_at",
-    key: "updated_at",
-    render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    render: (status: string) => {
-      return (
-        <>
-          <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
-        </>
-      );
-    },
-  },
-  {
-    title: "Action",
-    dataIndex: "id",
-    key: "id",
-    render: () => (
-      <>
-        <Button>
-          <FaPen />
-        </Button>
-      </>
-    ),
-  },
-];
-
 export default function ListRoleAccess() {
   const [params, setParams] = useState({
     offset: 0,
     limit: 10,
     search: "",
   });
-  const [openDrawer, setOpenDrawer] = useState(false);
+  // const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState({
+    create: false,
+    update: false,
+  });
+  const [roleAccess, setRoleAccess] = useState({});
   const [hookFormGenerator] = Form.useForm();
   const {
          getRoleAccess,
@@ -127,7 +85,6 @@ export default function ListRoleAccess() {
     },
   ];
 
-
   const handleGetRoleAccess = () => {
     getRoleAccess(params)
   };
@@ -157,7 +114,7 @@ export default function ListRoleAccess() {
        description: "Berhasil menyimpan role access",
      })
      hookFormGenerator.resetFields()
-     setOpenDrawer(false)
+     setOpenDrawer((prev:any) => ({...prev, create: false }))
      handleGetRoleAccess()
     } catch (error: any) {
      console.log(error.message)
@@ -168,11 +125,64 @@ export default function ListRoleAccess() {
     }
    };
 
+   const columns = [
+    {
+      title: "Access Id",
+      dataIndex: "access_id",
+      key: "access_id",
+    },
+    {
+      title: "Role Access",
+      dataIndex: "role_name",
+      key: "role_name",
+    },
+    {
+      title: "Dibuat Oleh",
+      dataIndex: "created_by",
+      key: "created_by",
+    },
+    {
+      title: "Tanggal Update",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => {
+        return (
+          <>
+            <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
+          </>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      render: (_, prev: any) => (
+        <>
+          <Button 
+          onClick={() => {
+            setOpenDrawer((prev: any) => ({ ...prev, update: true }));
+            setRoleAccess(prev);
+          }}
+          >
+            <FaPen />
+          </Button>
+        </>
+      ),
+    },
+  ];
+
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={(e) => setParams({...params, search: e})} />
-        <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
+        <Button onClick={() => setOpenDrawer((prev: any) => ({ ...prev, create: true }))} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Role Access Baru
         </Button>
       </div>
@@ -215,7 +225,7 @@ export default function ListRoleAccess() {
         }}
       />
 
-      <Drawer title="Tambah Akses Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Akses Baru" onClose={() => setOpenDrawer((prev: any) => ({ ...prev, create: false }))} open={openDrawer.create}>
         {
           loadingUserRole && (
           <Skeleton active paragraph={{ rows: dataForm.length }} />
@@ -237,6 +247,14 @@ export default function ListRoleAccess() {
           </Button>
         </div>
       </Drawer>
+      <UpdateRoleAccess
+        listUserRoles={listUserRoles}
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        handleGetRoleAccess={handleGetRoleAccess}
+        roleAccess={roleAccess}
+        listModules={listModules}
+      />
     </main>
   );
 }

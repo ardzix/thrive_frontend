@@ -7,6 +7,7 @@ import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { useUserRoleStore } from "../userRole.store";
 import { useDivisionStore } from "../division.store";
+import UpdateUserRole from "./UpdateUserRole";
 
 type ListDataType = {
   id: string;
@@ -17,7 +18,93 @@ type ListDataType = {
   status: string;
 };
 
-const columns = [
+export default function ListUserRole() {
+  const [params, setParams] = useState({
+    offset: 0,
+    limit: 10,
+    search: "",
+  });
+  // const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState({
+    create: false,
+    update: false,
+  });
+  const [hookFormGenerator] = Form.useForm();
+  const{getDivison,listDivision,loading:loadingDivision}= useDivisionStore()
+  const [userRole, setuserRole] = useState({});
+
+  const {getUserRole, loading, listUserRoles, postUserRole} =useUserRoleStore()
+  const handleGetUserRole = () => {
+    getUserRole(params)
+ }
+
+ useEffect(()=>{
+     handleGetUserRole()
+ },[params])
+
+ useEffect(()=>{
+  getDivison({
+    offset: 0,
+    limit: 1000,
+  })
+ },[])
+
+ const handleSubmit = async (val: any)=> {
+  try {
+   await postUserRole(val)
+   notification.success({
+     message: "Success",
+     description: "Berhasil menyimpan data role",
+   })
+   handleGetUserRole()
+  } catch (error: any) {
+   console.log(error.message)
+   Modal.error({
+     title: "Error",
+     content: error.message || "Internal Server Error",
+   })
+  }
+ };
+
+ const dataForm = [
+  {
+    name: "role_name",
+    label: "Role",
+    type: "text",
+    placeholder: "Enter Role",
+    rules: [{ required: true, message: "This field is required!" }],
+  },
+  {
+    name: "division_id",
+    label: "Divisi",
+    type: "select",
+    placeholder: "Enter Divisi",
+    rules: [{ required: true, message: "This field is required!" }],
+    options: listDivision?.items?.map((item) => ({
+      label: item.division_name,
+      value: item.id,
+    })),
+  },
+  {
+    name: "status",
+    label: "Status",
+    type: "select",
+    placeholder: "Enter Status",
+    rules: [{ required: true, message: "This field is required!" }],
+    options: [
+      {
+        label: "Active",
+        value: "Active",
+      },
+      {
+        label: "Inactive",
+        value: "Inactive",
+      },
+    ],
+  },
+];
+
+ const columns = [
   {
     title: "Role Id",
     dataIndex: "role_id",
@@ -60,101 +147,26 @@ const columns = [
     title: "Action",
     dataIndex: "id",
     key: "id",
-    render: () => (
-      <>
-        <Button>
-          <FaPen />
-        </Button>
-      </>
-    ),
+    render: (_, prev :any) => {
+      return(
+        <>
+          <Button onClick={()=>{
+            setOpenDrawer((val:any)=> ({...val, update: true}))
+            setuserRole({...prev})
+          }}>
+            <FaPen />
+          </Button>
+        </>
+      )
+    }
   },
 ];
-
-export default function ListUserRole() {
-  const [params, setParams] = useState({
-    offset: 0,
-    limit: 10,
-    search: "",
-  });
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const [hookFormGenerator] = Form.useForm();
-  const{getDivison,listDivision,loading:loadingDivision}= useDivisionStore()
-
-  const dataForm = [
-    {
-      name: "role_name",
-      label: "Role",
-      type: "text",
-      placeholder: "Enter Role",
-      rules: [{ required: true, message: "This field is required!" }],
-    },
-    {
-      name: "division_id",
-      label: "Divisi",
-      type: "select",
-      placeholder: "Enter Divisi",
-      rules: [{ required: true, message: "This field is required!" }],
-      options: listDivision?.items?.map((item) => ({
-        label: item.division_name,
-        value: item.id,
-      })),
-    },
-    {
-      name: "status",
-      label: "Status",
-      type: "select",
-      placeholder: "Enter Status",
-      rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "Active",
-          value: "Active",
-        },
-        {
-          label: "Not Active",
-          value: "Not Active",
-        },
-      ],
-    },
-  ];
-  const {getUserRole, loading, listUserRoles, postUserRole} =useUserRoleStore()
-  const handleGetUserRole = () => {
-    getUserRole(params)
- }
-
- useEffect(()=>{
-     handleGetUserRole()
- },[params])
-
- useEffect(()=>{
-  getDivison({
-    offset: 0,
-    limit: 1000,
-  })
- },[])
-
- const handleSubmit = async (val: any)=> {
-  try {
-   await postUserRole(val)
-   notification.success({
-     message: "Success",
-     description: "Berhasil menyimpan data role",
-   })
-   handleGetUserRole()
-  } catch (error: any) {
-   console.log(error.message)
-   Modal.error({
-     title: "Error",
-     content: error.message || "Internal Server Error",
-   })
-  }
- };
 
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={(val) => setParams({ ...params, search: val })} />
-        <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
+        <Button onClick={() => setOpenDrawer((val:any)=> ({...val, create: true}))} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Role Baru
         </Button>
       </div>
@@ -197,7 +209,7 @@ export default function ListUserRole() {
         }}
       />
 
-      <Drawer title="Tambah Role Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Role Baru" onClose={() => setOpenDrawer((val:any)=> ({...val, create: false}))} open={openDrawer.create}>
         {
           loadingDivision && (
           <Skeleton active paragraph={{ rows: dataForm.length }} />
@@ -207,18 +219,25 @@ export default function ListUserRole() {
           hookForm={hookFormGenerator}
           onFinish={handleSubmit}
           data={dataForm}
-          id="dynamicForm"
+          id="createRole"
           size="default" //small , default , large
           layout="vertical" //vertical, horizontal
           // disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
         <div className="w-full">
-          <Button form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+          <Button form="createRole" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
             Simpan
           </Button>
         </div>
       </Drawer>
+      <UpdateUserRole
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        handleGetUserRole={handleGetUserRole}
+        listDivision={listDivision}
+        userRole={userRole}
+      />
     </main>
   );
 }

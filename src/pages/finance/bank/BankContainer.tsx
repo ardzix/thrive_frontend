@@ -1,12 +1,13 @@
 import { Tabs } from "antd";
 import CustomLayout from "../../shared/components/CustomLayout";
 import HeaderCustom from "../../shared/components/HeaderCustom";
+import ListBankIn from "./components/listBankIn";
 
 const items = [
   {
     key: "1",
     label: "Bank In",
-    children: <>test</>
+    children: <ListBankIn/>,
   },
   {
     key: "2",

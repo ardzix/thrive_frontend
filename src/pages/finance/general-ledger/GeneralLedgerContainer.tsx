@@ -1,12 +1,13 @@
 import { Tabs } from "antd";
 import CustomLayout from "../../shared/components/CustomLayout";
 import HeaderCustom from "../../shared/components/HeaderCustom";
+import ListGeneralLedger from "./components/listGeneralLedger";
 
 const items = [
   {
     key: "1",
-    label: "Class Master",
-    children: <>test</>
+    label: "General Ledger",
+    children: <ListGeneralLedger/>
   },
   // {
   //   key: "2",

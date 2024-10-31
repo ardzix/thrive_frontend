@@ -7,51 +7,7 @@ import FormGenerator from "../../../shared/components/FormGenerator";
 import { useUserStore } from "../user.store";
 import { useUserRoleStore } from "../userRole.store";
 import { useEntityStore } from "../../company/entity.store";
-
-const columns = [
-  {
-    title: "User Id",
-    dataIndex: "user_id",
-    key: "user_id",
-  },
-  {
-    title: "Nama User",
-    dataIndex: "full_name",
-    key: "full_name",
-  },
-  {
-    title: "Role",
-    dataIndex: "role",
-    key: "role",
-  },
-  {
-    title: "Entitas",
-    dataIndex: "entity",
-    key: "entity",
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    render: (status: string) => {
-      return (
-        <>
-          <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
-        </>
-      );
-    },
-  },
-  {
-    title: "Action",
-    dataIndex: "id",
-    key: "id",
-    render: () => (
-        <Button>
-          <FaPen />
-        </Button>
-    ),
-  },
-];
+import UpdateUserData from "./UpdateUserData";
 
 export default function ListUserData() {
   const [params, setParams] = useState({
@@ -59,11 +15,16 @@ export default function ListUserData() {
     limit: 10,
     search: "",
   });
-  const [openDrawer, setOpenDrawer] = useState(false);
+  // const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState({
+    create: false,
+    update: false,
+  });
   const [hookFormGenerator] = Form.useForm();
   const {getUserRole,listUserRoles, loading:loadingUserRole}=useUserRoleStore()
   const {getUsers, listUsers, loading, postUser} = useUserStore()
   const {getEntity,listEntity} = useEntityStore()
+  const [userId, setUserId] = useState("")
 
   const handleGetUsers = () => {
      getUsers(params)
@@ -84,6 +45,54 @@ export default function ListUserData() {
     })
   },[])
 
+  const columns = [
+    {
+      title: "User Id",
+      dataIndex: "user_id",
+      key: "user_id",
+    },
+    {
+      title: "Nama User",
+      dataIndex: "full_name",
+      key: "full_name",
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+    },
+    {
+      title: "Entitas",
+      dataIndex: "entity",
+      key: "entity",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => {
+        return (
+          <>
+            <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
+          </>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      render: (id: any) => (
+          <Button onClick={()=> {
+            setOpenDrawer((val: any) => ({ ...val, update: true }))
+            setUserId(id)
+          }} >
+            <FaPen />
+          </Button>
+      ),
+    },
+  ];
+
   const handleSubmit = async (val: any)=> {
    try {
     console.log(val)
@@ -94,7 +103,7 @@ export default function ListUserData() {
       description: "Berhasil menyimpan data user",
     })
     handleGetUsers()
-    setOpenDrawer(false)
+    setOpenDrawer((val: any) => ({ ...val, create: false }))
     hookFormGenerator.resetFields()
    } catch (error: any) {
     console.log(error.message)
@@ -192,7 +201,7 @@ export default function ListUserData() {
     <main className="space-y-5">
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={(e) => setParams({...params, search: e})} />
-        <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
+        <Button onClick={() => setOpenDrawer((val: any) => ({ ...val, create: true }))} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           User Baru
         </Button>
       </div>
@@ -235,7 +244,7 @@ export default function ListUserData() {
         }}
       />
 
-      <Drawer title="Tambah User Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah User Baru" onClose={() => setOpenDrawer((val: any) => ({ ...val, create: false }))} open={openDrawer.create}>
         {
           loadingUserRole && (
           <Skeleton active paragraph={{ rows: dataForm.length }} />
@@ -245,18 +254,26 @@ export default function ListUserData() {
           hookForm={hookFormGenerator}
           onFinish={handleSubmit}
           data={dataForm}
-          id="dynamicForm"
+          id="createUser"
           size="default" //small , default , large
           layout="vertical" //vertical, horizontal
           disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
         <div className="w-full">
-          <Button loading={loading} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+          <Button loading={loading} form="createUser" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
             Simpan
           </Button>
         </div>
       </Drawer>
+      <UpdateUserData
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        handleGetListUsers={handleGetUsers}
+        listEntity={listEntity}
+        listUserRoles={listUserRoles}
+        userId={userId}
+      />
     </main>
   );
 }

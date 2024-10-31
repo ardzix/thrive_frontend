@@ -43,6 +43,7 @@ export default function FormGenerator({
   hookForm,
   disabled,
   className,
+  initialValues,
 }: any) {
   const formRef: any = useRef(null);
   const [_, setImageUrl] = useState("");
@@ -226,6 +227,7 @@ export default function FormGenerator({
         form={hookForm}
         disabled={disabled}
         id={id}
+        initialValues={initialValues}
         onFinishFailed={(failData) => console.log(failData)}
         onFinish={(value) => {
           //filter value formatted

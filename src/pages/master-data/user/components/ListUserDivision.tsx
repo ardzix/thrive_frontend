@@ -5,57 +5,13 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { useDivisionStore } from "../division.store";
-
-const columns = [
-  {
-    title: "Divisi Id",
-    dataIndex: "division_id",
-    key: "division_id",
-  },
-  {
-    title: "Nama",
-    dataIndex: "division_name",
-    key: "division_name",
-  },
-  {
-    title: "Deskripsi",
-    dataIndex: "description",
-    key: "description",
-  },
-  // {
-  //   title: "Tanggal Update",
-  //   dataIndex: "updated_at",
-  //   key: "updated_at",
-  //   render: ({ updated_at }: ListDataType) => <span>{updated_at ? dayjs(updated_at).format("DD/MM/YYYY") : "-"}</span>,
-  // },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    render: (status: string) => {
-      return (
-        <>
-          <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
-        </>
-      );
-    },
-  },
-  {
-    title: "Action",
-    dataIndex: "id",
-    key: "id",
-    render: () => (
-      <>
-        <Button>
-          <FaPen />
-        </Button>
-      </>
-    ),
-  },
-];
+import UpdateDivision from "./UpdateDivision";
 
 export default function ListUserDivison() {
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState({
+    create: false,
+    update: false,
+  });
   const [hookFormGenerator] = Form.useForm();
   const {postDivision,getDivison,listDivision, loading} = useDivisionStore((state) => state);
   const [params, setParams]= useState({
@@ -64,6 +20,7 @@ export default function ListUserDivison() {
     search: "",
     status: "",
   })
+  const [division, setDivision] = useState({});
 
   const dataForm = [
     {
@@ -118,7 +75,7 @@ export default function ListUserDivison() {
           message: "Success",
           description: "Divisi Berhasil",
         })
-        setOpenDrawer(false);
+        setOpenDrawer((prev)=> ({...prev, create: false}));
         hookFormGenerator.resetFields();
 
         handleGetDivision();
@@ -135,11 +92,64 @@ export default function ListUserDivison() {
     handleGetDivision();
   },[params])
 
+  const columns = [
+    {
+      title: "Divisi Id",
+      dataIndex: "division_id",
+      key: "division_id",
+    },
+    {
+      title: "Nama",
+      dataIndex: "division_name",
+      key: "division_name",
+    },
+    {
+      title: "Deskripsi",
+      dataIndex: "description",
+      key: "description",
+    },
+    // {
+    //   title: "Tanggal Update",
+    //   dataIndex: "updated_at",
+    //   key: "updated_at",
+    //   render: ({ updated_at }: ListDataType) => <span>{updated_at ? dayjs(updated_at).format("DD/MM/YYYY") : "-"}</span>,
+    // },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => {
+        return (
+          <>
+            <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
+          </>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      render: (_, prev: any) => {
+        return (
+          <>
+            <Button onClick={()=>{
+              setOpenDrawer((prev)=> ({...prev, update: true}))
+              setDivision(prev)
+            }}>
+              <FaPen />
+            </Button>
+          </>
+        )
+      }
+    },
+  ];
+
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
         <InputSearch placeholder="Search" onChange={(val) => setParams({ ...params, search: val })} />
-        <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
+        <Button onClick={() => setOpenDrawer((prev)=> ({...prev, create: true}))} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Divisi Baru
         </Button>
       </div>
@@ -182,23 +192,29 @@ export default function ListUserDivison() {
         }}
       />
 
-      <Drawer title="Tambah Divisi Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer title="Tambah Divisi Baru" onClose={() => setOpenDrawer((prev)=> ({...prev, create: false}))} open={openDrawer.create}>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={handleSubmit}
           data={dataForm}
-          id="dynamicForm"
+          id="createDivision"
           size="default" //small , default , large
           layout="vertical" //vertical, horizontal
           disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
         <div className="w-full">
-          <Button loading={loading} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+          <Button loading={loading} form="createDivision" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
             Simpan
           </Button>
         </div>
       </Drawer>
+      <UpdateDivision
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        handleGetDivision={handleGetDivision}
+        division={division}
+      />
     </main>
   );
 }
