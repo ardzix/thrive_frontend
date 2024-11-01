@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import InputSearch from "../../../shared/components/InputSearch";
 import { useEntityStore } from "../entity.store";
-import { useDivisionStore } from "../../user/division.store";
-import { useRoleAccessStore } from "../../user/roleAccess.store";
+import { useDivisionStore } from "../../division/division.store";
+import { useRoleAccessStore } from "../../role-access/roleAccess.store";
 import UpdateCompanyModule from "./UpdateModule";
 
 type ListDataType = {

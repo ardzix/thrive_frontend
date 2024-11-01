@@ -1,11 +1,8 @@
 import { Tabs } from "antd";
 import ListUserData from "./components/ListUserData";
 import ListUserRole from "./components/ListUserRole";
-import ListRoleAccess from "./components/ListRoleAccess";
-import ListUserDivison from "./components/ListUserDivision";
 import HeaderCustom from "../../shared/components/HeaderCustom";
 import CustomLayout from "../../shared/components/CustomLayout";
-import ListUserDepartement from "./components/ListUserDepartement";
 
 const items = [
   {
@@ -18,21 +15,21 @@ const items = [
     label: "User Role",
     children: <ListUserRole />,
   },
-  {
-    key: "3",
-    label: "Divisi",
-    children: <ListUserDivison />,
-  },
-  {
-    key: "4",
-    label: "Departement",
-    children: <ListUserDepartement />,
-  },
-  {
-    key: "5",
-    label: "Role Access",
-    children: <ListRoleAccess />,
-  },
+  // {
+  //   key: "3",
+  //   label: "Divisi",
+  //   children: <ListUserDivison />,
+  // },
+  // {
+  //   key: "4",
+  //   label: "Departement",
+  //   children: <ListUserDepartement />,
+  // },
+  // {
+  //   key: "5",
+  //   label: "Role Access",
+  //   children: <ListRoleAccess />,
+  // },
 ];
 
 export default function UserContainer() {

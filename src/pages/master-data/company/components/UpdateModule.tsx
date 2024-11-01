@@ -2,7 +2,7 @@ import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
 import { useEntityStore } from '../entity.store';
 import { useEffect } from 'react';
-import { useRoleAccessStore } from '../../user/roleAccess.store';
+import { useRoleAccessStore } from '../../role-access/roleAccess.store';
 
 interface IUpdateCompanyEntitas {
   openDrawer: any;

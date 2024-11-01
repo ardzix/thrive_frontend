@@ -6,7 +6,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { useRoleAccessStore } from "../roleAccess.store";
-import { useUserRoleStore } from "../userRole.store";
+import { useUserRoleStore } from "../../user/userRole.store";
 import UpdateRoleAccess from "./UpdateRoleAccess";
 
 type ListDataType = {

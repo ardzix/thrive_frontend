@@ -1,6 +1,6 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
-import { useDivisionStore } from '../division.store';
+import { useDivisionStore } from '../../division/division.store';
 import { useEffect } from 'react';
 
 interface IUserRole {

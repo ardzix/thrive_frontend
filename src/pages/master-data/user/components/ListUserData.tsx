@@ -6,8 +6,9 @@ import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { useUserStore } from "../user.store";
 import { useUserRoleStore } from "../userRole.store";
-import { useEntityStore } from "../../company/entity.store";
+// import { useEntityStore } from "../../company/entity.store";
 import UpdateUserData from "./UpdateUserData";
+import { useDivisionStore } from "../../division/division.store";
 
 export default function ListUserData() {
   const [params, setParams] = useState({
@@ -23,7 +24,8 @@ export default function ListUserData() {
   const [hookFormGenerator] = Form.useForm();
   const {getUserRole,listUserRoles, loading:loadingUserRole}=useUserRoleStore()
   const {getUsers, listUsers, loading, postUser} = useUserStore()
-  const {getEntity,listEntity} = useEntityStore()
+  // const {getEntity,listEntity} = useEntityStore()
+  const { getDivison, listDivision}= useDivisionStore();
   const [userId, setUserId] = useState("")
 
   const handleGetUsers = () => {
@@ -39,7 +41,11 @@ export default function ListUserData() {
       offset: 0,
       limit: 10000,
     })
-    getEntity({
+    // getEntity({
+    //   offset: 0,
+    //   limit: 10000
+    // })
+    getDivison({
       offset: 0,
       limit: 10000
     })
@@ -69,43 +75,43 @@ export default function ListUserData() {
   const dataForm = [
     {
       name: "full_name",
-      label: "Full Name",
+      label: "Nama User",
       type: "text",
-      placeholder: "Enter User Name",
+      placeholder: "Enter Full Name",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "position",
-      label: "Posisi",
+      name: "division_id",
+      label: "Divisi",
       type: "select",
-      placeholder: "Enter Position",
+      placeholder: "Enter Divisi",
+      rules: [{ required: true, message: "This field is required!" }],
+      options: listDivision?.items?.map((item: any) => ({
+        label: item.division_name,
+        value: item.id,
+      }))
+    },
+    {
+      name: "department_id",
+      label: "Departemen",
+      type: "select",
+      placeholder: "Enter Departemen",
       rules: [{ required: true, message: "This field is required!" }],
       options: [
         {
           label: "test",
           value: "test"
         }
-      ],
+      ]
     },
     {
       name: "role_id",
-      label: "Access",
+      label: "User Role",
       type: "select",
-      placeholder: "Enter Access",
+      placeholder: "Enter User Role",
       rules: [{ required: true, message: "This field is required!" }],
       options: listUserRoles?.items?.map((item: any) => ({
         label: item.role_name,
-        value: item.id,
-      })),
-    },
-    {
-      name: "entity_id",
-      label: "Entitas",
-      type: "select",
-      placeholder: "Enter Entity",
-      rules: [{ required: true, message: "This field is required!" }],
-      options: listEntity?.items?.map((item :any) => ({
-        label: item.entity_name,
         value: item.id,
       })),
     },
@@ -278,7 +284,7 @@ export default function ListUserData() {
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
         handleGetListUsers={handleGetUsers}
-        listEntity={listEntity}
+        // listEntity={listEntity}
         listUserRoles={listUserRoles}
         userId={userId}
       />

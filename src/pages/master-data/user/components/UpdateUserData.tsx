@@ -9,7 +9,7 @@ interface I {
   userId: any;
   handleGetListUsers: any;
   listUserRoles: any;
-  listEntity: any;
+  // listEntity: any;
 }
 
 export default function UpdateUserData({
@@ -18,7 +18,7 @@ export default function UpdateUserData({
   listUserRoles,
   userId,
   handleGetListUsers,
-  listEntity
+  // listEntity
 }: I) {
   const [hookFormGenerator] = Form.useForm();
   const { updateUser, user, getUserById, loading } = useUserStore();
@@ -102,10 +102,10 @@ export default function UpdateUserData({
       type: "select",
       placeholder: "Enter Entity",
       rules: [{ required: true, message: "This field is required!" }],
-      options: listEntity?.items?.map((item :any) => ({
-        label: item.entity_name,
-        value: item.id,
-      })),
+      // options: listEntity?.items?.map((item :any) => ({
+      //   label: item.entity_name,
+      //   value: item.id,
+      // })),
     },
     {
       name: "email",

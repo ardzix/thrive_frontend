@@ -4,7 +4,6 @@ import LoginContainer from "../pages/auth/LoginContainer";
 import { PrivateRoute, PublicRoute } from "./helper";
 import { Button, Result } from "antd";
 import CompanyContainer from "../pages/master-data/company/CompanyContainer";
-import UserContainer from "../pages/master-data/user/UserContainer";
 import ProjectContainer from "../pages/master-data/project/ProjectContainer";
 import FinanceContainer from "../pages/master-data/finance/FinanceContainer";
 import ForgotPasswordContainer from "../pages/auth/ForgotPasswordContainer";
@@ -14,6 +13,10 @@ import RequestsContainer from "../pages/finance/requests/RequestsContainer";
 import ReportContainer from "../pages/finance/report/ReportContainer";
 import SetupContainer from "../pages/finance/setup/SetupContainer";
 import DashboardFinanceContainer from "../pages/finance/dashboard-finance/DashboardFinanceContainer";
+import DivisionContainer from "../pages/master-data/division/DivisionContainer";
+import RoleAccessContainer from "../pages/master-data/role-access/RoleAccessContainer";
+import UserContainer from "../pages/master-data/user/UserContainer";
+import DepartementContainer from "../pages/master-data/departement/DepartementContainer";
 
 interface Route {
   path: string;
@@ -41,6 +44,21 @@ const masterDataRoutes : Route[] =[
   {
     path: "/master-data/finance",
     element: <FinanceContainer />,
+    isPrivate: true,
+  },
+  {
+    path: "/master-data/division",
+    element: <DivisionContainer />,
+    isPrivate: true,
+  },
+  {
+    path: "/master-data/departement",
+    element: <DepartementContainer/>,
+    isPrivate: true,
+  },
+  {
+    path: "/master-data/role-access",
+    element: <RoleAccessContainer />,
     isPrivate: true,
   },
 ];

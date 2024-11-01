@@ -5,7 +5,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { useDivisionStore } from "../division.store";
-import UpdateDivision from "./UpdateDivision";
+import UpdateDivision from "../../user/components/UpdateDivision";
 
 export default function ListUserDivison() {
   const [openDrawer, setOpenDrawer] = useState({

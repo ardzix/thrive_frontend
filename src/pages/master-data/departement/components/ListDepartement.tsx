@@ -4,10 +4,10 @@ import {  FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-import UpdateDepartement from "./UpdateDepartement";
+import UpdateDepartement from "../../user/components/UpdateDepartement";
 import dayjs from "dayjs";
 
-export default function ListUserDepartement() {
+export default function ListDepartement() {
   const [openDrawer, setOpenDrawer] = useState({
     create: false,
     update: false,

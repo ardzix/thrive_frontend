@@ -33,7 +33,15 @@ export default function SidebarCustom() {
   }
 
   const items = [
-    getItem("Master Data", "parent_1", <BarChartOutlined />, [getItem("Company", "/master-data/company", null), getItem("User", "/master-data/user", null), getItem("Project", "/master-data/project", null), getItem("Finance", "/master-data/finance", null)]),
+    getItem("Master Data", "parent_1", <BarChartOutlined />, [
+      getItem("Company", "/master-data/company", null),
+      getItem("Project", "/master-data/project", null),
+      getItem("User", "/master-data/user", null),
+      getItem("Divisi", "/master-data/division", null),
+      getItem("Departemen", "/master-data/departement", null),
+      getItem("Role Access", "/master-data/role-access", null),
+      getItem("Finance", "/master-data/finance", null),
+    ]),
     // getItem("Finance", "parent_2", <FaCalculator />, [
     //   getItem("Cash and Bank", "sub_1", <FaWallet />,  [
     //     getItem("Dashboard", "/finance/dashboard", null),

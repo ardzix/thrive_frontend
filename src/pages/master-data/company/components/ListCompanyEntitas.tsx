@@ -6,9 +6,9 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { useEntityStore } from "../entity.store";
-import { useDivisionStore } from "../../user/division.store";
+import { useDivisionStore } from "../../division/division.store";
 import UpdateCompanyEntitas from "./UpdateCompanyEntitas";
-import { useRoleAccessStore } from "../../user/roleAccess.store";
+import { useRoleAccessStore } from "../../role-access/roleAccess.store";
 
 type ListDataType = {
   id: string;
