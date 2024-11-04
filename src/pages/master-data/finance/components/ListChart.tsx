@@ -6,6 +6,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { useFinanceStore } from "../finance.store";
+import UpdateChartOfAccount from "./UpdateChartOfAccount";
 
 type ListDataType = {
   id: string;
@@ -17,74 +18,23 @@ type ListDataType = {
   status: string;
 };
 
-const columns = [
-  {
-    title: "Acc. ID",
-    dataIndex: "id",
-    key: "id",
-  },
-  {
-    title: "Nama Acc.",
-    dataIndex: "acc_name",
-    key: "acc_name",
-  },
-  {
-    title: "Kelas",
-    dataIndex: "class",
-    key: "class",
-  },
-  {
-    title: "Tipe",
-    dataIndex: "type",
-    key: "type",
-  },
-  {
-    title: "Dibuat Oleh",
-    dataIndex: "created_by",
-    key: "created_by",
-  },
-  {
-    title: "Tanggal Update",
-    dataIndex: "updated_at",
-    key: "updated_at",
-    render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
-  },
-
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    render: (status: string) => {
-      return (
-        <>
-          <p className={`${status === "active" ? "text-green-500" : "text-red-500"}`}>{status}</p>
-        </>
-      );
-    },
-  },
-  {
-    title: "Action",
-    dataIndex: "id",
-    key: "id",
-    render: () => (
-      <>
-        <Button>
-          <FaPen />
-        </Button>
-      </>
-    ),
-  },
-];
-
 export default function ListChart() {
   const [params, setParams] = useState({
     offset: 0,
     limit: 10,
     search: "",
   });
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState({
+    create: false,
+    update: false,
+  });
   const [hookFormGenerator] = Form.useForm();
-  const {getChartOfAccount,listClassMaster,loading, listChartOfAccount, postChartOfAccount}=useFinanceStore();
+  const {getChartOfAccount, getClassMaster, listClassMaster,loading, listChartOfAccount, postChartOfAccount}=useFinanceStore();
+  const [chartOfAccount, setChartOfAccount]=useState({});
+
+  const handleGetChartOfAccount = () => {
+    getChartOfAccount(params);
+  }
 
   const handleSubmit = async (val: any)=> {
     try {
@@ -93,7 +43,9 @@ export default function ListChart() {
        message: "Success",
        description: "Berhasil menyimpan data user",
      })
-     getChartOfAccount(params)
+     handleGetChartOfAccount()
+     hookFormGenerator.resetFields()
+     setOpenDrawer((val: any) => ({ ...val, create: false }))
     } catch (error: any) {
      console.log(error.message)
      Modal.error({
@@ -104,25 +56,32 @@ export default function ListChart() {
    };
 
   useEffect(() => {
-    getChartOfAccount(params);
+    handleGetChartOfAccount();
   }, [params]);
+
+  useEffect(()=>{
+    getClassMaster({
+      offset: 0,
+      limit: 10000
+    })
+  },[])
 
   const dataForm = [
     {
-      name: "acc_name",
+      name: "name",
       label: "Nama Acc.",
       type: "text",
       placeholder: "Enter Acc. Name",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "class",
+      name: "class_id",
       label: "Kelass",
       type: "select",
       placeholder: "Enter Kelas",
       rules: [{ required: true, message: "This field is required!" }],
       options: listClassMaster?.items?.map((item:any) => ({
-        label: item.class_name,
+        label: item.name,
         value: item.id,
       }))
     },
@@ -145,11 +104,69 @@ export default function ListChart() {
     },
   ];
 
+  const columns = [
+    {
+      title: "Acc. ID",
+      dataIndex: "acc_id",
+      key: "acc_id",
+    },
+    {
+      title: "Nama Acc.",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Kelas",
+      dataIndex: "class_name",
+      key: "class_name",
+    },
+    {
+      title: "Dibuat Oleh",
+      dataIndex: "created_by",
+      key: "created_by",
+    },
+    {
+      title: "Tanggal Update",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => {
+        return (
+          <>
+            <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
+          </>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      render: (_, res: any) => (
+        <>
+          <Button 
+            onClick={()=>{
+              setOpenDrawer({...openDrawer, update: true})
+              setChartOfAccount(res)
+            }}
+          >
+            <FaPen />
+          </Button>
+        </>
+      ),
+    },
+  ];
+
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
       <InputSearch placeholder="Search" onChange={(e) => setParams({...params, search: e})} />
-        <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
+        <Button onClick={() => setOpenDrawer({...openDrawer, create: true})} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Acc. Baru
         </Button>
       </div>
@@ -192,7 +209,18 @@ export default function ListChart() {
         }}
       />
 
-      <Drawer title="Tambah Acc. Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer
+      footer={
+        <div className="w-full my-8">
+          <Button form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+            Simpan
+          </Button>
+        </div>
+        }
+        title="Tambah Acc."
+        onClose={() => setOpenDrawer((val:any)=> ({...val, create: false}))}
+        open={openDrawer.create}
+    >
         {
           loading && (
             <div className="flex justify-center items-center">
@@ -210,12 +238,15 @@ export default function ListChart() {
           disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
-        <div className="w-full">
-          <Button loading={loading} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
-            Simpan
-          </Button>
-        </div>
       </Drawer>
+      
+      <UpdateChartOfAccount 
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        handleGetchartOfAccount={handleGetChartOfAccount}
+        chartOfAccount={chartOfAccount}
+        listClassMaster={listClassMaster}
+      />
     </main>
   );
 }

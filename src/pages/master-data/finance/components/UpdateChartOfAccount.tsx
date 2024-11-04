@@ -1,41 +1,40 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
 import { useEffect } from 'react';
-import { useUserRoleStore } from '../userRole.store';
+import { useFinanceStore } from '../finance.store';
 
-interface IUserRole {
+interface IchartOfAccount {
   openDrawer: any;
   setOpenDrawer: any;
-  userRole: any;
-  handleGetUserRole: any;
-  listDivision: any;
+  handleGetchartOfAccount: any;
+  chartOfAccount: any;
+  listClassMaster: any;
 }
 
-export default function UpdateUserRole({
+export default function UpdateChartOfAccount({
   openDrawer,
   setOpenDrawer,
-  userRole,
-  listDivision,
-  handleGetUserRole,
-}: IUserRole) {
+  handleGetchartOfAccount,
+  chartOfAccount,
+  listClassMaster
+}: IchartOfAccount) {
   const [hookFormGenerator] = Form.useForm();
-  const {updateUserRole, loading } = useUserRoleStore();
+  const { updateChartOfAccount, loading } = useFinanceStore();
 
   const handleSubmitUpdate = async (values: any) => {
     console.log(values.division_id);
     try {
-        const finalyPayload = {
-          role_name: values.role_name,
-          division_id: values.division_id.value || userRole.division_id,
-          status: values.status
-        }
-      await updateUserRole(finalyPayload, userRole.id), 
+      const finalyPayload = {
+        ...values,
+        class_id: values.class_id.value || values.class_id,
+      }
+      await updateChartOfAccount(finalyPayload, chartOfAccount.id), 
       notification.success({
         message: 'Success',
         description: 'Berhasil update data user role',
       });
       setOpenDrawer((val: any) => ({ ...val, update: false }));
-      handleGetUserRole();
+      handleGetchartOfAccount();
       hookFormGenerator.resetFields();
     } catch (error: any) {
       console.log(error.message);
@@ -46,36 +45,37 @@ export default function UpdateUserRole({
     }
   };
 
+  console.log(chartOfAccount)
 
   useEffect(() => {
       hookFormGenerator.setFieldsValue({ 
-        role_name: userRole?.role_name,
-        division_id:{
-          label: userRole?.division_name,
-          value: userRole?.division_id
-        },
-        status: userRole?.status,
+        name: chartOfAccount?.name,
+        // class_id: {
+        //   label: chartOfAccount?.class_name,
+        //   value: "test",
+        // },
+        status: chartOfAccount?.status,
        });
-  }, [userRole]);
+  }, [chartOfAccount]);
 
   const dataForm = [
     {
-      name: "role_name",
-      label: "Role",
+      name: "name",
+      label: "Nama Acc.",
       type: "text",
-      placeholder: "Enter Role",
+      placeholder: "Enter Acc. Name",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "division_id",
-      label: "Divisi",
+      name: "class_id",
+      label: "Kelass",
       type: "select",
-      placeholder: "Enter Divisi",
+      placeholder: "Enter Kelas",
       rules: [{ required: true, message: "This field is required!" }],
-      options: listDivision?.items?.map((item:any) => ({
-        label: item.division_name,
+      options: listClassMaster?.items?.map((item:any) => ({
+        label: item.name,
         value: item.id,
-      })),
+      }))
     },
     {
       name: "status",
@@ -102,7 +102,7 @@ export default function UpdateUserRole({
           <div className="w-full my-8">
           <Button
             loading={loading}
-            form="updateRole"
+            form="dynamicForm"
             htmlType="submit"
             className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold"
           >
@@ -110,7 +110,7 @@ export default function UpdateUserRole({
           </Button>
         </div>
         }
-       title="Tambah Role Baru"
+       title="Update Acc. "
        onClose={() => setOpenDrawer((val:any)=> ({...val, update: false}))}
        open={openDrawer.update}
       >
@@ -119,7 +119,7 @@ export default function UpdateUserRole({
           hookForm={hookFormGenerator}
           onFinish={handleSubmitUpdate}
           data={dataForm}
-          id="updateRole"
+          id="dynamicForm"
           size="default"
           layout="vertical"
           disabled={loading}

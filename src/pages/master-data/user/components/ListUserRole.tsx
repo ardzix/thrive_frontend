@@ -31,7 +31,7 @@ export default function ListUserRole() {
   });
   const [hookFormGenerator] = Form.useForm();
   const{getDivison,listDivision,loading:loadingDivision}= useDivisionStore()
-  const [userRole, setuserRole] = useState({});
+  const [userRole, setUserRole] = useState({});
 
   const {getUserRole, loading, listUserRoles, postUserRole} =useUserRoleStore()
   const handleGetUserRole = () => {
@@ -152,7 +152,7 @@ export default function ListUserRole() {
         <>
           <Button onClick={()=>{
             setOpenDrawer((val:any)=> ({...val, update: true}))
-            setuserRole({...prev})
+            setUserRole({...prev})
           }}>
             <FaPen />
           </Button>
@@ -209,7 +209,18 @@ export default function ListUserRole() {
         }}
       />
 
-      <Drawer title="Tambah Role Baru" onClose={() => setOpenDrawer((val:any)=> ({...val, create: false}))} open={openDrawer.create}>
+      <Drawer
+        footer={
+          <div className="w-full my-8">
+            <Button form="createRole" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+              Simpan
+            </Button>
+          </div>
+        }
+       title="Tambah Role Baru"
+       onClose={() => setOpenDrawer((val:any)=> ({...val, create: false}))}
+       open={openDrawer.create}
+      >
         {
           loadingDivision && (
           <Skeleton active paragraph={{ rows: dataForm.length }} />
@@ -225,11 +236,6 @@ export default function ListUserRole() {
           // disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
-        <div className="w-full">
-          <Button form="createRole" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
-            Simpan
-          </Button>
-        </div>
       </Drawer>
       <UpdateUserRole
         openDrawer={openDrawer}

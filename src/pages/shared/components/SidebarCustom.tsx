@@ -6,7 +6,9 @@ import { acceptablePathList } from "../../../lib/routes";
 import  { colors } from "../../../lib/theme";
 import { 
   // FaCalculator,
+  // FaCalculator,
   FaCircleUser,
+  // FaWallet,
   // FaWallet 
   } from "react-icons/fa6";
 import { useStorageStore } from "../storage.store";
@@ -115,9 +117,9 @@ export default function SidebarCustom() {
       </div>
 
       {/* Wrapper untuk Menu dengan scroll */}
-      <div className="flex-1 overflow-y-hidden" style={{ maxHeight: "calc(100vh - 150px)" }}>
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-neutral-700 " style={{ maxHeight: "calc(85vh - 150px)", height: "calc(85vh - 150px)" }}>
         <Menu
-          className="mt-2 !z-0 custom-menu !bg-black"
+          className="mt-2 !-z-50 custom-menu !bg-black"
           style={{ border: 0 }}
           openKeys={openKeys}
           onOpenChange={onOpenChange}
@@ -130,8 +132,8 @@ export default function SidebarCustom() {
       </div>
 
       {/* Bagian User dan Logout tetap di bawah */}
-      <div className="w-full absolute bottom-0 z-50 flex flex-col items-start justify-start p-6">
-        <Divider className="bg-neutral-700" />
+      <div className="w-full flex flex-col items-start justify-start px-4 pb-4 bg-black">
+        <Divider className="bg-neutral-700 !mt-0" />
         <div className="flex items-center justify-end gap-x-3 mb-5 cursor-pointer">
           <FaCircleUser size={32} color={colors?.grey} />
           <div>

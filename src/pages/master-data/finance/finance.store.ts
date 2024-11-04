@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { fetcherGET, fetcherPOST } from "../../../lib/fetcher";
+import { fetcherGET, fetcherPOST, fetcherPUT } from "../../../lib/fetcher";
 
 interface IFinanceStore {
     loading: boolean
@@ -12,6 +12,9 @@ interface IFinanceStore {
     postChartOfAccount: (body: any) => Promise<any>
     getCurrency: (params: any) => Promise<any>
     postCurrency: (body: any) => Promise<any>
+    updateClassMaster: (body: any, id: any) => Promise<any>
+    updateChartOfAccount: (body: any, id: any) => Promise<any>
+    updateCurrency: (body: any, id: any) => Promise<any>
 }
 
 export const useFinanceStore = create<IFinanceStore>()((set) => ({
@@ -91,4 +94,40 @@ export const useFinanceStore = create<IFinanceStore>()((set) => ({
             return Promise.reject(error)
         }
     },
+    updateClassMaster: async (body, id) => {
+        set({ loading: true })
+        try {
+            const data = await fetcherPUT(`/finance/classes/${id}`, body)
+            set({ loading: false})
+            return Promise.resolve(data)
+        } catch (error: any) {
+            console.log(error.message, "error zustand")
+            set({ loading: false })
+            return Promise.reject(error)
+        }
+    },
+    updateChartOfAccount: async (body, id) => {
+        set({ loading: true })
+        try {
+            const data = await fetcherPUT(`/finance/acc/${id}`, body)
+            set({ loading: false})
+            return Promise.resolve(data)
+        } catch (error: any) {
+            console.log(error.message, "error zustand")
+            set({ loading: false })
+            return Promise.reject(error)
+        }
+    },
+    updateCurrency: async (body, id) => {
+        set({ loading: true })
+        try {
+            const data = await fetcherPUT(`/finance/currencies/${id}`, body)
+            set({ loading: false})
+            return Promise.resolve(data)
+        } catch (error: any) {
+            console.log(error.message, "error zustand")
+            set({ loading: false })
+            return Promise.reject(error)
+        }
+    }
 }))
