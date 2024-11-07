@@ -88,8 +88,8 @@ export default function UpdateProject({
           value: "Active",
         },
         {
-          label: "Not Active",
-          value: "Not Active",
+          label: "Inactive",
+          value: "Inactive",
         },
       ],
     },

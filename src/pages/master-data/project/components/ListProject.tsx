@@ -91,8 +91,8 @@ export default function ListProject() {
           value: "Active",
         },
         {
-          label: "Not Active",
-          value: "Not Active",
+          label: "Inactive",
+          value: "Inactive",
         },
       ],
     },
