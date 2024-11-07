@@ -36,3 +36,26 @@ export const numberFormat = (value: any) =>
     // maximumSignificantDigits: 30
     minimumFractionDigits: 0, // remove 2 digit after comma
   }).format(value);
+
+  export const currencyFormat = (
+    value: number | null | undefined,
+    locale: string = "id-ID",
+    currency: string = "IDR",
+    minimumFractionDigits: number = 0,
+    prefix: string = "Rp "
+  ) => {
+    if (value == null) return "";
+  
+    return (
+      prefix +
+      new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency,
+        minimumFractionDigits,
+        maximumFractionDigits: minimumFractionDigits, // Menjaga konsistensi desimal
+      })
+        .format(value)
+        .replace(/\D00$/, "") // Menghapus dua nol desimal jika tidak diperlukan
+    );
+  };
+  

@@ -4,11 +4,10 @@ import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-import { useUserStore } from "../user.store";
-import { useUserRoleStore } from "../userRole.store";
-// import { useEntityStore } from "../../company/entity.store";
 import UpdateUserData from "./UpdateUserData";
-import { useDivisionStore } from "../../division/division.store";
+import { useDivisionStore } from "../../../../stores/division.store";
+import { useUserStore } from "../../../../stores/user.store";
+import { useUserRoleStore } from "../../../../stores/userRole.store";
 
 export default function ListUserData() {
   const [params, setParams] = useState({

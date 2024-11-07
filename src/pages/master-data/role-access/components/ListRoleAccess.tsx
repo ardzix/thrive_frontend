@@ -5,9 +5,9 @@ import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-import { useRoleAccessStore } from "../roleAccess.store";
-import { useUserRoleStore } from "../../user/userRole.store";
 import UpdateRoleAccess from "./UpdateRoleAccess";
+import { useRoleAccessStore } from "../../../../stores/roleAccess.store";
+import { useUserRoleStore } from "../../../../stores/userRole.store";
 
 type ListDataType = {
   id: string;

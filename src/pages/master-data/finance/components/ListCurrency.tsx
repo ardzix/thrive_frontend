@@ -5,8 +5,9 @@ import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-import { rupiahFormat } from "../../../../lib/helper";
-import { useFinanceStore } from "../finance.store";
+import {  rupiahFormat } from "../../../../lib/helper";
+import { useCurrencyStore } from "../../../../stores/currency.store";
+import UpdateCurrency from "./UpdateCurrency";
 
 type ListDataType = {
   id: string;
@@ -18,81 +19,23 @@ type ListDataType = {
   status: string;
 };
 
-const columns = [
-  {
-    title: "Currency Id",
-    dataIndex: "id",
-    key: "id",
-  },
-  {
-    title: "Currency",
-    dataIndex: "currency",
-    key: "currency",
-  },
-  {
-    title: "Code",
-    dataIndex: "code",
-    key: "code",
-  },
-  {
-    title: "Konversi",
-    dataIndex: "conversion",
-    key: "conversion",
-    render: (conversion: number) => {
-      return (
-        <>
-          <p>{rupiahFormat(conversion)}</p>
-        </>
-      );
-    },
-  },
-  {
-    title: "Dibuat Oleh",
-    dataIndex: "created_by",
-    key: "created_by",
-  },
-  {
-    title: "Tanggal Update",
-    dataIndex: "updated_at",
-    key: "updated_at",
-    render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
-  },
-
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    render: (status: string) => {
-      return (
-        <>
-          <p className={`${status === "active" ? "text-green-500" : "text-red-500"}`}>{status}</p>
-        </>
-      );
-    },
-  },
-  {
-    title: "Action",
-    dataIndex: "id",
-    key: "id",
-    render: () => (
-      <>
-        <Button>
-          <FaPen />
-        </Button>
-      </>
-    ),
-  },
-];
-
 export default function ListCurrency() {
   const [params, setParams] = useState({
     offset: 0,
     limit: 10,
     search: "",
   });
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState({
+    create: false,
+    update: false,
+  });
   const [hookFormGenerator] = Form.useForm();
-  const {getCurrency,loading, postCurrency, listCurrency} = useFinanceStore();
+  const {getCurrency,loading, postCurrency, listCurrency} = useCurrencyStore();
+  const [currency, setCurrency]= useState({})
+
+  const handleGetCurrency =  () => {
+    getCurrency(params)
+  }
 
   const handleSubmit = async (val: any)=> {
     try {
@@ -101,7 +44,9 @@ export default function ListCurrency() {
        message: "Success",
        description: "Berhasil menyimpan data user",
      })
-     getCurrency(params)
+     handleGetCurrency()
+     hookFormGenerator.resetFields()
+     setOpenDrawer((val: any) => ({ ...val, create: false }))
     } catch (error: any) {
      console.log(error.message)
      Modal.error({
@@ -112,7 +57,7 @@ export default function ListCurrency() {
    };
 
   useEffect(() => {
-    getCurrency(params);
+    handleGetCurrency();
   }, [params])
 
   const dataForm = [
@@ -124,17 +69,21 @@ export default function ListCurrency() {
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "currency_code",
+      name: "code",
       label: "Currency Code",
       type: "text",
       placeholder: "Enter Currency Code",
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "conversion_rate",
+      name: "conv_rate",
       label: "Conversion Rate",
-      type: "text",
+      type: "number",
+      className: "w-full",
       placeholder: "Enter Conversion Rate",
+      formatter: (value: any) =>
+        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      parser: (value: any) => value?.replace(/\$\s?|(,*)/g, ""),
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
@@ -156,11 +105,82 @@ export default function ListCurrency() {
     },
   ];
 
+  const columns = [
+    {
+      title: "Currency Id",
+      dataIndex: "currency_id",
+      key: "currency_id",
+    },
+    {
+      title: "Currency",
+      dataIndex: "currency",
+      key: "currency",
+    },
+    {
+      title: "Code",
+      dataIndex: "code",
+      key: "code",
+    },
+    {
+      title: "Konversi",
+      dataIndex: "conv_rate",
+      key: "conv_rate",
+      render: (conversion: number) => {
+        return (
+          <>
+            <p>{rupiahFormat(conversion)}</p>
+          </>
+        );
+      },
+    },
+    {
+      title: "Dibuat Oleh",
+      dataIndex: "created_by",
+      key: "created_by",
+    },
+    {
+      title: "Tanggal Update",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
+    },
+  
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => {
+        return (
+          <>
+            <p className={`${status.charAt(0).toUpperCase() + status.slice(1) === "Active"  ? "text-green-500" : "text-red-500"} capitalize`}>{status}</p>
+          </>
+        );
+      },
+    },
+    {
+      title: "Action",
+      dataIndex: "id",
+      key: "id",
+      render: (_, res: any) => (
+        <>
+          <Button 
+            onClick={()=>{
+              setOpenDrawer({...openDrawer, update: true})
+              setCurrency(res)
+            }}
+          >
+            <FaPen />
+          </Button>
+        </>
+      ),
+    },
+  ];
+
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
       <InputSearch placeholder="Search" onChange={(e) => setParams({...params, search: e})} />
-        <Button onClick={() => setOpenDrawer(true)} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
+        <Button onClick={() => setOpenDrawer({...openDrawer, create: true})} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Mata Uang Baru
         </Button>
       </div>
@@ -203,7 +223,14 @@ export default function ListCurrency() {
         }}
       />
 
-      <Drawer title="Tambah Mata Uang Baru" onClose={() => setOpenDrawer(false)} open={openDrawer}>
+      <Drawer
+       title="Tambah Mata Uang Baru"
+       onClose={() =>{
+        setOpenDrawer({...openDrawer, create: false})
+        hookFormGenerator.resetFields();
+       }}
+       open={openDrawer.create}
+      >
       <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={handleSubmit}
@@ -220,6 +247,12 @@ export default function ListCurrency() {
           </Button>
         </div>
       </Drawer>
+      <UpdateCurrency
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        handleGetCurrency={handleGetCurrency}
+        currancy={currency}
+      />
     </main>
   );
 }

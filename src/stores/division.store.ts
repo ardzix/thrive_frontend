@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { fetcherGET, fetcherPOST, fetcherPUT } from "../../../lib/fetcher";
+import { fetcherGET, fetcherPOST, fetcherPUT } from "../lib/fetcher";
 
 interface IDivisionStore{
     loading: boolean

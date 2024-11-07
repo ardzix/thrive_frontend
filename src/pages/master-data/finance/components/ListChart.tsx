@@ -5,7 +5,7 @@ import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-import { useFinanceStore } from "../finance.store";
+import { useFinanceStore } from "../../../../stores/finance.store";
 import UpdateChartOfAccount from "./UpdateChartOfAccount";
 
 type ListDataType = {
@@ -30,7 +30,7 @@ export default function ListChart() {
   });
   const [hookFormGenerator] = Form.useForm();
   const {getChartOfAccount, getClassMaster, listClassMaster,loading, listChartOfAccount, postChartOfAccount}=useFinanceStore();
-  const [chartOfAccount, setChartOfAccount]=useState({});
+  const [chartOfAccountId, setChartOfAccountId]=useState(null);
 
   const handleGetChartOfAccount = () => {
     getChartOfAccount(params);
@@ -147,12 +147,12 @@ export default function ListChart() {
       title: "Action",
       dataIndex: "id",
       key: "id",
-      render: (_, res: any) => (
+      render: (id: any) => (
         <>
           <Button 
             onClick={()=>{
               setOpenDrawer({...openDrawer, update: true})
-              setChartOfAccount(res)
+              setChartOfAccountId(id);
             }}
           >
             <FaPen />
@@ -244,7 +244,7 @@ export default function ListChart() {
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
         handleGetchartOfAccount={handleGetChartOfAccount}
-        chartOfAccount={chartOfAccount}
+        chartOfAccountId={chartOfAccountId}
         listClassMaster={listClassMaster}
       />
     </main>

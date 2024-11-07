@@ -1,7 +1,7 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
 import { useEffect } from 'react';
-import { useUserStore } from '../user.store';
+import { useUserStore } from '../../../../stores/user.store';
 
 interface I {
   openDrawer: any;

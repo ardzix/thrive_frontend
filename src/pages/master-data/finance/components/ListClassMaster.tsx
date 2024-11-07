@@ -5,7 +5,7 @@ import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-import { useFinanceStore } from "../finance.store";
+import { useFinanceStore } from "../../../../stores/finance.store";
 import UpdateClassMaster from "./UpdateClassMaster";
 
 type ListDataType = {

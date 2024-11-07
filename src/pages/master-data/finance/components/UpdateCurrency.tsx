@@ -1,42 +1,34 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
-import { useRoleAccessStore } from '../../../../stores/roleAccess.store';
+import { useCurrencyStore } from '../../../../stores/currency.store';
 import { useEffect } from 'react';
 
-interface IUserRole {
+interface IUpdateCurrency {
   openDrawer: any;
   setOpenDrawer: any;
-  handleGetRoleAccess: any;
-  roleAccess: any
-  listUserRoles: any;
-  listModules: any
+  handleGetCurrency: any;
+  currancy: any;
 }
 
-export default function UpdateRoleAccess({
+export default function UpdateCurrency({
   openDrawer,
   setOpenDrawer,
-  handleGetRoleAccess,
-  listUserRoles,
-  roleAccess,
-  listModules
-}: IUserRole) {
+  handleGetCurrency,
+  currancy,
+}: IUpdateCurrency) {
   const [hookFormGenerator] = Form.useForm();
-  const {updateRoleAccess, loading } = useRoleAccessStore();
-
+  const { updateCurrency, loading } = useCurrencyStore();
+  
   const handleSubmitUpdate = async (values: any) => {
     try {
-        const finalyPayload = {
-          role_id: values.role_id,
-          modules: values.modules,
-          status: values.status
-        }
-      await updateRoleAccess(finalyPayload, roleAccess?.id), 
+      console.log(values);
+      await updateCurrency(values, currancy?.id), 
       notification.success({
         message: 'Success',
         description: 'Berhasil update data divisi',
       });
       setOpenDrawer((val: any) => ({ ...val, update: false }));
-      handleGetRoleAccess();
+      handleGetCurrency();
       hookFormGenerator.resetFields();
     } catch (error: any) {
       console.log(error.message);
@@ -47,39 +39,40 @@ export default function UpdateRoleAccess({
     }
   };
 
-  useEffect(() => {
-    if (roleAccess) {
-      hookFormGenerator.setFieldsValue({ 
-            role_id: roleAccess?.role_id,
-            modules: roleAccess?.modules?.map((module: any) => module.id),
-            status: roleAccess?.status,
-       });
-    }
-  }, [roleAccess]);
+  useEffect(()=>{
+    hookFormGenerator.setFieldsValue({
+      currency: currancy?.currency,
+      code: currancy?.code,
+      conv_rate: currancy?.conv_rate,
+      status: currancy?.status
+    })
+  },[currancy])
 
   const dataForm = [
     {
-      name: "role_id",
-      label: "Role Access",
-      type: "select",
-      placeholder: "Enter Role Access",
+      name: "currency",
+      label: "Currency",
+      type: "text",
+      placeholder: "Enter Currency",
       rules: [{ required: true, message: "This field is required!" }],
-      options: listUserRoles?.items?.map((role: any) => ({
-        label: role.role_name,
-        value: role.id,
-      })),
     },
     {
-      name: "modules",
-      label: "Module",
-      type: "checkbox",
-      //   placeholder: "Enter Module",
+      name: "code",
+      label: "Currency Code",
+      type: "text",
+      placeholder: "Enter Currency Code",
       rules: [{ required: true, message: "This field is required!" }],
-      className: "!flex !flex-col !gap-2",
-      options: listModules?.items?.map((module: any) => ({
-        label: module.name,
-        value: module.id,
-      })),
+    },
+    {
+      name: "conv_rate",
+      label: "Conversion Rate",
+      type: "number",
+      className: "w-full",
+      placeholder: "Enter Conversion Rate",
+      formatter: (value: any) =>
+        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      parser: (value: any) => value?.replace(/\$\s?|(,*)/g, ""),
+      rules: [{ required: true, message: "This field is required!" }],
     },
     {
       name: "status",
@@ -94,38 +87,41 @@ export default function UpdateRoleAccess({
         },
         {
           label: "Inactive",
-          value: "inactive",
+          value: "Inactive",
         },
       ],
     },
   ];
-
-  
   return (
     <Drawer
-       title="Update Role Access"
-       onClose={() => setOpenDrawer((val:any)=> ({...val, update: false}))}
-       open={openDrawer.update}
-      >
+      title="Update Mata Uang"
+      onClose={() => {
+        setOpenDrawer((val: any) => ({ ...val, update: false }))
+        hookFormGenerator.resetFields();
+      }}
+      open={openDrawer.update}
+    >
+      <>
         <FormGenerator
           hookForm={hookFormGenerator}
           onFinish={handleSubmitUpdate}
           data={dataForm}
-          id="dynamicForm"
+          id="updateDivision"
           size="default"
           layout="vertical"
           disabled={loading}
         />
-      <div className="w-full my-8 absolute bottom-0 left-0 right-0 px-6">
+        <div className="w-full absolute bottom-0 left-0 right-0 px-5 pb-5">
           <Button
             loading={loading}
-            form="dynamicForm"
+            form="updateDivision"
             htmlType="submit"
             className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold"
           >
             Simpan
           </Button>
-       </div>
+        </div>
+      </>
     </Drawer>
   );
 }

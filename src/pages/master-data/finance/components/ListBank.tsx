@@ -1,11 +1,14 @@
-import { Button, Drawer, Form, Table } from "antd";
+import { Button, Drawer, Form, Modal, notification, Table } from "antd";
 import dayjs from "dayjs";
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import UpdateBank from "./UpdateBank";
+import { useBankStore } from "../../../../stores/bank.store";
+import { useCurrencyStore } from "../../../../stores/currency.store";
+import { useDivisionStore } from "../../../../stores/division.store";
 
 export default function ListBank() {
   const [params, setParams] = useState({
@@ -18,44 +21,49 @@ export default function ListBank() {
     update: false,
   });
   const [hookFormGenerator] = Form.useForm();
-//   const {getChartOfAccount,listClassMaster,loading, listGeneralLedger, postChartOfAccount}=useFinanceStore();
+  const {getBank, listBank, postBank, loading}=useBankStore();
+  const{ getCurrency, listCurrency}=useCurrencyStore();
+  const {getDivison, listDivision}=useDivisionStore();
+  const [bankId, setBankId]=useState(null)
 
-//   const handleSubmit = async (val: any)=> {
-//     try {
-//      await postChartOfAccount(val)
-//      notification.success({
-//        message: "Success",
-//        description: "Berhasil menyimpan data user",
-//      })
-//      getChartOfAccount(params)
-//     } catch (error: any) {
-//      console.log(error.message)
-//      Modal.error({
-//        title: "Error",
-//        content: error.message || "Internal Server Error",
-//      })
-//     }
-//    };
+  const handleGetBanks = () => {
+    getBank(params)
+  }
 
-//   useEffect(() => {
-//     getChartOfAccount(params);
-//   }, [params]);
+  const handleSubmit = async (val: any)=> {
+    try {
+     await postBank(val)
+     notification.success({
+       message: "Success",
+       description: "Berhasil menyimpan data user",
+     })
+     handleGetBanks()
+     hookFormGenerator.resetFields()
+     setOpenDrawer((val: any) => ({ ...val, create: false }))
+    } catch (error: any) {
+     console.log(error.message)
+     Modal.error({
+       title: "Error",
+       content: error.message || "Internal Server Error",
+     })
+    }
+   };
 
-// dummy data
-const listBank = {
-  items: Array(10).fill({
-    bank_id: "BNK001",
-    bank: "OCBC NISP",
-    entity_id: "ENT001",
-    acc_number: "315150001019",
-    created_by: "admin",
-    updated_at: dayjs().format("DD/MM/YYYY"),
-    status: "Active",
-  }),
-  total: 10,
-  offset: 0,
-  limit: 10,
-}
+  useEffect(() => {
+    handleGetBanks();
+  }, [params]);
+
+  useEffect(() => {
+    getCurrency({
+      offset: 0,
+      limit: 10000,
+    })
+
+    getDivison({
+      offset: 0,
+      limit: 10000,
+    })
+  }, []);
 
   const dataForm = [
     {
@@ -66,30 +74,42 @@ const listBank = {
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "acc_number",
+      name: "account_number",
       label: "No. Rekening",
       type: "text",
       placeholder: "Enter No. Rekening",
-      rules: [{ required: true, message: "This field is required!" }],
+      rules: [
+        { 
+          required: true,
+          message: "This field is required!"
+        },
+        {
+          min: 10,
+          message: "Account Code must be at least 10 characters",
+        },
+      ],
     },
     {
-      name: "acc_code",
+      name: "account_code",
       label: "Account Code",
       type: "text",
       placeholder: "Enter Account Code",
-      rules: [{ required: true, message: "This field is required!" }],
+      rules: [
+        { 
+          required: true,
+          message: "This field is required!"
+        },
+      ],
     },
     {
-      name: "currency",
+      name: "currency_id",
       label: "Currency",
       type: "select",
       placeholder: "Enter Currency",
-      options: [
-       {
-        label: "IDR",
-        value: "IDR",
-       }
-      ],
+      options: listCurrency?.items?.map((item: any) => ({
+        label: item.currency,
+        value: item.id,
+      })),
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
@@ -97,12 +117,10 @@ const listBank = {
       label: "Managing Division",
       type: "select",
       placeholder: "Enter Currency",
-      options: [
-       {
-        label: "Division 1",
-        value: "323ejsdyf32dddd",
-       }
-      ],
+      options: listDivision?.items?.map((item: any) => ({
+        label: item.division_name,
+        value: item.id,
+      })),
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
@@ -137,13 +155,13 @@ const listBank = {
     },
     {
       title: "Entitas",
-      dataIndex: "entity_id",
-      key: "entity_id",
+      dataIndex: "entity",
+      key: "entity",
     },
     {
       title: "No. Rekening",
-      dataIndex: "acc_number",
-      key: "acc_number",
+      dataIndex: "account_number",
+      key: "account_number",
     },
     {
       title: "Dibuat Oleh",
@@ -154,7 +172,7 @@ const listBank = {
       title: "Tanggal Update",
       dataIndex: "updated_at",
       key: "updated_at",
-      // render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
+      render: ({ updated_at }: any) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
     },
     {
       title: "Status",
@@ -172,11 +190,12 @@ const listBank = {
       title: "Action",
       dataIndex: "id",
       key: "id",
-      render: () => (
+      render: (id: any) => (
         <>
           <Button 
            onClick={()=>{
             setOpenDrawer((prev:any) => ({...prev, update: true}))
+            setBankId(id)
            }}
           >
             <FaPen />
@@ -202,7 +221,7 @@ const listBank = {
         columns={columns}
         dataSource={listBank?.items}
         size="small"
-        loading={false}
+        loading={loading}
         pagination={{
           size: "default",
           current: Math.floor(params.offset / params.limit) + 1, // Perhitungan halaman saat ini
@@ -245,26 +264,18 @@ const listBank = {
        }} 
        open={openDrawer.create}
       >
-      
-        {/* {
-          loading && (
-            <div className="flex justify-center items-center">
-              <Spin size="large" />
-            </div>
-          )
-        } */}
       <FormGenerator
           hookForm={hookFormGenerator}
-          onFinish={() => {}}
+          onFinish={handleSubmit}
           data={dataForm}
           id="dynamicForm"
           size="default" //small , default , large
           layout="vertical" //vertical, horizontal
-          disabled={false}
+          disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
         <div className="w-full absolute bottom-0 left-0 right-0 p-5">
-          <Button loading={false} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+          <Button loading={loading} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
             Simpan
           </Button>
         </div>
@@ -272,7 +283,10 @@ const listBank = {
       <UpdateBank
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
-        handleGetBank={()=>{}}
+        handleGetBanks={handleGetBanks}
+        listDivision={listDivision}
+        listCurrency={listCurrency}
+        bankId={bankId}
       />
     </main>
   );

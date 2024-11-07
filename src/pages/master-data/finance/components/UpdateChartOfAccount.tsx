@@ -1,13 +1,13 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
 import { useEffect } from 'react';
-import { useFinanceStore } from '../finance.store';
+import { useChartOfAccountStore } from '../../../../stores/chartOfAccount.store';
 
 interface IchartOfAccount {
   openDrawer: any;
   setOpenDrawer: any;
   handleGetchartOfAccount: any;
-  chartOfAccount: any;
+  chartOfAccountId: any;
   listClassMaster: any;
 }
 
@@ -15,20 +15,15 @@ export default function UpdateChartOfAccount({
   openDrawer,
   setOpenDrawer,
   handleGetchartOfAccount,
-  chartOfAccount,
+  chartOfAccountId,
   listClassMaster
 }: IchartOfAccount) {
   const [hookFormGenerator] = Form.useForm();
-  const { updateChartOfAccount, loading } = useFinanceStore();
+  const { updateChartOfAccount, getChartOfAccountById, chartOfAccount, loading } = useChartOfAccountStore();
 
   const handleSubmitUpdate = async (values: any) => {
-    console.log(values.division_id);
     try {
-      const finalyPayload = {
-        ...values,
-        class_id: values.class_id.value || values.class_id,
-      }
-      await updateChartOfAccount(finalyPayload, chartOfAccount.id), 
+      await updateChartOfAccount(values, chartOfAccountId), 
       notification.success({
         message: 'Success',
         description: 'Berhasil update data user role',
@@ -45,15 +40,16 @@ export default function UpdateChartOfAccount({
     }
   };
 
-  console.log(chartOfAccount)
+  useEffect(() => {
+    if(chartOfAccountId !== null && openDrawer.update === true){
+      getChartOfAccountById(chartOfAccountId);
+    }
+  }, [openDrawer.update]);
 
   useEffect(() => {
       hookFormGenerator.setFieldsValue({ 
         name: chartOfAccount?.name,
-        // class_id: {
-        //   label: chartOfAccount?.class_name,
-        //   value: "test",
-        // },
+        class_id: chartOfAccount?.class_id,
         status: chartOfAccount?.status,
        });
   }, [chartOfAccount]);

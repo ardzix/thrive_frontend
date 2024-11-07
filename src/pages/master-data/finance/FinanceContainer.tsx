@@ -4,8 +4,8 @@ import ListChart from "./components/ListChart";
 import ListCurrency from "./components/ListCurrency";
 import CustomLayout from "../../shared/components/CustomLayout";
 import HeaderCustom from "../../shared/components/HeaderCustom";
-import ListBank from "./components/ListBank";
 import ListTax from "./components/listTax";
+import ListBank from "./components/ListBank";
 
 const items = [
   {

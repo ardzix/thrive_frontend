@@ -1,7 +1,7 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
 import { useEffect } from 'react';
-import { useFinanceStore } from '../finance.store';
+import { useFinanceStore } from '../../../../stores/finance.store';
 
 interface IclassMaster {
   openDrawer: any;

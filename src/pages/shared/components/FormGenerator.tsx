@@ -476,7 +476,7 @@ export default function FormGenerator({
                 name={res.name}
                 rules={res?.rules}
               >
-                <Checkbox.Group className="min-h-[300px] flex-wrap flex flex-col justify-start items-start space-y-2">
+                <Checkbox.Group className="flex-wrap flex flex-col justify-start items-start space-y-2">
                   {res.options.map((option: any, optIdx: number) => (
                     <Checkbox key={optIdx} value={option.value}>
                       {option.label}

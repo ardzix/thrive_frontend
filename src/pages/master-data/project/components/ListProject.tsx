@@ -1,38 +1,68 @@
-import { Button, Drawer, Form, Table } from "antd";
+import { Button, Drawer, Form, Modal, notification, Table } from "antd";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import UpdateProject from "./UpdateProject";
+import { useProjectStore } from "../../../../stores/project.store";
+import { useEntityStore } from "../../../../stores/entity.store";
 
 
 export default function ListProject() {
-  const [page, setPage] = useState(1);
+  const [params, setParams] = useState({
+    offset: 0,
+    limit: 10,
+    search: "",
+  })
   const [openDrawer, setOpenDrawer] = useState({
     create: false,
     update: false,
   });
   const [hookFormGenerator] = Form.useForm();
+  const {getProject, listProject, loading, postProject}=useProjectStore();
+  const {getEntity, listEntity}=useEntityStore()
+  const [projectId, setProjectId] = useState(null);
 
-  // dummy data
-  const listProjects={
-    items: Array(10).fill({
-      project_id: "PRO001",
-      project_name: "Lembayung Senja",
-      status: "Active",
-      created_by: "Jon Pantau",
-      updated_at: dayjs().format('DD/MM/YYYY'),
-    }),
-    total: 10,
-    offset: 0,
-    limit: 10,
-  }
+  const handleGetProject = () => {
+    getProject(params)
+  };
+
+  useEffect(() => {
+    handleGetProject();
+  }, [params]);
+
+  useEffect(() => {
+    getEntity({
+      offset: 0,
+      limit: 10000
+    })
+  },[])
+
+  const handleSubmit = async (values: any) => {
+    try {
+      console.log(values);
+      await postProject(values), 
+      notification.success({
+        message: 'Success',
+        description: 'Berhasil Menambah data Project',
+      });
+      handleGetProject();
+      hookFormGenerator.resetFields();
+      setOpenDrawer((val: any) => ({ ...val, create: false }));
+    } catch (error: any) {
+      console.log(error.message);
+      Modal.error({
+        title: 'Error',
+        content: error.message || 'Internal Server Error',
+      });
+    }
+  };
 
   const dataForm = [
     {
-      name: "project_name",
+      name: "name",
       label: "Nama Project",
       type: "text",
       placeholder: "Enter Project Name",
@@ -44,16 +74,10 @@ export default function ListProject() {
       type: "select",
       placeholder: "Enter Entity",
       rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "entitas 1",
-          value: "entitas 1",
-        },
-        {
-          label: "entitas 1",
-          value: "entitas 1",
-        },
-      ],
+      options: listEntity?.items?.map((item: any) => ({ 
+        label: item.entity_name,
+        value: item.id 
+      })),
     },
     {
       name: "status",
@@ -82,8 +106,8 @@ export default function ListProject() {
     },
     {
       title: "Nama Project",
-      dataIndex: "project_name",
-      key: "project_name",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Dibuat Oleh",
@@ -94,7 +118,7 @@ export default function ListProject() {
       title: "Tanggal Update",
       dataIndex: "updated_at",
       key: "updated_at",
-      // render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
+      render: ({ updated_at }: any) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
     },
     {
       title: "Status",
@@ -112,12 +136,12 @@ export default function ListProject() {
       title: "Action",
       dataIndex: "id",
       key: "id",
-      render: () => (
+      render: (id: any) => (
         <>
           <Button
             onClick={()=>{
               setOpenDrawer({...openDrawer, update: true})
-
+              setProjectId(id)
             }}
           >
             <FaPen />
@@ -130,41 +154,47 @@ export default function ListProject() {
   return (
     <main className="space-y-5">
       <div className="flex justify-between items-center">
-        <InputSearch placeholder="Search" onChange={() => {}} />
+        <InputSearch placeholder="Search" onChange={(val) => setParams({...params, search: val})} />
         <Button onClick={() => setOpenDrawer({...openDrawer, create: true})} className="bg-[#F2E2A8] hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold" icon={<PlusCircleOutlined />}>
           Project Baru
         </Button>
       </div>
       <Table
         columns={columns}
-        dataSource={listProjects?.items}
+        dataSource={listProject?.items}
         size="small"
-        loading={false}
+        loading={loading}
         pagination={{
           size: "default",
-          current: page,
-          // current: parseInt(CurrentPage),
-          // defaultCurrent: 1,
-          onChange: (p) => {
-            setPage(p);
-          },
-          //   pageSize: pageSize,
-          // size: pageSize,
+          current: Math.floor(params.offset / params.limit) + 1, // Perhitungan halaman saat ini
+          pageSize: params.limit,
+          // defaultPageSize: params.limit,
           showSizeChanger: true,
-          //   total: listTaskAll?.count,
-          //   onShowSizeChange: (p, s) => {
-          //     setPage(p);
-          //     setPageSize(s);
-          //   },
-          showTotal: (total, range) => (
-            <span style={{ left: 0, position: "absolute", fontSize: 12 }}>
-              Showing {range[0]} to {range[1]} of {total} results
-            </span>
-          ),
+          total: listProject?.total, // Total data
+          onChange: (page, pageSize) => {
+            setParams({
+              ...params,
+              limit: pageSize,
+              offset: (page - 1) * pageSize, // Perhitungan offset
+            });
+          },
+          onShowSizeChange: (current, size) => {
+            setParams({
+              ...params,
+              limit: size,
+              offset:(current - 1) * size,
+            });
+          },
+          showTotal: (total, range) => {
+            return(
+              <span style={{ left: 0, position: "absolute", fontSize: 12 }}>
+                Menampilkan {range[0]} hingga {Math.min(range[1], total)} dari {total} hasil
+              </span>
+            )
+          },
         }}
         scroll={{
           x: "100%",
-          // y: "100%",
         }}
       />
 
@@ -178,18 +208,18 @@ export default function ListProject() {
       >
         <FormGenerator
           hookForm={hookFormGenerator}
-          onFinish={() => {}}
+          onFinish={handleSubmit}
           data={dataForm}
           id="dynamicForm"
           size="default" //small , default , large
           layout="vertical" //vertical, horizontal
-          // disabled={loading}
+          disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
         <div className="w-full absolute bottom-0 left-0 right-0 px-5 pb-5">
           <Button
-            // loading={loading}
-            form="updateDivision"
+            loading={loading}
+            form="dynamicForm"
             htmlType="submit"
             className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold"
           >
@@ -200,7 +230,9 @@ export default function ListProject() {
       <UpdateProject
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
-        handleGetTax={()=>{}}
+        handleGetProject={handleGetProject}
+        listEntity={listEntity}
+        projectId={projectId}
       />
     </main>
   );

@@ -1,30 +1,43 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
+import { useBankStore } from '../../../../stores/bank.store';
+import { useEffect } from 'react';
 
 interface IUserRole {
   openDrawer: any;
   setOpenDrawer: any;
-  handleGetBank: any;
+  handleGetBanks: any;
+  listDivision:any;
+  listCurrency:any;
+  bankId:any;
 }
 
 export default function UpdateBank({
   openDrawer,
   setOpenDrawer,
-  handleGetBank,
+  handleGetBanks,
+  bankId,
+  listDivision,
+  listCurrency,
 }: IUserRole) {
   const [hookFormGenerator] = Form.useForm();
-  // const {updateDivision, loading } = useDivisionStore();
+  const {updateBank, getBankById, bank, loading } = useBankStore();
 
   const handleSubmitUpdate = async (values: any) => {
     try {
       console.log(values);
-      // await updateDivision(values, division?.id), 
+      const finalyPayload ={
+        ...values,
+        currency_id: values.currency_id.value || values.currency_id,
+        division_id: values.division_id.value || values.division_id
+      }
+      await updateBank(finalyPayload, bankId), 
       notification.success({
         message: 'Success',
         description: 'Berhasil update data divisi',
       });
       setOpenDrawer((val: any) => ({ ...val, update: false }));
-      handleGetBank();
+      handleGetBanks();
       hookFormGenerator.resetFields();
     } catch (error: any) {
       console.log(error.message);
@@ -35,13 +48,22 @@ export default function UpdateBank({
     }
   };
 
-  // useEffect(()=>{
-  //   hookFormGenerator.setFieldsValue({
-  //     division_name: division?.division_name,
-  //     description: division?.description,
-  //     status: division?.status
-  //   })
-  // },[division])
+  useEffect(()=>{
+    if(bankId !== null && openDrawer.update === true){
+      getBankById(bankId)
+    }
+  },[openDrawer.update])
+
+  useEffect(()=>{
+      hookFormGenerator.setFieldsValue({
+        bank: bank?.bank,
+        account_number: bank?.account_number, 
+        account_code: bank?.account_code,
+        currency_id: bank?.currency_id,
+        division_id: bank?.division_id,
+        status: bank?.status
+      })
+  },[bank])
 
   const dataForm = [
     {
@@ -52,30 +74,42 @@ export default function UpdateBank({
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
-      name: "acc_number",
+      name: "account_number",
       label: "No. Rekening",
       type: "text",
       placeholder: "Enter No. Rekening",
-      rules: [{ required: true, message: "This field is required!" }],
+      rules: [
+        { 
+          required: true,
+          message: "This field is required!"
+        },
+        {
+          min: 10,
+          message: "Account Code must be at least 10 characters",
+        },
+      ],
     },
     {
-      name: "acc_code",
+      name: "account_code",
       label: "Account Code",
       type: "text",
       placeholder: "Enter Account Code",
-      rules: [{ required: true, message: "This field is required!" }],
+      rules: [
+        { 
+          required: true,
+          message: "This field is required!"
+        },
+      ],
     },
     {
-      name: "currency",
+      name: "currency_id",
       label: "Currency",
       type: "select",
       placeholder: "Enter Currency",
-      options: [
-       {
-        label: "IDR",
-        value: "IDR",
-       }
-      ],
+      options: listCurrency?.items?.map((item: any) => ({
+        label: item.currency,
+        value: item.id,
+      })),
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
@@ -83,12 +117,10 @@ export default function UpdateBank({
       label: "Managing Division",
       type: "select",
       placeholder: "Enter Currency",
-      options: [
-       {
-        label: "Division 1",
-        value: "323ejsdyf32dddd",
-       }
-      ],
+      options: listDivision?.items?.map((item: any) => ({
+        label: item.division_name,
+        value: item.id,
+      })),
       rules: [{ required: true, message: "This field is required!" }],
     },
     {
@@ -127,11 +159,11 @@ export default function UpdateBank({
           id="updateDivision"
           size="default"
           layout="vertical"
-          // disabled={loading}
+          disabled={loading}
         />
         <div className="w-full absolute bottom-0 left-0 right-0 px-5 pb-5">
           <Button
-            // loading={loading}
+            loading={loading}
             form="updateDivision"
             htmlType="submit"
             className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold"

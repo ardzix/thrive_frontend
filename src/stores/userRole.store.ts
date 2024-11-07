@@ -1,27 +1,27 @@
 import { create } from "zustand";
-import { fetcherGET, fetcherPOST, fetcherPUT } from "../../../lib/fetcher";
-import { Iparams } from "../../shared/shared.store";
+import { Iparams } from "../pages/shared/shared.store";
+import { fetcherGET, fetcherPOST, fetcherPUT } from "../lib/fetcher";
 
 interface IUserStore{
     loading: boolean
-    listRoleAccess: any
-    listModules: any
-    getRoleAccess: (params: Iparams) => Promise<any>
-    postRoleAccess: (data:any ) => Promise<any>
-    getModules: (params: Iparams) => Promise<any>
-    updateRoleAccess: (data: any, id: any) => Promise<any>
+    listUserRoles: any
+    userRole: any
+    getUserRole: (params: Iparams) => Promise<any>
+    postUserRole: (data:any ) => Promise<any>
+    updateUserRole: (data:any, id: string) => Promise<any>
+    getUserRoleById: (id: string) => Promise<any>
 }
 
 
-export const useRoleAccessStore = create<IUserStore>()((set) => ({
+export const useUserRoleStore = create<IUserStore>()((set) => ({
     loading: false,
-    listRoleAccess: [],
-    listModules: [],
-    getRoleAccess: async (params) => {
+    listUserRoles: [],
+    userRole: {},
+    getUserRole: async (params) => {
         set({ loading: true });
         try {
-            const data = await fetcherGET(`/role-access`, params);
-            set({ loading: false, listRoleAccess: data.data });
+            const data = await fetcherGET(`/roles`, params);
+            set({ loading: false, listUserRoles: data.data });
             return Promise.resolve(data);
         } catch (error: any) {
             console.log(error.message, "error zustand");
@@ -29,10 +29,10 @@ export const useRoleAccessStore = create<IUserStore>()((set) => ({
             return Promise.reject(error);
         }
     },
-    postRoleAccess: async (data) => {
+    postUserRole: async (data) => {
         set({ loading: true });
         try {
-            const response = await fetcherPOST(`/role-access`, data);
+            const response = await fetcherPOST(`/roles`, data);
             set({ loading: false });
             return Promise.resolve(response);
         } catch (error: any) {
@@ -41,23 +41,23 @@ export const useRoleAccessStore = create<IUserStore>()((set) => ({
             return Promise.reject(error);
         }
     },
-    getModules: async (params) => {
+    updateUserRole: async (data, id) => {
         set({ loading: true });
         try {
-            const data = await fetcherGET(`/modules`, params);
-            set({ loading: false, listModules: data?.data });
-            return Promise.resolve(data);
+            const response = await fetcherPUT(`/roles/${id}`, data);
+            set({ loading: false });
+            return Promise.resolve(response);
         } catch (error: any) {
             console.log(error.message, "error zustand");
             set({ loading: false });
             return Promise.reject(error);
         }
     },
-    updateRoleAccess: async (data, id) => {
+    getUserRoleById: async (id) => {
         set({ loading: true });
         try {
-            const response = await fetcherPUT(`/role-access/${id}`, data);
-            set({ loading: false });
+            const response = await fetcherGET(`/roles/${id}`, {});
+            set({ loading: false, userRole: response.data });
             return Promise.resolve(response);
         } catch (error: any) {
             console.log(error.message, "error zustand");

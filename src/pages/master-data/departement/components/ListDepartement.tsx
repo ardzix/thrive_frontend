@@ -4,7 +4,7 @@ import {  FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-import UpdateDepartement from "../../user/components/UpdateDepartement";
+import UpdateDepartement from "./UpdateDepartement";
 import dayjs from "dayjs";
 
 export default function ListDepartement() {

@@ -4,8 +4,8 @@ import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-import { useDivisionStore } from "../division.store";
-import UpdateDivision from "../../user/components/UpdateDivision";
+import UpdateDivision from "./UpdateDivision";
+import { useDivisionStore } from "../../../../stores/division.store";
 
 export default function ListUserDivison() {
   const [openDrawer, setOpenDrawer] = useState({

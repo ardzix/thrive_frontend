@@ -1,11 +1,12 @@
-import { Button, Drawer, Form, Table } from "antd";
+import { Button, Drawer, Form, Modal, notification, Table } from "antd";
 import dayjs from "dayjs";
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import UpdateTax from "./UpdateTax";
+import { useTaxStore } from "../../../../stores/tax.store";
 
 export default function ListTax() {
   const [params, setParams] = useState({
@@ -18,47 +19,39 @@ export default function ListTax() {
     update: false,
   });
   const [hookFormGenerator] = Form.useForm();
-//   const {getChartOfAccount,listClassMaster,loading, listGeneralLedger, postChartOfAccount}=useFinanceStore();
+  const {getTax, listTax, loading, postTax}=useTaxStore();
+  const [taxId, setTaxId]= useState(null);
 
-//   const handleSubmit = async (val: any)=> {
-//     try {
-//      await postChartOfAccount(val)
-//      notification.success({
-//        message: "Success",
-//        description: "Berhasil menyimpan data user",
-//      })
-//      getChartOfAccount(params)
-//     } catch (error: any) {
-//      console.log(error.message)
-//      Modal.error({
-//        title: "Error",
-//        content: error.message || "Internal Server Error",
-//      })
-//     }
-//    };
+  const handleGetTax = () => {
+    getTax(params);
+  };
 
-//   useEffect(() => {
-//     getChartOfAccount(params);
-//   }, [params]);
+  const handleSubmit = async (val: any)=> {
+    try {
+     await postTax(val)
+     notification.success({
+       message: "Success",
+       description: "Berhasil menyimpan tax",
+     })
+     handleGetTax()
+     hookFormGenerator.resetFields()
+     setOpenDrawer({ ...openDrawer, create: false })
+    } catch (error: any) {
+     console.log(error.message)
+     Modal.error({
+       title: "Error",
+       content: error.message || "Internal Server Error",
+     })
+    }
+   };
 
-// dummy data
-const listBank = {
-  items: Array(10).fill({
-    tax_id: "TAX001",
-    tax_name: "PPn",
-    amount: "10%",
-    created_by: "Jon Pantau",
-    updated_at: dayjs().format("DD/MM/YYYY"),
-    status: "Active",
-  }),
-  total: 10,
-  offset: 0,
-  limit: 10,
-}
+  useEffect(() => {
+    handleGetTax();
+  }, [params]);
 
   const dataForm = [
     {
-      name: "tax_name",
+      name: "name",
       label: "Tax Name",
       type: "text",
       placeholder: "Enter Tax Name",
@@ -67,7 +60,8 @@ const listBank = {
     {
       name: "amount",
       label: "Amount",
-      type: "text",
+      type: "number",
+      className: "w-full",
       placeholder: "Enter Amount",
       rules: [{ required: true, message: "This field is required!" }],
     },
@@ -98,8 +92,8 @@ const listBank = {
     },
     {
       title: "Tax Name",
-      dataIndex: "tax_name",
-      key: "tax_name",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Amount",
@@ -115,7 +109,7 @@ const listBank = {
       title: "Tanggal Update",
       dataIndex: "updated_at",
       key: "updated_at",
-      // render: ({ updated_at }: ListDataType) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
+      render: ({ updated_at }: any) => <span>{dayjs(updated_at).format("DD/MM/YYYY")}</span>,
     },
     {
       title: "Status",
@@ -133,11 +127,12 @@ const listBank = {
       title: "Action",
       dataIndex: "id",
       key: "id",
-      render: () => (
+      render: (id:any) => (
         <>
           <Button 
            onClick={()=>{
             setOpenDrawer({...openDrawer, update: true})
+            setTaxId(id)
            }}
           >
             <FaPen />
@@ -161,16 +156,16 @@ const listBank = {
       </div>
       <Table
         columns={columns}
-        dataSource={listBank?.items}
+        dataSource={listTax?.items}
         size="small"
-        loading={false}
+        loading={loading}
         pagination={{
           size: "default",
           current: Math.floor(params.offset / params.limit) + 1, // Perhitungan halaman saat ini
           pageSize: params.limit,
           // defaultPageSize: params.limit,
           showSizeChanger: true,
-          total: listBank?.total, // Total data
+          total: listTax?.total, // Total data
           onChange: (page, pageSize) => {
             setParams({
               ...params,
@@ -206,25 +201,18 @@ const listBank = {
        }} 
        open={openDrawer.create}
       >
-        {/* {
-          loading && (
-            <div className="flex justify-center items-center">
-              <Spin size="large" />
-            </div>
-          )
-        } */}
       <FormGenerator
           hookForm={hookFormGenerator}
-          onFinish={() => {}}
+          onFinish={handleSubmit}
           data={dataForm}
           id="dynamicForm"
           size="default" //small , default , large
           layout="vertical" //vertical, horizontal
-          disabled={false}
+          disabled={loading}
           // formStyle={{ maxWidth: "100%" }}
         />
         <div className="w-full absolute bottom-0 left-0 right-0 p-5">
-          <Button loading={false} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
+          <Button loading={loading} form="dynamicForm" htmlType="submit" className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold">
             Simpan
           </Button>
         </div>
@@ -232,7 +220,8 @@ const listBank = {
       <UpdateTax
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
-        handleGetTax={()=>{}}
+        handleGetTax={handleGetTax}
+        taxId={taxId}
       />
     </main>
   );

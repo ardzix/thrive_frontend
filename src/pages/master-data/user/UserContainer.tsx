@@ -1,6 +1,6 @@
 import { Tabs } from "antd";
-import ListUserData from "./components/ListUserData";
-import ListUserRole from "./components/ListUserRole";
+import ListUserData from "./user-data/ListUserData";
+import ListUserRole from "./user-role/ListUserRole";
 import HeaderCustom from "../../shared/components/HeaderCustom";
 import CustomLayout from "../../shared/components/CustomLayout";
 

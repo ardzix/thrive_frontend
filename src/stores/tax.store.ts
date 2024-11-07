@@ -1,29 +1,26 @@
 import { create } from "zustand";
-import { fetcherGET, fetcherPOST, fetcherPUT } from "../../../lib/fetcher";
-import { Iparams } from "../../shared/shared.store";
+import { Iparams } from "../pages/shared/shared.store";
+import { fetcherGET, fetcherPOST, fetcherPUT } from "../lib/fetcher";
 
-
-
-interface IUserStore{
-    loading: boolean;
-    listUsers: any;
-    user: any;
-    getUsers: (params: Iparams) => Promise<any>;
-    postUser: (data:any) => Promise<any>;
-    updateUser: (data:any, id:any) => Promise<any>;
-    getUserById: (id:any) => Promise<any>;
+interface ITaxStore {
+    loading: boolean
+    listTax: any
+    getTax: (params: Iparams) => Promise<any>
+    getTaxById: (id: any) => Promise<any>
+    postTax: (data:any ) => Promise<any>
+    updateTax: (data: any, id: any) => Promise<any>
+    tax: any;
 }
 
-
-export const useUserStore = create<IUserStore>()((set) => ({
+export const useTaxStore = create<ITaxStore>()((set) => ({
     loading: false,
-    listUsers: [],
-    user: null,
-    getUsers: async (params) => {
+    listTax: [],
+    tax: {},
+    getTax: async (params) => {
         set({ loading: true });
         try {
-            const data = await fetcherGET(`/users`, params);
-            set({ loading: false, listUsers: data.data });
+            const data = await fetcherGET(`/taxes`, params);
+            set({ loading: false, listTax: data.data });
             return Promise.resolve(data);
         } catch (error: any) {
             console.log(error.message, "error zustand");
@@ -31,10 +28,22 @@ export const useUserStore = create<IUserStore>()((set) => ({
             return Promise.reject(error);
         }
     },
-    postUser: async (data) => {
+    getTaxById: async (id) => {
         set({ loading: true });
         try {
-            const response = await fetcherPOST(`/users`, data);
+            const data = await fetcherGET(`/taxes/${id}`, {});
+            set({ loading: false, tax: data.data });
+            return Promise.resolve(data);
+        } catch (error: any) {
+            console.log(error.message, "error zustand");
+            set({ loading: false });
+            return Promise.reject(error);
+        }
+    },
+    postTax: async (data) => {
+        set({ loading: true });
+        try {
+            const response = await fetcherPOST(`/taxes`, data);
             set({ loading: false });
             return Promise.resolve(response);
         } catch (error: any) {
@@ -43,23 +52,11 @@ export const useUserStore = create<IUserStore>()((set) => ({
             return Promise.reject(error);
         }
     },
-    updateUser: async (data, id) => {
+    updateTax: async (data, id) => {
         set({ loading: true });
         try {
-            const response = await fetcherPUT(`/users/${id}`, data);
+            const response = await fetcherPUT(`/taxes/${id}`, data);
             set({ loading: false });
-            return Promise.resolve(response);
-        } catch (error: any) {
-            console.log(error.message, "error zustand");
-            set({ loading: false });
-            return Promise.reject(error);
-        }
-    },
-    getUserById: async (id) => {
-        set({ loading: true });
-        try {
-            const response = await fetcherGET(`/users/${id}`, {});
-            set({ loading: false, user: response.data });
             return Promise.resolve(response);
         } catch (error: any) {
             console.log(error.message, "error zustand");

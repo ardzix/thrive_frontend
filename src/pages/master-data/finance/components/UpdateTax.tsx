@@ -1,27 +1,31 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
+import { useTaxStore } from '../../../../stores/tax.store';
+import { useEffect } from 'react';
 
 interface IUserRole {
   openDrawer: any;
   setOpenDrawer: any;
   handleGetTax: any;
+  taxId: any;
 }
 
 export default function UpdateTax({
   openDrawer,
   setOpenDrawer,
   handleGetTax,
+  taxId,
 }: IUserRole) {
   const [hookFormGenerator] = Form.useForm();
-  // const {updateDivision, loading } = useDivisionStore();
+  const {getTaxById, tax, updateTax } = useTaxStore();
 
   const handleSubmitUpdate = async (values: any) => {
     try {
       console.log(values);
-      // await updateDivision(values, division?.id), 
+      await updateTax(values, taxId), 
       notification.success({
         message: 'Success',
-        description: 'Berhasil update data divisi',
+        description: 'Berhasil update data tax',
       });
       setOpenDrawer((val: any) => ({ ...val, update: false }));
       handleGetTax();
@@ -35,17 +39,25 @@ export default function UpdateTax({
     }
   };
 
-  // useEffect(()=>{
-  //   hookFormGenerator.setFieldsValue({
-  //     division_name: division?.division_name,
-  //     description: division?.description,
-  //     status: division?.status
-  //   })
-  // },[division])
+  console.log(taxId, tax)
+
+  useEffect(() => {
+    if(taxId !== null && openDrawer.update === true){
+      getTaxById(taxId);
+    }
+  }, [openDrawer.update]);
+
+  useEffect(()=>{
+    hookFormGenerator.setFieldsValue({
+      name: tax?.name,
+      amount: tax?.amount,
+      status: tax?.status
+    })
+  },[tax])
 
   const dataForm = [
     {
-      name: "tax_name",
+      name: "name",
       label: "Tax Name",
       type: "text",
       placeholder: "Enter Tax Name",
@@ -54,7 +66,8 @@ export default function UpdateTax({
     {
       name: "amount",
       label: "Amount",
-      type: "text",
+      type: "number",
+      className: "w-full",
       placeholder: "Enter Amount",
       rules: [{ required: true, message: "This field is required!" }],
     },

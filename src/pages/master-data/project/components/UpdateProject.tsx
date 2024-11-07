@@ -1,30 +1,36 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
+import { useProjectStore } from '../../../../stores/project.store';
+import { useEffect } from 'react';
 
 interface IUserRole {
   openDrawer: any;
   setOpenDrawer: any;
-  handleGetTax: any;
+  handleGetProject: any;
+  listEntity: any;
+  projectId: any;
 }
 
 export default function UpdateProject({
   openDrawer,
   setOpenDrawer,
-  handleGetTax,
+  handleGetProject,
+  listEntity,
+  projectId
 }: IUserRole) {
   const [hookFormGenerator] = Form.useForm();
-  // const {updateDivision, loading } = useDivisionStore();
+  const {getProjectById,project, updateProject, loading } = useProjectStore();
 
   const handleSubmitUpdate = async (values: any) => {
     try {
       console.log(values);
-      // await updateDivision(values, division?.id), 
+      await updateProject(values, projectId), 
       notification.success({
         message: 'Success',
         description: 'Berhasil update data divisi',
       });
       setOpenDrawer((val: any) => ({ ...val, update: false }));
-      handleGetTax();
+      handleGetProject();
       hookFormGenerator.resetFields();
     } catch (error: any) {
       console.log(error.message);
@@ -35,17 +41,25 @@ export default function UpdateProject({
     }
   };
 
-  // useEffect(()=>{
-  //   hookFormGenerator.setFieldsValue({
-  //     division_name: division?.division_name,
-  //     description: division?.description,
-  //     status: division?.status
-  //   })
-  // },[division])
+  useEffect(()=>{
+    if(projectId !== null && openDrawer.update === true){
+      getProjectById(projectId)
+    }
+  }, [openDrawer.update, projectId])
+
+  console.log(listEntity)
+
+  useEffect(()=>{
+    hookFormGenerator.setFieldsValue({
+      name: project?.name,
+      entity_id: project?.entity_id,
+      status: project?.status
+    })
+  },[project])
 
   const dataForm = [
     {
-      name: "project_name",
+      name: "name",
       label: "Nama Project",
       type: "text",
       placeholder: "Enter Project Name",
@@ -57,16 +71,10 @@ export default function UpdateProject({
       type: "select",
       placeholder: "Enter Entity",
       rules: [{ required: true, message: "This field is required!" }],
-      options: [
-        {
-          label: "entitas 1",
-          value: "entitas 1",
-        },
-        {
-          label: "entitas 1",
-          value: "entitas 1",
-        },
-      ],
+      options: listEntity?.items?.map((item: any) => ({ 
+        label: item.entity_name,
+        value: item.id 
+      })),
     },
     {
       name: "status",
@@ -104,11 +112,11 @@ export default function UpdateProject({
           id="updateDivision"
           size="default"
           layout="vertical"
-          // disabled={loading}
+          disabled={loading}
         />
         <div className="w-full absolute bottom-0 left-0 right-0 px-5 pb-5">
           <Button
-            // loading={loading}
+            loading={loading}
             form="updateDivision"
             htmlType="submit"
             className="bg-[#F2E2A8] w-full hover:!bg-[#F2E2A8] !border-none hover:!text-black font-semibold"

@@ -3,10 +3,10 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa6";
 import InputSearch from "../../../shared/components/InputSearch";
-import { useEntityStore } from "../entity.store";
-import { useDivisionStore } from "../../division/division.store";
-import { useRoleAccessStore } from "../../role-access/roleAccess.store";
 import UpdateCompanyModule from "./UpdateModule";
+import { useDivisionStore } from "../../../../stores/division.store";
+import { useRoleAccessStore } from "../../../../stores/roleAccess.store";
+import { useEntityStore } from "../../../../stores/entity.store";
 
 type ListDataType = {
   id: string;

@@ -5,10 +5,10 @@ import { FaPen } from "react-icons/fa6";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import InputSearch from "../../../shared/components/InputSearch";
 import FormGenerator from "../../../shared/components/FormGenerator";
-import { useEntityStore } from "../entity.store";
-import { useDivisionStore } from "../../division/division.store";
 import UpdateCompanyEntitas from "./UpdateCompanyEntitas";
-import { useRoleAccessStore } from "../../role-access/roleAccess.store";
+import { useDivisionStore } from "../../../../stores/division.store";
+import { useRoleAccessStore } from "../../../../stores/roleAccess.store";
+import { useEntityStore } from "../../../../stores/entity.store";
 
 type ListDataType = {
   id: string;

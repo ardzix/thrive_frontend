@@ -1,7 +1,7 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
-import { useEntityStore } from '../entity.store';
 import { useEffect } from 'react';
+import { useEntityStore } from '../../../../stores/entity.store';
 
 interface IUpdateCompanyEntitas {
   openDrawer: any;
@@ -25,13 +25,7 @@ export default function UpdateCompanyEntitas({
 
   const handleSubmitUpdate = async (values: any) => {
     try {
-      const finalyPayload = {
-        ...values,
-        division: values.division.value || values.division,
-        access: values.access.value || values.access,
-        fiscal_year: Number(values.fiscal_year),
-      }
-      await updateEntity(finalyPayload, entityId);
+      await updateEntity(values, entityId);
       notification.success({
         message: 'Success',
         description: 'Berhasil update data entitas',
@@ -53,14 +47,6 @@ export default function UpdateCompanyEntitas({
       getEntityById(entityId);
     }
   }, [entityId, getEntityById]);
-
-  const divisionName = listDivision?.items?.find(
-    (division: any) => division?.id === entity?.division
-  )?.division_name;
-
-  const accessName = listRoleAccess?.items?.find(
-    (access: any) => access?.id === entity?.access
-  )?.role_name;
   
   useEffect(() => {
       hookFormGenerator.setFieldsValue({
@@ -71,14 +57,8 @@ export default function UpdateCompanyEntitas({
         postal_code: entity?.postal_code,
         division_id: entity?.division_id,
         description: entity?.description,
-        division: {
-          label: divisionName,
-          value: entity?.division,
-        },
-        access: {
-          label: accessName,
-          value: entity?.access,
-        },
+        division: entity?.division,
+        access: entity?.access,
         updated_at: entity?.updated_at,
         created_at: entity?.created_at,
         entity_id: entity?.entity_id,

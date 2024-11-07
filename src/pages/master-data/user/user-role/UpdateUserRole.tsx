@@ -1,7 +1,7 @@
 import { Button, Drawer, Form, Modal, notification } from 'antd';
 import FormGenerator from '../../../shared/components/FormGenerator';
 import { useEffect } from 'react';
-import { useUserRoleStore } from '../userRole.store';
+import { useUserRoleStore } from '../../../../stores/userRole.store';
 
 interface IUserRole {
   openDrawer: any;
@@ -110,7 +110,7 @@ export default function UpdateUserRole({
           </Button>
         </div>
         }
-       title="Tambah Role Baru"
+       title="Update Role Baru"
        onClose={() => setOpenDrawer((val:any)=> ({...val, update: false}))}
        open={openDrawer.update}
       >
